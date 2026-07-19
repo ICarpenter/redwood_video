@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Generate docs/beatmap.csv: bar/beat -> seconds -> timeline frame.
 
 Usage:

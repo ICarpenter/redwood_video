@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Build tools/shot_template.blend with the locked project settings.
 
 Run:

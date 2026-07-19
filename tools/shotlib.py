@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Shared helpers for the redwood_video pipeline.
 
 Stdlib only: this module runs under both system Python and Blender's

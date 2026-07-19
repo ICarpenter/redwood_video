@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Create a shot .blend from the open template + its docs/shotlist.csv row.
 
 Run with the template open, headless:

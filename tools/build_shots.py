@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Create every missing shot .blend listed in docs/shotlist.csv.
 
 Usage: python3 tools/build_shots.py [--dry-run] [--force]
