@@ -1,0 +1,18 @@
+# regenerable outputs
+render/
+delivery/
+edit/proxies/
+shots/**/playblast/
+
+# blender litter
+*.blend1
+*.blend@
+
+# python
+__pycache__/
+
+# macOS
+.DS_Store
+
+# local machine config
+.claude/settings.local.json
