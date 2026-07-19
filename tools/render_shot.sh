@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Headless-render one shot to render/<code>/<version>/ as a PNG sequence.
+# Headless-render one shot to render/<code>/<version>/ as an image sequence (format comes from the shot blend's output settings).
 # Usage: tools/render_shot.sh <sq> <sh> [vNNN]
 set -euo pipefail
 . "$(dirname "$0")/env.sh" || exit 1
@@ -22,6 +22,5 @@ out="$REDWOOD_ROOT/render/$code/$ver/${code}_####"
 echo "rendering $code -> render/$code/$ver/"
 "$BLENDER" --background "$blend" \
   --render-output "$out" \
-  --render-format PNG -x 1 \
   --render-anim
 echo "done: render/$code/$ver/"

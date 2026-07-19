@@ -22,12 +22,25 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--force", action="store_true",
-                   help="rebuild shots that already exist")
+                   help="rebuild shots that already exist (asks for confirmation; OVERWRITES existing work)")
     args = p.parse_args(argv)
 
     root = shotlib.project_root()
     shots = shotlib.read_shotlist(root / "docs" / "shotlist.csv")
     todo = plan_builds(shots, root, args.force)
+    if args.force:
+        existing = [s for s in shots if shotlib.shot_blend(s.sq, s.sh, root).exists()]
+        if existing and not args.dry_run:
+            print("--force will OVERWRITE these existing shot files from the template:")
+            for s in existing:
+                print(f"  {s.code}")
+            try:
+                answer = input(f"type yes to rebuild {len(existing)} existing shot(s): ")
+            except EOFError:
+                answer = ""
+            if answer.strip() != "yes":
+                print("aborted")
+                return
     if len(todo) < len(shots):
         print(f"skipping {len(shots) - len(todo)} existing shot(s)")
     if not todo:

@@ -30,6 +30,7 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 
 ## Shots
 - All missing shots: `python3 tools/build_shots.py`
+- `--force` rebuilds existing shots from the empty template — it OVERWRITES animation work and asks for confirmation.
 - One shot:
   `"$BLENDER" --background tools/shot_template.blend --python-exit-code 1 \
       --python tools/new_shot.py -- --sq 010 --sh 010`
@@ -37,7 +38,7 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 
 ## Render
 - `tools/render_shot.sh <sq> <sh> [vNNN]` → `render/sqXXX_shXXX/vNNN/` PNGs.
-- Versions auto-increment; never overwrite an old version.
+- Versions auto-increment by default. Pass an explicit vNNN only to resume or re-render into that version — it overwrites those frames.
 
 ## Edit & delivery
 - `edit/edit.blend` (VSE): track on channel 1, shots as image-sequence strips,

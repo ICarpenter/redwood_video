@@ -14,6 +14,10 @@ import shotlib
 
 
 def generate_rows(bpm, length_s, beats_per_bar=4, fps=shotlib.FPS):
+    if bpm <= 0:
+        raise ValueError(f"bpm must be positive, got {bpm}")
+    if length_s < 0:
+        raise ValueError(f"length must be >= 0, got {length_s}")
     rows = []
     beat = 0
     while True:
@@ -42,7 +46,10 @@ def main(argv=None):
                    default=shotlib.project_root() / "docs" / "beatmap.csv")
     args = p.parse_args(argv)
 
-    rows = generate_rows(args.bpm, args.length, args.beats_per_bar, args.fps)
+    try:
+        rows = generate_rows(args.bpm, args.length, args.beats_per_bar, args.fps)
+    except ValueError as e:
+        p.error(str(e))
     with open(args.out, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["bar", "beat", "time_s", "frame"])
         writer.writeheader()

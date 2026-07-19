@@ -21,6 +21,16 @@ class GenerateRowsTest(unittest.TestCase):
         rows = beatmap.generate_rows(bpm=60, length_s=2.5)
         self.assertEqual(len(rows), 3)  # beats at 0, 1, 2 s
 
+    def test_rejects_non_positive_bpm(self):
+        with self.assertRaisesRegex(ValueError, "bpm"):
+            beatmap.generate_rows(bpm=0, length_s=10)
+        with self.assertRaisesRegex(ValueError, "bpm"):
+            beatmap.generate_rows(bpm=-80, length_s=10)
+
+    def test_rejects_negative_length(self):
+        with self.assertRaisesRegex(ValueError, "length"):
+            beatmap.generate_rows(bpm=120, length_s=-1)
+
 
 if __name__ == "__main__":
     unittest.main()
