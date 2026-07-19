@@ -5,6 +5,7 @@ An animated music video produced end-to-end in Blender — stylized clay look
 
 - Design spec: `docs/superpowers/specs/2026-07-19-redwood-video-pipeline-design.md`
 - Conventions: `docs/pipeline.md`
+- Tools & production flow: `docs/tools.md`
 - Source of truth for shots: `docs/shotlist.csv`
 
 ## Layout

@@ -1,6 +1,7 @@
 # Pipeline conventions — quick reference
 
 Full rationale: `superpowers/specs/2026-07-19-redwood-video-pipeline-design.md`
+What each tool does and the end-to-end flow: `tools.md`
 
 ## Frames & timing
 - 24 fps, 1920×1080, AgX view transform. Locked in `tools/shot_template.blend`.
