@@ -66,6 +66,8 @@ def read_shotlist(path) -> list[Shot]:
         if reader.fieldnames != _FIELDS:
             raise ValueError(f"{path}: header must be {','.join(_FIELDS)}")
         for lineno, row in enumerate(reader, start=2):
+            if any(row.get(k) is None for k in _FIELDS):
+                raise ValueError(f"{path}:{lineno}: wrong number of columns")
             sq, sh = row["sq"].strip(), row["sh"].strip()
             for label, val in (("sq", sq), ("sh", sh)):
                 if not (len(val) == 3 and val.isdigit()):
@@ -82,10 +84,17 @@ def read_shotlist(path) -> list[Shot]:
             if end < start:
                 raise ValueError(f"{path}:{lineno}: end_frame {end} < start_frame {start}")
             duration = row["duration"].strip()
-            if duration and int(duration) != end - start + 1:
-                raise ValueError(
-                    f"{path}:{lineno}: duration {duration} != end-start+1 ({end - start + 1})"
-                )
+            if duration:
+                try:
+                    duration_val = int(duration)
+                except ValueError:
+                    raise ValueError(
+                        f"{path}:{lineno}: duration must be an integer, got {duration!r}"
+                    ) from None
+                if duration_val != end - start + 1:
+                    raise ValueError(
+                        f"{path}:{lineno}: duration {duration} != end-start+1 ({end - start + 1})"
+                    )
             status = row["status"].strip()
             if status not in STATUSES:
                 raise ValueError(

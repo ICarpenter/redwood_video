@@ -94,6 +94,16 @@ class ReadShotlistTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "header"):
             shotlib.read_shotlist(p)
 
+    def test_non_numeric_duration(self):
+        p = self.write("010,010,x,1,48,abc,,boarded\n")
+        with self.assertRaisesRegex(ValueError, r"duration"):
+            shotlib.read_shotlist(p)
+
+    def test_short_row(self):
+        p = self.write("010,010,x,1,48\n")
+        with self.assertRaisesRegex(ValueError, r"columns"):
+            shotlib.read_shotlist(p)
+
 
 class NextVersionTest(unittest.TestCase):
     def test_missing_dir(self):
