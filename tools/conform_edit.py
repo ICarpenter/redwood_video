@@ -91,10 +91,19 @@ def main():
             strip.elements.append(f.name)
         placed += 1
 
+    # song-section markers from docs/sections.csv (if present)
+    marked = 0
+    sections_csv = root / "docs" / "sections.csv"
+    if sections_csv.exists():
+        scene.timeline_markers.clear()
+        for sec in shotlib.read_sections(sections_csv):
+            scene.timeline_markers.new(sec.name, frame=sec.start_frame)
+            marked += 1
+
     out.parent.mkdir(exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), relative_remap=True)
     print(f"conformed edit/edit.blend: track [1-{scene.frame_end}] "
-          f"+ {placed} shot strip(s)")
+          f"+ {placed} shot strip(s) + {marked} section marker(s)")
 
 
 if __name__ == "__main__":

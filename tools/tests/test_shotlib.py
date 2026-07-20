@@ -105,6 +105,34 @@ class ReadShotlistTest(unittest.TestCase):
             shotlib.read_shotlist(p)
 
 
+class ReadSectionsTest(unittest.TestCase):
+    HEADER = "section,start_bar,end_bar,start_frame,end_frame\n"
+
+    def write(self, body):
+        f = tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False)
+        f.write(self.HEADER + body)
+        f.close()
+        self.addCleanup(os.unlink, f.name)
+        return Path(f.name)
+
+    def test_happy_path(self):
+        p = self.write("intro,0,19,1,776\nverse_1,19,39,777,1593\n")
+        intro, verse = shotlib.read_sections(p)
+        self.assertEqual((intro.name, intro.start_frame, intro.end_frame),
+                         ("intro", 1, 776))
+        self.assertEqual((verse.start_bar, verse.end_bar), (19, 39))
+
+    def test_end_before_start(self):
+        p = self.write("intro,0,19,776,1\n")
+        with self.assertRaisesRegex(ValueError, "end_frame"):
+            shotlib.read_sections(p)
+
+    def test_duplicate_section(self):
+        p = self.write("intro,0,19,1,776\nintro,19,39,777,1593\n")
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            shotlib.read_sections(p)
+
+
 class NextVersionTest(unittest.TestCase):
     def test_missing_dir(self):
         self.assertEqual(shotlib.next_version(Path("/nonexistent/x")), "v001")

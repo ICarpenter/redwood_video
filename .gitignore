@@ -16,3 +16,6 @@ __pycache__/
 
 # local machine config
 .claude/settings.local.json
+
+# IDE
+.idea/

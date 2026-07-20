@@ -8,6 +8,10 @@ What each tool does and the end-to-end flow: `tools.md`
 - Timeline frame 1 = song time 0. All shot start/end frames are song-global.
 - `docs/beatmap.csv` maps bar/beat → timeline frame
   (`python3 tools/beatmap.py --bpm <BPM> --length <SECONDS>`).
+- `docs/sections.csv` maps song sections (intro/verse/chorus/…) to bars and
+  frames; `conform_edit.py` turns them into timeline markers in the edit.
+  NOTE: its bar columns count from 0 at song start (matching the written
+  structure in `treatment/lyrics.md`); beatmap.csv's bar column is 1-indexed.
 
 ## Naming
 - Sequences `sq010`, shots `sh010` — 3 digits, increments of 10.
