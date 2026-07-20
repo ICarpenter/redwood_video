@@ -35,7 +35,8 @@ flowchart TD
     build --> shots["shots/sqXXX/shXXX/shXXX.blend<br/>(animate here)"]
     shots --> render["tools/render_shot.sh"]
     render --> frames["render/sqXXX_shXXX/vNNN/<br/>(versioned frame sequences)"]
-    frames --> edit["edit/edit.blend<br/>(VSE: track + shot strips)"]
+    frames --> conform["tools/conform_edit.py"]
+    conform --> edit["edit/edit.blend<br/>(VSE: track + shot strips)"]
     edit -->|render the final edit| final["final frame sequence"]
     final --> encode["tools/encode_delivery.sh"]
     track --> encode
@@ -151,6 +152,28 @@ frames). Format and resolution come from the shot file's own settings (locked
 by the template — PNG by default, switch a specific shot to EXR for
 comp-heavy work and the script honors it). Frame sequences rather than movie
 files because a crashed render resumes instead of starting over.
+
+### `tools/conform_edit.py` — build/rebuild the edit from what's rendered
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/conform_edit.py            # first build
+# add `-- --force` to rebuild (DESTROYS manual edit work — it's a full regen)
+```
+
+Creates `edit/edit.blend`: the track as the spine on channel 1 (the scene's
+frame range is derived from the actual audio length), and every shot that has
+rendered frames as an image strip on channel 2, placed at its song-global
+start frame, always using the shot's *latest* `vNNN`. Because frames are
+song-global, placement is mechanical — no eyeballing.
+
+Two things to know: it's a **from-scratch regen**, so once you start hand-
+cutting (cutaways on higher channels, trims, transitions) stop conforming and
+maintain the edit manually — the `--force` guard exists to protect exactly
+that work. And the edit scene deliberately uses the **Standard** view
+transform: shot renders already have AgX baked in, and applying AgX again in
+the edit visibly washes out every strip (verified: double-transformed frames
+measure 25 dB PSNR against source vs. 102 dB when passed through untouched).
 
 ### `tools/encode_delivery.sh` — final masters
 

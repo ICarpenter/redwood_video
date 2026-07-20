@@ -46,6 +46,11 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 ## Edit & delivery
 - `edit/edit.blend` (VSE): track on channel 1, shots as image-sequence strips,
   upgraded animatic → playblast → final render without changing the cut.
+- Seed/rebuild it with `tools/conform_edit.py` (places every rendered shot's
+  latest version at its song-global frames; refuses to overwrite a hand-cut
+  edit without `--force`).
+- The edit scene uses the **Standard** view transform — shot renders already
+  carry AgX baked in; AgX in the edit would apply twice and wash everything out.
 - `tools/encode_delivery.sh <frames_dir> <audio> <name>` → `delivery/`
   ProRes master + H.264 (needs `brew install ffmpeg`).
 
