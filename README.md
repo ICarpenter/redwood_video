@@ -3,6 +3,7 @@
 An animated music video produced end-to-end in Blender — stylized clay look
 (ClayPencil + Clay Doh + Grease Pencil), cut to a finished track.
 
+- **Start here:** `docs/handoff.md` — project state, conventions, next actions
 - Design spec: `docs/superpowers/specs/2026-07-19-redwood-video-pipeline-design.md`
 - Conventions: `docs/pipeline.md`
 - Tools & production flow: `docs/tools.md`
@@ -27,8 +28,10 @@ An animated music video produced end-to-end in Blender — stylized clay look
 
 - [x] 1. Ideation — concept notes in `docs/ideation/`, refs into `refs/`
 - [x] 2. Writing — treatment in `docs/treatment/`, beat map, first shotlist
-- [ ] 3. Storyboards & animatic — `boards/` (Storypencil), durations → shotlist
+- [ ] 3. Storyboards & animatic — `boards/` (Grease Pencil), durations → shotlist
+      *(in progress: 38 board scenes seeded, slug animatic cut, drawing next)*
 - [ ] 4. Asset production — `assets/` registered in the Asset Browser
+      *(started: property blockout — see `docs/treatment/site.md`)*
 - [ ] 5. Animation — `shots/` via `tools/build_shots.py`, playblasts into edit
 - [ ] 6. Rendering — `tools/render_shot.sh` per shot
 - [ ] 7. Compositing — per-shot compositor (Uber Compositor)

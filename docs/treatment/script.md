@@ -25,7 +25,7 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 010 | 0–4 | 1–163 | 6.8s | Wide: sun rises over the rural house. Pedal steel yawns. Long and lazy — let the world breathe. |
 | 020 | 4–7 | 164–286 | 5.1s | Delivery truck never stops — the big package spirals out like a football and sticks the landing on the porch mat. [IF TIME: simplify to truck pulling away] |
 | 030 | 7–10 | 287–409 | 5.1s | Boy pushes open the screen door, clocks the package. ♪ door-slap on the beat. |
-| 040 | 10–14 | 410–572 | 6.8s | Garage unbox frenzy, packing peanuts everywhere. He peels the big "NOT A TOY" sticker off the box and pockets it — deliberately. |
+| 040 | 10–14 | 410–572 | 6.8s | Garage unbox frenzy — he's dragged the box in the FRONT, the rear door open onto the backyard (establish the passthrough). Packing peanuts everywhere. He peels the big "NOT A TOY" sticker off the box and pockets it — deliberately. |
 | 050 | 14–16 | 573–654 | 3.4s | CLOSE UP: the devious grin. Hold it. |
 | 060 | 16–19 | 655–776 | 5.1s | Printer boots and warms up, little chugs and wiggles. ♪ warm-up chunks in time as verse 1 approaches. |
 
@@ -36,9 +36,9 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 010 | 19–23 | 777–940 | 6.8s | The machine gun prints like soft-serve — one continuous extrusion the boy snaps off. Bells and whistles are LITERAL: he flicks the tiny bell — ding. ♪ "the product's movin'" as it plops off the bed. |
 | 020 | 23–27 | 941–1103 | 6.8s | He slaps the "NOT A TOY" sticker on the gun, then swings it around drawing beads on garage junk, the yard, the mailbox. |
 | 030 | 27–30 | 1104–1226 | 5.1s | MOM'S SHADOW falls across him — full villain silhouette. Boy freezes mid-aim. |
-| 040 | 30–34 | 1227–1389 | 6.8s | Reveal: curlers, housecoat, oven mitts, sweetest face in the county — finger wagging. ♪ wags on beats; the clay gun barrel DROOPS a little more with each wag, scolded. Pan to the vintage Santa: duct-tape repairs, mismatched paint. It has survived incidents before. **THE SETUP.** |
+| 040 | 30–34 | 1227–1389 | 6.8s | Reveal: curlers, housecoat, oven mitts, sweetest face in the county — finger wagging. ♪ wags on beats; the clay gun barrel DROOPS a little more with each wag, scolded. Pan to the vintage Santa, standing right by the garage's back door: duct-tape repairs, mismatched paint. It has survived incidents before. **THE SETUP** (and it's already parked in the eventual line of fire). |
 | 050 | 34–37 | 1390–1511 | 5.1s | Printer again: human-sized action figure slides out — discount-Americana visage (off-brand wrestler / mullet commando energy). |
-| 060 | 37–39 | 1512–1593 | 3.4s | Boy drags it backyard-ward, more figures under his arm. |
+| 060 | 37–39 | 1512–1593 | 3.4s | Boy hauls it out the garage's REAR door into the backyard, past the Santa at the threshold; more figures under his arm. |
 
 ## sq030 — CHORUS 1 · bars 39–47 · frames 1594–1920 · 13.6s
 
@@ -66,7 +66,7 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 010 | 67–69 | 2738–2819 | 3.4s | War flashback — two seconds of sepia clay 'Nam, triggered by Danny. Face puckers into the salty marine mug. ♪ "Who got the bag?" |
 | 020 | 69–71 | 2820–2900 | 3.4s | Comically large gun out; determined army crawl. **A butterfly lands on the crack (runner 2/3).** |
 | 030 | 71–73 | 2901–2982 | 3.4s | Window POV — Mom sees: disheveled armed man creeping along her house. |
-| 040 | 73–75 | 2983–3064 | 3.4s | The framed "Live, Laugh, Love" FLIPS — wall arsenal. Rosco out; she racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." |
+| 040 | 73–75 | 2983–3064 | 3.4s | The framed "Live, Laugh, LOAD" FLIPS — wall arsenal. Rosco out; she racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." |
 
 ## sq060 — SOLO · bars 75–87 · frames 3065–3554 · 20.4s — THE SETPIECE
 
