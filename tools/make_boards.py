@@ -30,6 +30,19 @@ def gp_data_collection():
         else data.grease_pencils
 
 
+def paper_world():
+    w = bpy.data.worlds.get("paper")
+    if w is None:
+        w = bpy.data.worlds.new("paper")
+        w.color = (1.0, 1.0, 1.0)
+        w.use_nodes = True
+        bg = w.node_tree.nodes.get("Background")
+        if bg is not None:
+            bg.inputs["Color"].default_value = (1.0, 1.0, 1.0, 1.0)
+            bg.inputs["Strength"].default_value = 1.0
+    return w
+
+
 def ink_material():
     mat = bpy.data.materials.get("board_ink")
     if mat is None:
@@ -41,6 +54,7 @@ def ink_material():
 
 def build_scene(shot, track, ink):
     scene = bpy.data.scenes.new(shot.code)
+    scene.world = paper_world()
     scene.render.fps = 24
     scene.render.resolution_x = 1920
     scene.render.resolution_y = 1080
@@ -82,11 +96,17 @@ def main():
     if track is None:
         print("warning: no track in audio/track/ — board scenes get no audio")
 
+    healed = 0
     if out.exists() and not force:
         bpy.ops.wm.open_mainfile(filepath=str(out))
         existing = set(bpy.data.scenes.keys())
         todo = [s for s in shots if s.code not in existing]
-        if not todo:
+        # heal scenes missing a world (black viewport/render without one)
+        for sc in bpy.data.scenes:
+            if sc.world is None:
+                sc.world = paper_world()
+                healed += 1
+        if not todo and not healed:
             print("boards.blend up to date: nothing to add")
             return
     else:
@@ -103,7 +123,7 @@ def main():
 
     out.parent.mkdir(exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), relative_remap=True)
-    print(f"boards.blend: +{len(todo)} board scene(s), "
+    print(f"boards.blend: +{len(todo)} board scene(s), {healed} healed, "
           f"{len(bpy.data.scenes)} total")
 
 
