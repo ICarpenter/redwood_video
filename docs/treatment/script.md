@@ -17,9 +17,6 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
   the carnage.
 - **Flowerbed arm [IF TIME]:** arm lands in the flower pot (sq030-sh030) →
   Mom absentmindedly waters it (sq040-sh020). Never referenced again.
-- ~~Dog~~, ~~printer-as-character~~ — cut. (The soft-serve print and the
-  literal bell & whistle on the gun stay — those are gun gags, not printer
-  personality.)
 
 ## sq010 — INTRO · bars 0–19 · frames 1–776 · 32.3s
 
