@@ -44,6 +44,7 @@ PALETTE = {
 }
 
 collection = None
+labels_coll = None
 
 
 def mat(name):
@@ -113,7 +114,10 @@ def label(text, x, y, size=0.9):
     curve.materials.append(mat("label"))
     ob = bpy.data.objects.new(f"lbl_{text}", curve)
     ob.location = (x, y, 0.12)
-    return link(ob)
+    # labels live outside the `property` collection so linking shots never
+    # imports floating site-plan text
+    labels_coll.objects.link(ob)
+    return ob
 
 
 def camera(name, loc, look_at, lens=35, ortho_scale=None):
@@ -145,6 +149,9 @@ def build(out_path, force):
 
     collection = bpy.data.collections.new("property")
     scene.collection.children.link(collection)
+    global labels_coll
+    labels_coll = bpy.data.collections.new("site_labels")
+    scene.collection.children.link(labels_coll)
 
     # --- ground, road, ditch, driveway -------------------------------------
     # the yard and the roadside are separate slabs so the ditch between them
@@ -166,7 +173,11 @@ def build(out_path, force):
     gable_roof("house_roof", -7.6, 5.6, -4.6, 5.6, 3.2, 5.2)
     box("garage", -13, -7, -3, 3, 0.0, 2.9, "house")
     gable_roof("garage_roof", -13.5, -6.9, -3.5, 3.5, 2.9, 4.1)
-    box("garage_door", -12.4, -7.6, -3.05, -2.95, 0.1, 2.4, "porch")
+    # PASSTHROUGH: front door faces the road/delivery, rear door opens onto
+    # the backyard — the boy hauls the printer in the front and carries the
+    # printed junk out the back to the killing field
+    box("garage_door_front", -12.4, -7.6, -3.05, -2.95, 0.1, 2.4, "porch")
+    box("garage_door_rear", -12.4, -7.6, 2.95, 3.05, 0.1, 2.4, "porch")
 
     # front porch + steps (Mom fires from here in the final shot)
     box("porch_deck", -5, 1, -6.4, -4, 0.0, 0.5, "porch")
@@ -240,7 +251,7 @@ def build(out_path, force):
 
     # --- labels (site plan only; hidden before perspective renders) ---------
     for text, x, y in (
-        ("ROAD (sprint west ->)", 0, -20), ("DITCH / CRASH", 10, -15.5),
+        ("ROAD (the escape)", 0, -20), ("DITCH / CRASH", 10, -15.5),
         ("DRIVEWAY", -10, -10), ("GARAGE", -10, 0), ("HOUSE", -1, 0),
         ("PORCH", -2, -7.4), ("KITCHEN WINDOWS", 12.5, 4.5),
         ("SIDE CORRIDOR", 12.8, -7), ("BACKYARD", 2.5, 16),
@@ -262,9 +273,11 @@ def build(out_path, force):
     sun_data.energy = 3.2
     sun_data.angle = math.radians(2.0)
     sun = bpy.data.objects.new("sun", sun_data)
-    # low morning sun out of the east (light travels west; 255 deg would be
-    # a sunset). The final sprint reverses this to a western sunset.
-    sun.rotation_euler = (math.radians(62), 0.0, math.radians(75))
+    # SUN ARC = the film's clock. Morning key: low sun rising over the ROAD
+    # (−Y) as the delivery lands — light rakes toward the backyard, the
+    # road-facing front of the house is lit. The firefight/sprint relight to
+    # a dusk key sinking over the backyard (+Y). See docs/treatment/site.md.
+    sun.rotation_euler = (math.radians(66), 0.0, math.radians(12))
     scene.collection.objects.link(sun)
 
     # --- render settings + preview cameras ----------------------------------

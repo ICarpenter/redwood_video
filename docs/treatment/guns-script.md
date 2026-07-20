@@ -13,10 +13,11 @@ three-way backyard war. Guns are toys, consequences are cosmetic, and the
 only sacred object in the whole film is a vintage Santa Claus lawn
 decoration.
 
-Everything happens on one property over one morning: a rural house with an
-attached garage, a dirt road out front with a drainage ditch, and a
-backyard big enough for a massacre. The sun rises in the east as we open
-and sets in the west as we close.
+Everything happens on one property across one day: a rural house with a
+pass-through garage, a dirt road out front with a drainage ditch, and a
+backyard big enough for a massacre. The sun rises over the road as the
+delivery lands and sets over the backyard as the war ends — the day arcs
+from the first knock to the last shot.
 
 ---
 
@@ -29,9 +30,10 @@ The sun comes up over a rural house — long, lazy, let the world breathe. A
 delivery truck rolls past out front without ever quite stopping; a big
 package spirals out of it like a thrown football and sticks the landing on
 the porch mat. The screen door bangs open and a young boy steps out, clocks
-the box. Cut to the garage: an unboxing frenzy, packing peanuts everywhere.
-He peels the big **NOT A TOY** sticker off the carton and pockets it —
-deliberately. Close on his face: a devious grin, held a beat too long
+the box. Cut to the garage — he's dragged the carton in through the front,
+its back door standing open onto the backyard — an unboxing frenzy, packing
+peanuts everywhere. He peels the big **NOT A TOY** sticker off the carton
+and pockets it — deliberately. Close on his face: a devious grin, held a beat too long
 behind it, a 3D printer boots up and warms itself, chugging and wiggling in
 time with the music as the first verse rolls in.
 
@@ -51,13 +53,14 @@ A shadow falls over him — a full villain silhouette. He freezes mid-aim.
 The reveal: it's Mom. Curlers, housecoat, oven mitts, the sweetest face in
 the county, wagging one finger. As she wags, the clay gun barrel visibly
 *droops* a little more with each wag, like a scolded dog. She pans a look
-to the vintage Santa Claus decoration standing in the yard — duct-tape
-repairs, mismatched paint, a thing that has clearly survived incidents
-before. *The rule is set: not the Santa.*
+to the vintage Santa Claus decoration standing just outside the garage's
+back door — duct-tape repairs, mismatched paint, a thing that has clearly
+survived incidents before. *The rule is set: not the Santa.*
 
 The printer slides out something new — a human-sized action figure with a
 proud, off-brand visage (mullet-commando, discount-wrestler energy). The
-boy hauls it off toward the backyard, more figures tucked under his arm.
+boy hauls it out through the garage's back door into the backyard, right
+past that Santa by the threshold, more figures tucked under his arm.
 
 ## CHORUS
 *"Who got the bag? / Who is your plug? / I got the guns / if peace of mind
@@ -148,9 +151,10 @@ exchange one look. She opens fire; they bolt, clay divots exploding at their
 heels. The hook has changed owners — *she's* got the guns now.
 
 **FINAL IMAGE:** a wide of the boy and the sheriff sprinting down the dirt
-road into the western sunset under heavy fire from the porch. The sheriff
-holds his pants up with one hand. The boy overtakes him. And the song dies
-— dead, on its last hit — and we **smash to black** with it.
+road under heavy fire from the porch, the sun sinking over the wrecked
+backyard behind them. The sheriff holds his pants up with one hand. The boy
+overtakes him. And the song dies — dead, on its last hit — and we **smash
+to black** with it.
 
 ---
 
