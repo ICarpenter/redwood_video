@@ -1,0 +1,10 @@
+section,start_bar,end_bar,start_frame,end_frame
+intro,0,19,1,776
+verse_1,19,39,777,1593
+chorus_1,39,47,1594,1920
+verse_2,47,67,1921,2737
+chorus_2,67,75,2738,3064
+solo,75,87,3065,3554
+verse_3,87,103,3555,4208
+chorus_3,103,111,4209,4534
+outro,111,150,4535,6124

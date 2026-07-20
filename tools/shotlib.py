@@ -111,6 +111,50 @@ def read_shotlist(path) -> list[Shot]:
     return shots
 
 
+_SECTION_FIELDS = ["section", "start_bar", "end_bar", "start_frame", "end_frame"]
+
+
+@dataclass
+class Section:
+    name: str
+    start_bar: int
+    end_bar: int
+    start_frame: int
+    end_frame: int
+
+
+def read_sections(path) -> list[Section]:
+    """Parse docs/sections.csv: song sections mapped to bars and frames.
+
+    Bars are counted from 0 at song start (matching the written song
+    structure); frames are 1-based timeline frames like everywhere else.
+    """
+    path = Path(path)
+    sections: list[Section] = []
+    seen: set[str] = set()
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames != _SECTION_FIELDS:
+            raise ValueError(f"{path}: header must be {','.join(_SECTION_FIELDS)}")
+        for lineno, row in enumerate(reader, start=2):
+            if any(row.get(k) is None for k in _SECTION_FIELDS):
+                raise ValueError(f"{path}:{lineno}: wrong number of columns")
+            name = row["section"].strip()
+            try:
+                sb, eb, sf, ef = (int(row[k]) for k in _SECTION_FIELDS[1:])
+            except ValueError:
+                raise ValueError(
+                    f"{path}:{lineno}: bars/frames must be integers"
+                ) from None
+            if ef < sf:
+                raise ValueError(f"{path}:{lineno}: end_frame {ef} < start_frame {sf}")
+            if name in seen:
+                raise ValueError(f"{path}:{lineno}: duplicate section {name!r}")
+            seen.add(name)
+            sections.append(Section(name, sb, eb, sf, ef))
+    return sections
+
+
 def beat_to_frame(beat: float, bpm: float, fps: int = FPS) -> int:
     return round(beat * 60.0 / bpm * fps)
 
