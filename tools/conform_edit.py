@@ -91,6 +91,16 @@ def main():
             strip.elements.append(f.name)
         placed += 1
 
+    # a background save keeps the factory UI (empty 3D viewport), which makes
+    # the file look blank on open — repoint Layout's viewport at the sequencer
+    screen = bpy.data.screens.get("Layout")
+    if screen:
+        for area in screen.areas:
+            if area.type == "VIEW_3D":
+                area.type = "SEQUENCE_EDITOR"
+                area.spaces.active.view_type = "SEQUENCER_PREVIEW"
+    scene.frame_current = 1
+
     out.parent.mkdir(exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), relative_remap=True)
     print(f"conformed edit/edit.blend: track [1-{scene.frame_end}] "
