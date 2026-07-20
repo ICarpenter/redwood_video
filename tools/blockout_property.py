@@ -131,8 +131,14 @@ def camera(name, loc, look_at, lens=35, ortho_scale=None):
     return cam
 
 
-def build():
+def build(out_path, force):
     global collection
+    # the .blend is hand-maintained once layout edits begin — don't clobber
+    if out_path == OUT and out_path.exists() and not force:
+        sys.exit(f"error: {out_path.relative_to(ROOT)} exists and is now "
+                 "hand-maintained. Edit it in Blender, or pass --force to "
+                 "regenerate from scratch (DESTROYS manual layout edits). Use "
+                 "--out=<path> to build a throwaway copy for previews.")
     scene = bpy.context.scene
     for ob in list(bpy.data.objects):
         bpy.data.objects.remove(ob, do_unlink=True)
@@ -183,21 +189,27 @@ def build():
         fx = -6 + i * 3.0
         box(f"figure_{i}", fx - 0.45, fx + 0.45, 19.6, 20.4, 0.0, 1.9, "figure")
 
-    # old truck on blocks — east edge: the ricochet surface, and set dressing
-    box("truck_body", 10.5, 14.5, 13.0, 19.0, 0.7, 2.3, "truck")
-    box("truck_cab", 10.5, 14.5, 13.0, 15.2, 2.3, 3.1, "truck")
+    # old truck on blocks — moved into the east side corridor near the road
+    # end: the ricochet surface that kicks the boy's stray shot to the
+    # sheriff's tire, and an obstacle the crawling sheriff has to get past
+    box("truck_body", 11.0, 14.0, -3.1, 1.5, 0.5, 1.8, "truck")
+    box("truck_cab", 11.0, 14.0, -3.1, -1.4, 1.8, 2.4, "truck")
 
-    # propane BBQ — east of centre, where the boy's spray swings across
-    box("bbq", 5.2, 7.0, 10.4, 11.8, 0.0, 1.1, "bbq")
-    cyl("propane_tank", 7.4, 11.1, 0.45, 0.28, 0.9, "bbq")
+    # propane BBQ — pulled in beside the back stoop so one blast catches the
+    # whole cast (and the Santa) when the boy's spray rakes it
+    box("bbq", -6.7, -4.9, 5.4, 6.8, 0.0, 1.1, "bbq")
+    cyl("propane_tank", -4.5, 6.15, 0.45, 0.28, 0.9, "bbq")
 
-    # vintage Santa — Mom's one rule, near the back stoop, in the blast zone
-    cyl("santa", -8.5, 7.5, 0.9, 0.55, 1.8, "santa")
+    # vintage Santa — Mom's one rule, right by the back stoop in the BBQ
+    # blast zone, so the explosion is what finally topples it
+    cyl("santa", -9.25, 5.05, 0.9, 0.55, 1.8, "santa")
 
-    # clothesline (ventilated in the firefight; her floral dress hangs here)
-    for i, cx in enumerate((-13.5, -4.5)):
-        cyl(f"line_post_{i}", cx, 11.0, 1.1, 0.09, 2.2, "porch")
-    box("laundry", -12.6, -5.4, 10.9, 11.1, 1.5, 2.1, "window")
+    # clothesline — east side, running north-south along the corridor; her
+    # floral dress hangs here (ventilated in the firefight) and the kitchen's
+    # east window looks straight down it
+    for i, cy in enumerate((5.78, 14.78)):
+        cyl(f"line_post_{i}", 8.6, cy, 1.1, 0.09, 2.2, "porch")
+    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "window")
 
     # --- yard boundary: fence + treeline contain the backyard ---------------
     for i in range(15):
@@ -231,9 +243,9 @@ def build():
         ("ROAD (sprint west ->)", 0, -20), ("DITCH / CRASH", 10, -15.5),
         ("DRIVEWAY", -10, -10), ("GARAGE", -10, 0), ("HOUSE", -1, 0),
         ("PORCH", -2, -7.4), ("KITCHEN WINDOWS", 12.5, 4.5),
-        ("SIDE CORRIDOR", 10.5, -6), ("BACKYARD", -2, 14),
-        ("FIRING SQUAD", 0, 21.6), ("TRUCK", 12.5, 20.2), ("BBQ", 6, 9.2),
-        ("SANTA", -8.5, 5.9), ("CLOTHESLINE", -9, 12.2), ("BOY", -2.0, 7.0),
+        ("SIDE CORRIDOR", 12.8, -7), ("BACKYARD", 2.5, 16),
+        ("FIRING SQUAD", 0, 21.6), ("TRUCK", 12.8, 3.2), ("BBQ", -6.0, 8.6),
+        ("SANTA", -11.2, 4.6), ("CLOTHESLINE", 11.0, 10.5), ("BOY", 0.6, 8.5),
     ):
         label(text, x, y)
 
@@ -273,9 +285,9 @@ def build():
     camera("cam_road", (26, -20, 1.6), (-10, -19, 1.6), lens=40)
     camera("cam_sidecorridor", (9.0, -12.0, 1.2), (7.5, 12, 1.2), lens=30)
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    bpy.ops.wm.save_as_mainfile(filepath=str(OUT), relative_remap=True)
-    print(f"blockout saved: {OUT.relative_to(ROOT)}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    bpy.ops.wm.save_as_mainfile(filepath=str(out_path), relative_remap=True)
+    print(f"blockout saved: {out_path}")
 
 
 def render_previews(outdir: Path):
@@ -302,8 +314,15 @@ def render_previews(outdir: Path):
 
 
 if __name__ == "__main__":
-    build()
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    force = "--force" in argv
+    out_path = OUT
+    previews = None
     for arg in argv:
-        if arg.startswith("--previews="):
-            render_previews(Path(arg.split("=", 1)[1]))
+        if arg.startswith("--out="):
+            out_path = Path(arg.split("=", 1)[1])
+        elif arg.startswith("--previews="):
+            previews = Path(arg.split("=", 1)[1])
+    build(out_path, force)
+    if previews:
+        render_previews(previews)

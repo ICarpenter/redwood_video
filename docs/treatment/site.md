@@ -1,8 +1,11 @@
 # guns — the property (site plan)
 
-Greybox layout: `assets/envs/property/property.blend`, built by
+Greybox layout: `assets/envs/property/property.blend`, bootstrapped by
 `tools/blockout_property.py`. Massing only — it exists so boards, shot
-cameras, and eventually the real set all agree on where things are.
+cameras, and eventually the real set all agree on where things are. The
+`.blend` is now **hand-maintained**: edit it in Blender. The tool has the
+same positions baked in (so it doesn't lie) but refuses to overwrite the
+file without `--force`; use `--out=<path>` for a throwaway preview build.
 
 ## Compass convention
 
@@ -32,29 +35,33 @@ south (Mom fires from here in the final shot). Garage attached on the
 printer live here, off the front of the property.
 
 **BACKYARD (north, y ≈ +5…+27).** Contained by a back fence and treeline
-so it reads as a yard, not prairie. Contents, west to east: clothesline
-(her floral dress), the Santa by the back stoop, the boy's firing
-position, the propane BBQ, the old truck on blocks, and the firing squad
-line across the north end.
+so it reads as a yard, not prairie. The **BBQ and the Santa are clustered
+tight by the back stoop** (west of centre) — so one propane blast catches
+the whole cast *and* topples the Santa in a single beat. The boy's firing
+position is centre; the firing squad lines up across the north end.
 
-## The east side corridor — the layout's one load-bearing idea
+## The east side corridor — the layout's load-bearing idea
 
-The **east side of the house is deliberately kept clear** (garage is west),
-creating an open corridor from the backyard down to the road. It does
-double duty:
+The garage sits on the **west**, leaving the **east side of the house as a
+corridor** running from the backyard down to the road. It's not empty — the
+old truck and the clothesline dress it — but it stays a clear *path*, and
+it does double duty:
 
-1. **The ricochet path.** The boy fires north at the figures; a round
-   ricochets off the **old truck** on the yard's east edge and zings south
-   down the corridor to the road — blowing out the sheriff's tire. The gag
-   has a traceable line instead of a cheat.
-2. **The sheriff's crawl.** He climbs out of the ditch and army-crawls
-   *up that same corridor* to reach the backyard — the bullet's path in
-   reverse.
+1. **The ricochet path.** A stray round off the boy's gun kicks off the
+   **old truck**, now parked in the corridor near its road end, and zings
+   south to blow out the sheriff's tire. The gag has a traceable line
+   instead of a cheat. *(The exact bounce geometry is a boarding detail —
+   the truck's job is to be the surface at the corridor mouth.)*
+2. **The sheriff's crawl.** He climbs out of the ditch and army-crawls *up
+   that same corridor* — past the truck, under the clothesline — to reach
+   the backyard.
 
-The **kitchen sits at the north-east corner with windows on two walls** —
-north into the backyard (she watches the boy's massacre) and east onto the
-corridor (she spots the sheriff creeping). One room, both story beats, no
-contrivance.
+The **clothesline runs north–south along the corridor** (her floral dress
+hangs here, ventilated in the firefight), which puts it straight in the
+sightline of the **kitchen's east window**. The kitchen sits at the
+north-east corner with windows on two walls — north into the backyard (she
+watches the massacre) and east down the corridor (she spots the sheriff
+creeping, past her own laundry). One room, both story beats, no contrivance.
 
 ## Key positions (metres)
 
@@ -68,10 +75,10 @@ contrivance.
 | Ditch / crash | y −17…−14, crash ≈ x +10 | trench with culvert at driveway |
 | Boy's position | (−2, 8.5) | fires north |
 | Firing squad | y = 20, x −6…+6 | five figures |
-| Old truck | (10.5…14.5, 13…19) | ricochet surface |
-| BBQ + propane | (5.2…7.0, 10.4…11.8) | the detonation |
-| Santa | (−8.5, 7.5) | back stoop, in the blast zone |
-| Clothesline | x −13.5…−4.5, y 11 | ventilated in the firefight |
+| Old truck | x 11…14, y −3.1…1.5 | east corridor near the road; ricochet surface + crawl obstacle |
+| BBQ + propane | x −6.7…−4.9, y 5.4…6.8 | beside the back stoop — the detonation |
+| Santa | (−9.25, 5.05) | at the back stoop, inside the blast zone |
+| Clothesline | x 8.6, y 5.8…14.8 | east side, runs N–S; in the kitchen east-window sightline |
 | Back fence | y = 27 | treeline beyond |
 
 ## Status
