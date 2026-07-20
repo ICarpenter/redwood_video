@@ -27,12 +27,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
 
 def board_drawn(sc):
-    """A board scene counts once its Grease Pencil has any keyframe."""
+    """A board scene counts once its Grease Pencil has actual strokes.
+
+    Board scenes ship with an empty starter keyframe, so keyframe existence
+    is not enough — look inside the frames (GPv3: frame.drawing.strokes;
+    legacy: frame.strokes).
+    """
     for ob in sc.objects:
         if ob.type in {"GREASEPENCIL", "GPENCIL"}:
             for layer in ob.data.layers:
-                if len(layer.frames):
-                    return True
+                for fr in layer.frames:
+                    strokes = getattr(fr, "strokes", None)
+                    if strokes is None:
+                        drawing = getattr(fr, "drawing", None)
+                        strokes = getattr(drawing, "strokes", ()) if drawing else ()
+                    if len(strokes):
+                        return True
     return False
 
 

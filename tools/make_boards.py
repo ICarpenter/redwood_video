@@ -73,7 +73,10 @@ def build_scene(shot, track, ink):
     gp_data = gp_data_collection().new(f"{shot.code}_board")
     if hasattr(gp_data, "materials") and ink is not None:
         gp_data.materials.append(ink)
-    gp_data.layers.new("lines")
+    layer = gp_data.layers.new("lines")
+    # starter keyframe so drawing works immediately; conform only graduates
+    # a board once the frame contains actual strokes
+    layer.frames.new(shot.start_frame)
     gp = bpy.data.objects.new(f"{shot.code}_board", gp_data)
     scene.collection.objects.link(gp)
 
@@ -102,10 +105,17 @@ def main():
         existing = set(bpy.data.scenes.keys())
         todo = [s for s in shots if s.code not in existing]
         # heal scenes missing a world (black viewport/render without one)
+        # or missing the starter keyframe on their GP layers
         for sc in bpy.data.scenes:
             if sc.world is None:
                 sc.world = paper_world()
                 healed += 1
+            for ob in sc.objects:
+                if ob.type in {"GREASEPENCIL", "GPENCIL"}:
+                    for layer in ob.data.layers:
+                        if len(layer.frames) == 0:
+                            layer.frames.new(sc.frame_start)
+                            healed += 1
         if not todo and not healed:
             print("boards.blend up to date: nothing to add")
             return
