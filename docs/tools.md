@@ -191,6 +191,23 @@ animatic: they link into board scenes and never render. See `docs/boards.md`.
 Declarative registry lives in `tools/guides.py`; covered by
 `tools/tests/test_guides.py` and the headless `tools/tests/test_blender_smoke.py`.
 
+### `tools/stage_property.py` — stage the cast + props into the property file
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/stage_property.py
+```
+
+Drops the greybox char/prop standins from `property.blend` and re-adds the full
+cast + props as **linked collection instances** (from `cast.blend`/`props.blend`)
+in a separate `blocking` collection — a scene sandbox for blocking out shots
+inside the property file. The `property` set collection stays pure (environment +
+set-dressing) and keeps its asset mark, so linking the `property` guide into a
+board never drags the cast/props along; in boards you instance cast/props
+individually via the Redwood Guides add-on. Idempotent; run it again after
+regenerating the guides or `property.blend`. `blockout_property.py` builds only
+the static set now — the cast/props live here.
+
 ### `tools/conform_edit.py` — build/rebuild the edit from what's rendered
 
 ```sh
