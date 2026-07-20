@@ -16,7 +16,8 @@ render** into the animatic.
   `action_figure`, `delivery_truck`, `cruiser`, `rosco`, `big_pistol`, `santa`,
   `scale_stick`.
 - **Set** (`assets/envs/property/property.blend`): the whole `property`
-  massing, for wide establishing boards.
+  massing, for wide establishing boards. It appears as `property` in the Add
+  Guide dropdown, so you can instance the set with the button too.
 
 All are catalogued Assets (`guides/cast`, `guides/props`, `guides/set`) via
 `assets/blender_assets.cats.txt`. Regenerate cast/props with
@@ -41,6 +42,9 @@ Each board scene owns a non-rendering collection `<shotcode>_guides` (created by
 - **Position it:** move/rotate/scale as a single unit for the shot's framing.
   Guides are rigid; if you need a distinct pose (e.g. the boy aiming), ask for a
   variant collection rather than trying to deform the instance.
+- **The property set** (`property` in the dropdown) drops in like any guide, but
+  it's large — scale the instance down or pull the board camera back to frame
+  the whole property for an establishing board.
 - **It won't render:** guides live in a `hide_render` collection, so `F12` and
   `conform_edit` only ever see your strokes.
 

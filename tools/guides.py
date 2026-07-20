@@ -42,7 +42,7 @@ CATALOGS = {
 @dataclass(frozen=True)
 class GuideSpec:
     name: str      # collection name == asset name
-    file: str      # CAST_FILE or PROPS_FILE
+    file: str      # CAST_FILE, PROPS_FILE, or PROPERTY_FILE
     catalog: str   # key into CATALOGS
     height: float  # target overall Z extent in metres (checked, loose tolerance)
 
@@ -62,13 +62,21 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("scale_stick", PROPS_FILE, "props", 2.0),
 ]
 
+# The whole property SET is droppable/linkable too, but it is NOT built by
+# guide_assets (marked in place via --mark-property) and never
+# dimension-checked. Its height is nominal (house ridge). Kept out of GUIDES so
+# the build/check paths stay "cast + props only"; DROPPABLE is the full set the
+# add-on offers (the 12 guides + the property set).
+SET_GUIDE = GuideSpec("property", PROPERTY_FILE, "set", 5.2)
+DROPPABLE: list[GuideSpec] = GUIDES + [SET_GUIDE]
+
 
 def guides_for_file(file: str) -> list[GuideSpec]:
     return [g for g in GUIDES if g.file == file]
 
 
 def guide_by_name(name: str) -> "GuideSpec | None":
-    return next((g for g in GUIDES if g.name == name), None)
+    return next((g for g in DROPPABLE if g.name == name), None)
 
 
 def cats_file_text() -> str:

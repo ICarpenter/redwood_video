@@ -1,9 +1,10 @@
 """Redwood scale-guide dropper.
 
-Drops a linked instance of a cast/prop guide into the current board scene's
-non-rendering guides collection, facing the board camera. Locates the project
-by walking up from the open .blend (boards.blend), so enable it with a board
-file open. Asset-Browser drag-drop is the manual equivalent.
+Drops a linked instance of a cast/prop guide — or the whole property set —
+into the current board scene's non-rendering guides collection, facing the
+board camera. Locates the project by walking up from the open .blend
+(boards.blend), so enable it with a board file open. Asset-Browser drag-drop
+is the manual equivalent.
 """
 import sys
 from pathlib import Path
@@ -94,7 +95,7 @@ def _guide_items(self, context):
     if mods is not None:
         guides_mod, _ = mods
         _ITEMS_CACHE = [(g.name, g.name.replace("_", " "), g.catalog)
-                        for g in guides_mod.GUIDES]
+                        for g in guides_mod.DROPPABLE]
     return _ITEMS_CACHE
 
 

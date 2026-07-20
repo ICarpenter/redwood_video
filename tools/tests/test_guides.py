@@ -26,6 +26,19 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(guides.guide_by_name("boy").file, guides.CAST_FILE)
         self.assertIsNone(guides.guide_by_name("nope"))
 
+    def test_droppable_includes_property_set(self):
+        self.assertEqual(len(guides.DROPPABLE), 13)
+        self.assertIn("property", [g.name for g in guides.DROPPABLE])
+        prop = guides.guide_by_name("property")
+        self.assertIsNotNone(prop)
+        self.assertEqual(prop.file, guides.PROPERTY_FILE)
+        self.assertEqual(prop.catalog, "set")
+        self.assertIn(prop.catalog, guides.CATALOGS)
+
+    def test_property_not_in_buildable_guides(self):
+        # property is marked in place, never built by guide_assets
+        self.assertNotIn("property", [g.name for g in guides.GUIDES])
+
     def test_collection_name(self):
         self.assertEqual(
             guides.guides_collection_name("sq010_sh010"), "sq010_sh010_guides"

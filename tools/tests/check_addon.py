@@ -59,6 +59,18 @@ assert len(guide_instances) == 2, \
     f"expected 2 instances of the linked 'boy' collection in {gcoll.name}, " \
     f"got {len(guide_instances)}"
 
+# The whole property SET is droppable too (LIBRARY link from property.blend).
+prop_inst = redwood_guides.add_guide_instance(scene, "property")
+assert prop_inst.instance_collection is not None, "property instance_collection not set"
+assert prop_inst.instance_collection.name == "property", \
+    f"expected linked collection 'property', got {prop_inst.instance_collection.name!r}"
+assert prop_inst.instance_collection.library is not None, \
+    "property collection should be a LIBRARY link"
+assert Path(prop_inst.instance_collection.library.filepath).name == "property.blend", \
+    f"expected library property.blend, got {prop_inst.instance_collection.library.filepath!r}"
+assert prop_inst.name in gcoll.objects, \
+    f"{prop_inst.name} not linked into {gcoll.name}.objects"
+
 redwood_guides.unregister()
 
 print("ADDON CHECK OK")
