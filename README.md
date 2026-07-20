@@ -25,8 +25,8 @@ An animated music video produced end-to-end in Blender — stylized clay look
 
 ## Phases
 
-- [ ] 1. Ideation — concept notes in `docs/ideation/`, refs into `refs/`
-- [ ] 2. Writing — treatment in `docs/treatment/`, beat map, first shotlist
+- [x] 1. Ideation — concept notes in `docs/ideation/`, refs into `refs/`
+- [x] 2. Writing — treatment in `docs/treatment/`, beat map, first shotlist
 - [ ] 3. Storyboards & animatic — `boards/` (Storypencil), durations → shotlist
 - [ ] 4. Asset production — `assets/` registered in the Asset Browser
 - [ ] 5. Animation — `shots/` via `tools/build_shots.py`, playblasts into edit

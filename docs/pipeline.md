@@ -22,7 +22,7 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 - `start_frame`/`end_frame` inclusive, song-global. `duration` = end−start+1
   (validated; may be left blank).
 - `assets`: `;`-separated paths under `assets/`, e.g. `chars/redwood;envs/forest`.
-- `status` flow: `boarded → blocked → animated → rendered → comped → final`.
+- `status` flow: `scripted → boarded → blocked → animated → rendered → comped → final`.
 
 ## Assets
 - One .blend per asset at `assets/<kind>/<name>/<name>.blend`.
@@ -50,9 +50,15 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 ## Edit & delivery
 - `edit/edit.blend` (VSE): track on channel 1, shots as image-sequence strips,
   upgraded animatic → playblast → final render without changing the cut.
-- Seed/rebuild it with `tools/conform_edit.py` (places every rendered shot's
-  latest version at its song-global frames; refuses to overwrite a hand-cut
-  edit without `--force`).
+- Seed/rebuild it with `tools/conform_edit.py`. Per shotlist row it places the
+  best available tier at the shot's song-global frames: rendered frames
+  (latest vNNN) → board scene from `boards/boards.blend` (scene named by shot
+  code, linked) → slug (text strip). Refuses to overwrite a hand-cut edit
+  without `--force`.
+- Storypencil does NOT work on Blender 5.x (rewrite pending upstream) —
+  boards are plain Grease Pencil scenes in `boards/boards.blend`, one scene
+  per shot, named `sqXXX_shXXX`. Seed/extend with `tools/make_boards.py`;
+  a board graduates from slug to scene strip once its GP has any keyframe.
 - The edit scene uses the **Standard** view transform — shot renders already
   carry AgX baked in; AgX in the edit would apply twice and wash everything out.
 - `tools/encode_delivery.sh <frames_dir> <audio> <name>` → `delivery/`

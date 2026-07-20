@@ -56,6 +56,11 @@ class ReadShotlistTest(unittest.TestCase):
         )
         self.assertEqual(shot.assets, ["chars/redwood", "envs/forest"])
 
+    def test_scripted_status_ok(self):
+        p = self.write("010,010,x,1,48,,,scripted\n")
+        (shot,) = shotlib.read_shotlist(p)
+        self.assertEqual(shot.status, "scripted")
+
     def test_blank_duration_and_assets_ok(self):
         p = self.write("020,030,mid,49,72,,,animated\n")
         (shot,) = shotlib.read_shotlist(p)
@@ -131,6 +136,20 @@ class ReadSectionsTest(unittest.TestCase):
         p = self.write("intro,0,19,1,776\nintro,19,39,777,1593\n")
         with self.assertRaisesRegex(ValueError, "duplicate"):
             shotlib.read_sections(p)
+
+
+class FindTrackTest(unittest.TestCase):
+    def test_finds_audio_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "audio" / "track").mkdir(parents=True)
+            (root / "audio" / "track" / "song.wav").touch()
+            (root / "audio" / "track" / "notes.txt").touch()
+            self.assertEqual(shotlib.find_track(root).name, "song.wav")
+
+    def test_none_when_empty(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertIsNone(shotlib.find_track(Path(d)))
 
 
 class NextVersionTest(unittest.TestCase):

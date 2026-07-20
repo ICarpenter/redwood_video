@@ -14,7 +14,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 FPS = 24
-STATUSES = ("boarded", "blocked", "animated", "rendered", "comped", "final")
+AUDIO_EXTS = {".wav", ".mp3", ".flac", ".aif", ".aiff"}
+STATUSES = ("scripted", "boarded", "blocked", "animated", "rendered", "comped", "final")
 DEFAULT_BLENDER = "/Applications/Blender.app/Contents/MacOS/Blender"
 _FIELDS = ["sq", "sh", "description", "start_frame", "end_frame",
            "duration", "assets", "status"]
@@ -165,6 +166,17 @@ def next_version(render_shot_dir) -> str:
         return "v001"
     nums = [int(m.group(1)) for p in d.iterdir() if (m := _V_RE.match(p.name))]
     return f"v{max(nums, default=0) + 1:03d}"
+
+
+def find_track(root: Path | None = None):
+    """First audio file in audio/track/, or None."""
+    root = root or project_root()
+    track_dir = root / "audio" / "track"
+    candidates = sorted(track_dir.iterdir()) if track_dir.is_dir() else []
+    for p in candidates:
+        if p.suffix.lower() in AUDIO_EXTS:
+            return p
+    return None
 
 
 def find_blender() -> str:

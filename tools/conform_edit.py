@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
-"""Build edit/edit.blend from scratch: track on channel 1, every rendered
-shot's LATEST version as an image strip on channel 2 at its song-global
-position.
+"""Build edit/edit.blend from scratch: track on channel 1, one strip per
+docs/shotlist.csv row on channel 2 at its song-global position, choosing the
+best available tier per shot:
+
+  1. rendered frames (latest render/<code>/vNNN/) -> image strip
+  2. board scene named <code> in boards/boards.blend -> linked scene strip
+  3. otherwise -> slug (text strip: shot code + description)
+
+So the edit is watchable at every stage: slugs -> boards -> renders, same
+cut throughout.
 
 DESTRUCTIVE: regenerating replaces the whole edit — any hand-cut changes in
 an existing edit/edit.blend are lost. It therefore refuses to overwrite
@@ -19,16 +26,24 @@ import bpy
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
 
-AUDIO_EXTS = {".wav", ".mp3", ".flac", ".aif", ".aiff"}
+def board_drawn(sc):
+    """A board scene counts once its Grease Pencil has actual strokes.
 
-
-def find_track(root: Path):
-    track_dir = root / "audio" / "track"
-    candidates = sorted(track_dir.iterdir()) if track_dir.is_dir() else []
-    for p in candidates:
-        if p.suffix.lower() in AUDIO_EXTS:
-            return p
-    return None
+    Board scenes ship with an empty starter keyframe, so keyframe existence
+    is not enough — look inside the frames (GPv3: frame.drawing.strokes;
+    legacy: frame.strokes).
+    """
+    for ob in sc.objects:
+        if ob.type in {"GREASEPENCIL", "GPENCIL"}:
+            for layer in ob.data.layers:
+                for fr in layer.frames:
+                    strokes = getattr(fr, "strokes", None)
+                    if strokes is None:
+                        drawing = getattr(fr, "drawing", None)
+                        strokes = getattr(drawing, "strokes", ()) if drawing else ()
+                    if len(strokes):
+                        return True
+    return False
 
 
 def main():
@@ -41,7 +56,7 @@ def main():
         sys.exit(f"error: {out} exists — rebuilding discards manual edit work "
                  "(rerun with -- --force to overwrite)")
 
-    track = find_track(root)
+    track = shotlib.find_track(root)
     if track is None:
         sys.exit("error: no track in audio/track/ — the edit needs its spine")
 
@@ -69,27 +84,50 @@ def main():
     scene.frame_start = 1
     scene.frame_end = int(snd.frame_final_end) - 1
 
-    placed = 0
-    render_root = root / "render"
-    shot_dirs = sorted(render_root.iterdir()) if render_root.is_dir() else []
-    for shot_dir in shot_dirs:
-        if not shot_dir.is_dir():
-            continue
-        versions = sorted(d for d in shot_dir.iterdir()
-                          if d.is_dir() and d.name.startswith("v"))
-        if not versions:
-            continue
-        frames = sorted(versions[-1].glob("*.png"))
-        if not frames:
-            continue
-        # frame number of the first rendered file = the shot's start frame
-        start = int(frames[0].stem.rsplit("_", 1)[-1])
-        strip = strips.new_image(name=f"{shot_dir.name}_{versions[-1].name}",
-                                 filepath=str(frames[0]), channel=2,
-                                 frame_start=start)
-        for f in frames[1:]:
-            strip.elements.append(f.name)
-        placed += 1
+    shots = shotlib.read_shotlist(root / "docs" / "shotlist.csv")
+
+    # link all available board scenes (named by shot code) in one pass
+    board_scenes = {}
+    boards_blend = root / "boards" / "boards.blend"
+    if boards_blend.exists():
+        codes = {s.code for s in shots}
+        with bpy.data.libraries.load(str(boards_blend), link=True) as (src, dst):
+            dst.scenes = [name for name in src.scenes if name in codes]
+        board_scenes = {sc.name: sc for sc in bpy.data.scenes
+                        if sc.library is not None and board_drawn(sc)}
+
+    counts = {"render": 0, "board": 0, "slug": 0}
+    for shot in shots:
+        rdir = shotlib.render_dir(shot.sq, shot.sh, root)
+        versions = sorted(d for d in rdir.iterdir()
+                          if d.is_dir() and d.name.startswith("v")) \
+            if rdir.is_dir() else []
+        frames = sorted(versions[-1].glob("*.png")) if versions else []
+
+        if frames:
+            strip = strips.new_image(name=f"{shot.code}_{versions[-1].name}",
+                                     filepath=str(frames[0]), channel=2,
+                                     frame_start=shot.start_frame)
+            for f in frames[1:]:
+                strip.elements.append(f.name)
+            counts["render"] += 1
+        elif shot.code in board_scenes:
+            strip = strips.new_scene(name=f"{shot.code}_board",
+                                     scene=board_scenes[shot.code],
+                                     channel=2, frame_start=shot.start_frame)
+            strip.frame_final_duration = shot.duration
+            # render the board scene's camera view; its own sequencer (the
+            # scrub-audio strip) must not feed the edit
+            strip.scene_input = "CAMERA"
+            counts["board"] += 1
+        else:
+            strip = strips.new_effect(name=f"{shot.code}_slug", type="TEXT",
+                                      channel=2, frame_start=shot.start_frame,
+                                      length=shot.duration)
+            strip.text = f"{shot.code}\n{shot.description}"
+            strip.font_size = 56
+            strip.wrap_width = 0.8
+            counts["slug"] += 1
 
     # song-section markers from docs/sections.csv (if present)
     marked = 0
@@ -102,8 +140,9 @@ def main():
 
     out.parent.mkdir(exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), relative_remap=True)
-    print(f"conformed edit/edit.blend: track [1-{scene.frame_end}] "
-          f"+ {placed} shot strip(s) + {marked} section marker(s)")
+    print(f"conformed edit/edit.blend: track [1-{scene.frame_end}], "
+          f"{counts['render']} render / {counts['board']} board / "
+          f"{counts['slug']} slug strip(s), {marked} section marker(s)")
 
 
 if __name__ == "__main__":
