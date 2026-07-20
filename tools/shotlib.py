@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 FPS = 24
-STATUSES = ("boarded", "blocked", "animated", "rendered", "comped", "final")
+STATUSES = ("scripted", "boarded", "blocked", "animated", "rendered", "comped", "final")
 DEFAULT_BLENDER = "/Applications/Blender.app/Contents/MacOS/Blender"
 _FIELDS = ["sq", "sh", "description", "start_frame", "end_frame",
            "duration", "assets", "status"]

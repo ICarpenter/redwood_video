@@ -162,12 +162,19 @@ files because a crashed render resumes instead of starting over.
 ```
 
 Creates `edit/edit.blend`: the track as the spine on channel 1 (the scene's
-frame range is derived from the actual audio length), and every shot that has
-rendered frames as an image strip on channel 2, placed at its song-global
-start frame, always using the shot's *latest* `vNNN`. Because frames are
-song-global, placement is mechanical — no eyeballing. If `docs/sections.csv`
+frame range is derived from the actual audio length), and one strip per
+`docs/shotlist.csv` row on channel 2 at its song-global frames, choosing the
+best available tier per shot:
+
+1. **render** — latest `render/<code>/vNNN/` as an image strip
+2. **board** — Grease Pencil scene named `<code>` in `boards/boards.blend`,
+   linked in as a scene strip (board edits appear in the animatic live)
+3. **slug** — a text strip showing the shot code + description
+
+So the animatic exists from day one as a slug cut and upgrades shot by shot
+as boards and renders land — same cut throughout. If `docs/sections.csv`
 exists, each song section also becomes a timeline marker (intro, verse_1,
-chorus_1, …), so the edit and every scrub is oriented by song structure.
+chorus_1, …), so every scrub is oriented by song structure.
 
 Two things to know: it's a **from-scratch regen**, so once you start hand-
 cutting (cutaways on higher channels, trims, transitions) stop conforming and

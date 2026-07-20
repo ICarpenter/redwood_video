@@ -56,6 +56,11 @@ class ReadShotlistTest(unittest.TestCase):
         )
         self.assertEqual(shot.assets, ["chars/redwood", "envs/forest"])
 
+    def test_scripted_status_ok(self):
+        p = self.write("010,010,x,1,48,,,scripted\n")
+        (shot,) = shotlib.read_shotlist(p)
+        self.assertEqual(shot.status, "scripted")
+
     def test_blank_duration_and_assets_ok(self):
         p = self.write("020,030,mid,49,72,,,animated\n")
         (shot,) = shotlib.read_shotlist(p)
