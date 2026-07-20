@@ -165,11 +165,11 @@ Creates/extends `boards/boards.blend`: one Grease Pencil scene per shotlist
 row, named by shot code, with the shot's song-global frame range, a camera
 framed for 1080p drawing, an empty GP object, and the track on the scene's
 sequencer so you scrub with music while drawing. The default run only ADDS
-scenes for new shotlist rows (safe after drawing begins) — inserting a
-cutaway later is one shotlist row + one rerun. A board "graduates" into the
-animatic automatically once its GP has any keyframe. Every board scene also gets a non-rendering `<shotcode>_guides` collection for
-movable drawing guides (see `docs/boards.md`); reruns heal it into existing
-scenes.
+scenes for new shotlist rows (safe after drawing begins) — inserting a cutaway
+later is one shotlist row + one rerun. A board "graduates" into the animatic
+automatically once its GP has any keyframe. Every board scene also gets a
+non-rendering `<shotcode>_guides` collection for movable drawing guides (see
+`docs/boards.md`); reruns heal it into existing scenes.
 
 ### `tools/guide_assets.py` — build the drawing-guide assets
 

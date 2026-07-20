@@ -46,3 +46,9 @@ Each board scene owns a non-rendering collection `<shotcode>_guides` (created by
 
 Guides are throwaway references — delete or leave them; they never reach the
 edit.
+
+**Drag-drop caveat:** the **Add Guide** button always targets the correct
+`<shotcode>_guides` collection, but Asset-Browser drag-drop lands wherever the
+*active* collection is — if you've clicked into a rendering collection, a
+dragged instance can end up there too, so prefer the button (or re-select the
+guides collection before dragging).

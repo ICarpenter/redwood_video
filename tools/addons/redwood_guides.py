@@ -58,8 +58,10 @@ def add_guide_instance(scene, name):
         raise RuntimeError(f"Unknown guide {name}")
 
     make_boards.ensure_guides_collection(scene)
-    gcoll = scene.collection.children[
-        guides_mod.guides_collection_name(scene.name)]
+    gname = guides_mod.guides_collection_name(scene.name)
+    gcoll = scene.collection.children.get(gname)
+    if gcoll is None:
+        raise RuntimeError(f"could not resolve guides collection {gname}")
 
     filepath = str(root / spec.file)
     linked = next((c for c in bpy.data.collections

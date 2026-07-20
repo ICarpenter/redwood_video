@@ -42,6 +42,23 @@ gcoll = scene.collection.children[guides.guides_collection_name(scene.name)]
 assert inst.name in gcoll.objects, \
     f"{inst.name} not linked into {gcoll.name}.objects"
 
+# Second drop of the same guide: reuse the already-linked library collection
+# rather than double-linking it (no `boy.001`), and reuse the same instance
+# transform contract.
+inst2 = redwood_guides.add_guide_instance(scene, "boy")
+
+boy_collections = [c for c in bpy.data.collections if c.name == "boy"]
+assert len(boy_collections) == 1, \
+    f"expected exactly one 'boy' collection, got {[c.name for c in boy_collections]}"
+assert inst2.instance_collection is inst.instance_collection, \
+    "second drop should reuse the same linked collection, not relink it"
+
+guide_instances = [ob for ob in gcoll.objects
+                    if ob.instance_collection is inst.instance_collection]
+assert len(guide_instances) == 2, \
+    f"expected 2 instances of the linked 'boy' collection in {gcoll.name}, " \
+    f"got {len(guide_instances)}"
+
 redwood_guides.unregister()
 
 print("ADDON CHECK OK")

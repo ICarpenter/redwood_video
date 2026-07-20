@@ -49,10 +49,12 @@ front elevation to draw over.
 origin (Y = 0). Guides default to **Y = +1.5** — just *behind* the paper — so
 strokes overlay the guide in the viewport.
 
-**Render-hiding.** Guides live in a per-scene collection named `guides` whose
-render toggle is off (`hide_render = True`). Visible in the viewport, invisible
-to the render and therefore to `conform_edit`. The collection is also set as
-the scene's **active collection**, so Asset-Browser drops land in it by default.
+**Render-hiding.** Guides live in a per-scene collection (named `<shotcode>_guides`
+— Blender collection names are global, so the shot code disambiguates them; see
+Components below) whose render toggle is off (`hide_render = True`). Visible in
+the viewport, invisible to the render and therefore to `conform_edit`. The
+collection is also set as the scene's **active collection**, so Asset-Browser
+drops land in it by default.
 
 ## Architecture
 
@@ -149,7 +151,7 @@ Blender Asset Browser (assets/ registered as a library)
         │
    drag-drop  ── or ──  "Add Guide" add-on
         ▼
-board scene `guides` collection  (hide_render=True, active)
+board scene `<shotcode>_guides` collection  (hide_render=True, active)
         │  artist positions instances, draws GP over them
         ▼
 conform_edit  ── sees only GP strokes; guides never render ──> animatic
