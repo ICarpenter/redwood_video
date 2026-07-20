@@ -106,3 +106,7 @@ look, interiors (only the kitchen window matters so far). Preview cameras
 `cam_site`, `cam_intro`, `cam_backyard`, `cam_kitchen`, `cam_road`,
 `cam_sidecorridor` live in the file, outside the linkable `property`
 collection.
+
+Movable, correctly-scaled drawing guides for the cast and hero props live in
+`assets/chars/cast.blend` and `assets/props/props.blend`; the `property` set is
+itself a linkable guide. See `docs/boards.md` for the drawing-guide workflow.
