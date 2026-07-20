@@ -138,6 +138,20 @@ class ReadSectionsTest(unittest.TestCase):
             shotlib.read_sections(p)
 
 
+class FindTrackTest(unittest.TestCase):
+    def test_finds_audio_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "audio" / "track").mkdir(parents=True)
+            (root / "audio" / "track" / "song.wav").touch()
+            (root / "audio" / "track" / "notes.txt").touch()
+            self.assertEqual(shotlib.find_track(root).name, "song.wav")
+
+    def test_none_when_empty(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertIsNone(shotlib.find_track(Path(d)))
+
+
 class NextVersionTest(unittest.TestCase):
     def test_missing_dir(self):
         self.assertEqual(shotlib.next_version(Path("/nonexistent/x")), "v001")

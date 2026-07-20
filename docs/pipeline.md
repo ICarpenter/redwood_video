@@ -57,7 +57,8 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
   without `--force`.
 - Storypencil does NOT work on Blender 5.x (rewrite pending upstream) —
   boards are plain Grease Pencil scenes in `boards/boards.blend`, one scene
-  per shot, named `sqXXX_shXXX`; the conform picks them up automatically.
+  per shot, named `sqXXX_shXXX`. Seed/extend with `tools/make_boards.py`;
+  a board graduates from slug to scene strip once its GP has any keyframe.
 - The edit scene uses the **Standard** view transform — shot renders already
   carry AgX baked in; AgX in the edit would apply twice and wash everything out.
 - `tools/encode_delivery.sh <frames_dir> <audio> <name>` → `delivery/`

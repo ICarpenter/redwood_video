@@ -153,6 +153,22 @@ by the template — PNG by default, switch a specific shot to EXR for
 comp-heavy work and the script honors it). Frame sequences rather than movie
 files because a crashed render resumes instead of starting over.
 
+### `tools/make_boards.py` — seed the storyboard file
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/make_boards.py
+# `-- --force` rebuilds from scratch (DESTROYS all drawings)
+```
+
+Creates/extends `boards/boards.blend`: one Grease Pencil scene per shotlist
+row, named by shot code, with the shot's song-global frame range, a camera
+framed for 1080p drawing, an empty GP object, and the track on the scene's
+sequencer so you scrub with music while drawing. The default run only ADDS
+scenes for new shotlist rows (safe after drawing begins) — inserting a
+cutaway later is one shotlist row + one rerun. A board "graduates" into the
+animatic automatically once its GP has any keyframe.
+
 ### `tools/conform_edit.py` — build/rebuild the edit from what's rendered
 
 ```sh

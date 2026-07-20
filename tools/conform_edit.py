@@ -26,16 +26,14 @@ import bpy
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
 
-AUDIO_EXTS = {".wav", ".mp3", ".flac", ".aif", ".aiff"}
-
-
-def find_track(root: Path):
-    track_dir = root / "audio" / "track"
-    candidates = sorted(track_dir.iterdir()) if track_dir.is_dir() else []
-    for p in candidates:
-        if p.suffix.lower() in AUDIO_EXTS:
-            return p
-    return None
+def board_drawn(sc):
+    """A board scene counts once its Grease Pencil has any keyframe."""
+    for ob in sc.objects:
+        if ob.type in {"GREASEPENCIL", "GPENCIL"}:
+            for layer in ob.data.layers:
+                if len(layer.frames):
+                    return True
+    return False
 
 
 def main():
@@ -48,7 +46,7 @@ def main():
         sys.exit(f"error: {out} exists — rebuilding discards manual edit work "
                  "(rerun with -- --force to overwrite)")
 
-    track = find_track(root)
+    track = shotlib.find_track(root)
     if track is None:
         sys.exit("error: no track in audio/track/ — the edit needs its spine")
 
@@ -86,7 +84,7 @@ def main():
         with bpy.data.libraries.load(str(boards_blend), link=True) as (src, dst):
             dst.scenes = [name for name in src.scenes if name in codes]
         board_scenes = {sc.name: sc for sc in bpy.data.scenes
-                        if sc.library is not None}
+                        if sc.library is not None and board_drawn(sc)}
 
     counts = {"render": 0, "board": 0, "slug": 0}
     for shot in shots:
@@ -108,6 +106,9 @@ def main():
                                      scene=board_scenes[shot.code],
                                      channel=2, frame_start=shot.start_frame)
             strip.frame_final_duration = shot.duration
+            # render the board scene's camera view; its own sequencer (the
+            # scrub-audio strip) must not feed the edit
+            strip.scene_input = "CAMERA"
             counts["board"] += 1
         else:
             strip = strips.new_effect(name=f"{shot.code}_slug", type="TEXT",
