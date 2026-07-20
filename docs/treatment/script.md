@@ -1,8 +1,8 @@
 # guns — shot-by-shot script (DRAFT 2 — pacing pass)
 
 Story: `story.md` · Lyrics/structure: `lyrics.md` · Section frames:
-`../sections.csv` · Ending shots follow **Option A** (see story.md) — swap
-sq080/sq090 if Option B wins.
+`../sections.csv` · Ending CONFIRMED: "Not the Santa" — the song dies dead
+on the last chorus hit (bar 111); everything after is audio tail.
 
 Shots are paced in **bars** (counted from 0, 1 bar ≈ 1.7s ≈ 41 frames).
 Frames get locked at boarding when rows land in `../shotlist.csv` — cut
@@ -79,32 +79,28 @@ proposed `sq/sh` scheme (one sequence per song section).
 | 040 | 97–100 | For one warm beat it's sweet tea and truce among the wreckage. |
 | 050 | 100–103 | Behind them: the Santa — charred down one side — wobbles… and slowly tips over dead. **THE PAYOFF.** |
 
-## sq080 — CHORUS 3 · bars 103–111 · frames 4209–4534 · 13.6s
+## sq080 — CHORUS 3 · bars 103–111 · frames 4209–4534 · 13.6s — THE ENDING
 
 | sh | bars | shot |
 |----|------|------|
 | 010 | 103–105 | Mom's face goes final boss. ♪ "Who got the bag?" |
 | 020 | 105–106 | Boy and sheriff exchange ONE look. |
-| 030 | 106–111 | Mom unloads; they scatter. ♪ the hook changes owners — SHE'S "got the guns" now. |
+| 030 | 106–108 | Mom unloads; they bolt, clay divots exploding at their heels. ♪ the hook changes owners — SHE'S "got the guns" now. |
+| 040 | 108–111 | **FINAL IMAGE:** wide — boy and sheriff sprinting down the dirt road under heavy fire from Mom on the porch. ♪ the song dies dead on the last hit of bar 111 — **SMASH TO BLACK** with it. |
 
-## sq090 — OUTRO · bars 111–150 · frames 4535–6124 · 66.2s
+## sq090 — TAIL (audio only) · bars 111–~117 · frames 4535–~4780
 
 | sh | bars | shot |
 |----|------|------|
-| 010 | 111–119 | Boy and sheriff sprint down the dirt road into the sunset, Mom firing from the porch. Pedal steel returns like nothing happened. |
-| 020 | 119–125 | Calm settles. Golden hour over the smoking yard. |
-| 030 | 125–133 | Next door: delivery truck pulls up. Neighbor kid signs for a big flat box. Devious grin. |
-| 040 | 133–143 | Aerial pull-up into dusk: across the heartland, backyard muzzle flashes twinkle like fireflies, yard after yard. |
-| 050 | 143–150 | Sunset mirrors the opening shot. The house. Quiet. Title card. |
+| 010 | 111–~117 | Black. Title card over the audio ringing out. Fade to silence — exact out-point picked in the edit. |
 
 ## Tally & open items
 
-- **41 shots** across 9 sequences — right in the planned ambitious range,
-  with sh-numbering gaps for inserts.
+- **38 shots** across 9 sequences, with sh-numbering gaps for inserts.
 - Chorus motif escalation: same hook, new owner each time — boy (1),
-  sheriff & mom entering (2), mom rampant (3).
-- OPEN: what the music actually does bars 111–150 (pacing assumes pedal
-  steel reprise + fade).
-- OPEN: ending Option A vs B (this draft is A).
+  sheriff & mom entering (2), mom rampant (3) — and the third one ends the
+  film mid-sprint. The abrupt cut is the joke.
+- Ending CONFIRMED ("Not the Santa", story.md). Music confirmed: song ends
+  at bar 111; bars 111–150 are tail.
 - NEXT: lock tone/beats → boards per sequence → durations firm up →
   rows into `../shotlist.csv`.

@@ -47,9 +47,7 @@ Full three-way chaos, everyone firing at whatever moves, until the boy's
 spray finds the propane BBQ: mushroom cloud, everyone blasted off their
 feet. The camera hovers over the partially charred backyard.
 
-## Ending (PROPOSED — pick a lane)
-
-### Option A — "Not the Santa" (recommended)
+## Ending (CONFIRMED — "Not the Santa")
 
 The smoke drifts. The three of them lie dazed in the char, coughing little
 clay puffs. Slow, tentative aftermath: Mom and the sheriff recognize each
@@ -59,27 +57,15 @@ for one warm beat it looks like this ends in sweet tea. Then — behind them
 over dead.
 
 Mom's face goes final boss. Final chorus: now SHE'S got the guns — the boy
-and the sheriff exchange one look and RUN. Outro: the two of them sprinting
-down the dirt road into the sunset while Mom unloads from the porch; the
-pedal steel comes back like nothing happened. As the calm settles, a
-delivery truck pulls up next door — a neighbor kid signs for a big flat
-box, devious grin. Aerial pull-up into the dusk: across the whole
-heartland, backyard muzzle flashes twinkle like fireflies. Sunset mirrors
-the sunrise. Title card.
+and the sheriff exchange one look and RUN. The last image is the two of
+them sprinting down the dirt road under heavy fire from Mom on the porch —
+and the song dies dead on the final chorus hit (bar 111). Smash to black.
+Title card rings out over the audio tail.
 
-Why: pays off the planted gag, gives the final chorus a reason to exist
-(the hook changes owners), and the proliferation pull-back lands the song's
-point without preaching it.
+Why it works: pays off the planted gag, gives the final chorus a reason to
+exist (the hook changes owners), and the abrupt cut IS the joke — Spike &
+Mike endings don't linger.
 
-### Option B — "The Family That Blasts Together" (warmer)
-
-Aftermath reconciliation sticks: sheriff gets handed sweet tea, the boy
-prints the cruiser a new tire, and the final chorus is all three lined up
-blasting a fresh row of action figures together — an American family
-portrait. Outro: same neighbor-kid/proliferation pull-back. Less bite, more
-hug; the Santa survives (which wastes the setup).
-
-### Either way, the outro's 39 bars (66s) carry: chase-or-portrait, calm
-returning, next-door delivery, heartland pull-back, title. Confirm what the
-music actually does from bar 111 — this pacing assumes the pedal steel
-comes home.
+(Cut with the outro: a neighbor-kid delivery / heartland-of-muzzle-flashes
+pull-back coda. Could resurface as cover art or an end-card gag someday;
+the film doesn't need it.)

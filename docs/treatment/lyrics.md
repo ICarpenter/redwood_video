@@ -16,10 +16,11 @@ note `../beatmap.csv`'s bar column is 1-indexed — its bar 1 is this bar 0).
 | Solo     | 75–87   | 3065–3554 | 20.4s  |
 | Verse 3  | 87–103  | 3555–4208 | 27.2s  |
 | Chorus 3 | 103–111 | 4209–4534 | 13.6s  |
-| Outro    | 111–150 | 4535–6124 | 66.2s  |
+| Tail (audio only) | 111–150 | 4535–6124 | 66.2s |
 
-(Outro is assumed: bars 111–150 weren't in the written structure but the
-track runs to 4:15 — confirm what happens musically in that last minute.)
+(The song ends dead on the last chorus hit at bar 111; bars 111–150 are
+just the audio ringing out. Picture ends with a title card early in the
+tail — the exact out-point gets picked in the edit.)
 
 ## Lyrics
 
