@@ -66,7 +66,7 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 010 | 67–69 | 2738–2819 | 3.4s | War flashback — two seconds of sepia clay 'Nam, triggered by Danny. Face puckers into the salty marine mug. ♪ "Who got the bag?" |
 | 020 | 69–71 | 2820–2900 | 3.4s | Comically large gun out; determined army crawl. **A butterfly lands on the crack (runner 2/3).** |
 | 030 | 71–73 | 2901–2982 | 3.4s | Window POV — Mom sees: disheveled armed man creeping along her house. |
-| 040 | 73–75 | 2983–3064 | 3.4s | The framed "Live, Laugh, Love" FLIPS — wall arsenal. Rosco out; she racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." |
+| 040 | 73–75 | 2983–3064 | 3.4s | The framed "Live, Laugh, LOAD" FLIPS — wall arsenal. Rosco out; she racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." |
 
 ## sq060 — SOLO · bars 75–87 · frames 3065–3554 · 20.4s — THE SETPIECE
 

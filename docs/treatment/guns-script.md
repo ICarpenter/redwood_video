@@ -98,7 +98,7 @@ sheriff's face puckers into a salty-marine mug. Out comes a comically large
 gun. He drops into a determined army crawl along the side of the house; a
 butterfly lands on the butt crack. Through the window, Mom sees him now — a
 disheveled armed man creeping along her wall. The framed **LIVE LAUGH
-LOVE** on the wall flips around to reveal a hidden arsenal. She pulls her
+LOAD** on the wall flips around to reveal a hidden arsenal. She pulls her
 own pistol and — oven mitts still on — racks the slide with her *teeth*,
 right on *"I got the guns."*
 
