@@ -139,8 +139,12 @@ tools/render_shot.sh 010 010          # → v002 (auto-increments, v001 kept)
 tools/render_shot.sh 010 010 v002     # explicit version = resume/re-render INTO v002
 ```
 
-Headless-renders a shot's frame range as an image sequence. Every run gets a
-fresh `vNNN` directory by default, so old renders are never lost — you can
+Headless-renders a shot as an image sequence. The frame range is read from
+the shot's `docs/shotlist.csv` row *at render time* — the shotlist governs at
+both ends of the pipeline, so retiming a row re-renders correctly without
+recreating the shot file (the blend's stored range only drives in-UI
+scrubbing and playblasts). Every run gets a fresh `vNNN` directory by
+default, so old renders are never lost — you can
 always A/B against the previous version. Passing an explicit version is the
 crash-resume path: it re-renders into that directory (overwriting those
 frames). Format and resolution come from the shot file's own settings (locked

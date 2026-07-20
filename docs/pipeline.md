@@ -39,6 +39,8 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 
 ## Render
 - `tools/render_shot.sh <sq> <sh> [vNNN]` → `render/sqXXX_shXXX/vNNN/` PNGs.
+- Frame range comes from `docs/shotlist.csv` at render time — retiming a row
+  re-renders correctly; the blend's stored range is a creation-time default.
 - Versions auto-increment by default. Pass an explicit vNNN only to resume or re-render into that version — it overwrites those frames.
 
 ## Edit & delivery
