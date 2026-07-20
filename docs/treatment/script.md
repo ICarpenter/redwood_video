@@ -12,15 +12,14 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 
 - **BUTT-CRACK TRILOGY (confirmed):** debut sq040-sh060 → butterfly
   sq050-sh020 → holding-pants sprint sq080-sh040.
-- **Printer as character:** yawns awake with the sunrise (sq010-sh060) →
-  war-profiteer mag conveyor, wearing a little army helmet (sq060-sh010
-  insert).
 - **"NOT A TOY" sticker:** peeled off the box and pocketed (sq010-sh040) →
   slapped onto the fresh machine gun (sq020-sh020). It wears it through all
   the carnage.
 - **Flowerbed arm [IF TIME]:** arm lands in the flower pot (sq030-sh030) →
   Mom absentmindedly waters it (sq040-sh020). Never referenced again.
-- ~~Dog~~ — cut.
+- ~~Dog~~, ~~printer-as-character~~ — cut. (The soft-serve print and the
+  literal bell & whistle on the gun stay — those are gun gags, not printer
+  personality.)
 
 ## sq010 — INTRO · bars 0–19 · frames 1–776 · 32.3s
 
@@ -31,7 +30,7 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 030 | 7–10 | 287–409 | 5.1s | Boy pushes open the screen door, clocks the package. ♪ door-slap on the beat. |
 | 040 | 10–14 | 410–572 | 6.8s | Garage unbox frenzy, packing peanuts everywhere. He peels the big "NOT A TOY" sticker off the box and pockets it — deliberately. |
 | 050 | 14–16 | 573–654 | 3.4s | CLOSE UP: the devious grin. Hold it. |
-| 060 | 16–19 | 655–776 | 5.1s | Printer boots — stretches and yawns exactly like the sunrise did. ♪ warm-up chunks in time as verse 1 approaches. |
+| 060 | 16–19 | 655–776 | 5.1s | Printer boots and warms up, little chugs and wiggles. ♪ warm-up chunks in time as verse 1 approaches. |
 
 ## sq020 — VERSE 1 · bars 19–39 · frames 777–1593 · 34.0s
 
@@ -76,7 +75,7 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 75–83 | 3065–3391 | 13.6s | **THREE-WAY FIREFIGHT.** Sheriff rounds the corner firing wildly; shots from two, then three directions. Texture: lawn flamingos beheaded one per beat; a gnome takes cover behind the birdbath; the laundry line gets ventilated — when her floral Sunday dress takes hits, Mom's aim shifts with PERSONAL offense. Insert: through the garage window, the printer — now wearing a little army helmet — runs a conveyor of fresh magazines. ♪ gunfire phrases with the guitar. |
+| 010 | 75–83 | 3065–3391 | 13.6s | **THREE-WAY FIREFIGHT.** Sheriff rounds the corner firing wildly; shots from two, then three directions. Texture: lawn flamingos beheaded one per beat; a gnome takes cover behind the birdbath; the laundry line gets ventilated — when her floral Sunday dress takes hits, Mom's aim shifts with PERSONAL offense. ♪ gunfire phrases with the guitar. |
 | 020 | 83–85 | 3392–3472 | 3.4s | The spray rakes the propane BBQ. Hiss. **All three freeze — one shared "oh no" look across the yard.** |
 | 030 | 85–87 | 3473–3554 | 3.4s | **MUSHROOM CLOUD** — for exactly one frame it resolves into a bald eagle. Everyone blasted off their feet, slow-mo clay pinwheel. ♪ detonation on the solo's final accent. |
 
