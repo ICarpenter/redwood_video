@@ -165,9 +165,48 @@ Creates/extends `boards/boards.blend`: one Grease Pencil scene per shotlist
 row, named by shot code, with the shot's song-global frame range, a camera
 framed for 1080p drawing, an empty GP object, and the track on the scene's
 sequencer so you scrub with music while drawing. The default run only ADDS
-scenes for new shotlist rows (safe after drawing begins) — inserting a
-cutaway later is one shotlist row + one rerun. A board "graduates" into the
-animatic automatically once its GP has any keyframe.
+scenes for new shotlist rows (safe after drawing begins) — inserting a cutaway
+later is one shotlist row + one rerun. A board "graduates" into the animatic
+automatically once its GP has any keyframe. Every board scene also gets a
+non-rendering `<shotcode>_guides` collection for movable drawing guides (see
+`docs/boards.md`); reruns heal it into existing scenes.
+
+### `tools/guide_assets.py` — build the drawing-guide assets
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/guide_assets.py
+# --force          overwrite the (now hand-maintained) asset files
+# --out=<dir>       throwaway build into <dir>
+# --previews=<dir>  render each guide to <dir>/<name>.png
+# --check           build to a temp dir + assert invariants
+# --mark-property   mark the `property` collection as a catalogued asset
+```
+
+Builds `assets/chars/cast.blend` and `assets/props/props.blend` — one
+recognisable, real-scale, primitive-built collection per cast member and hero
+prop — plus `assets/blender_assets.cats.txt`. Each collection is a catalogued
+Asset (`guides/cast`, `guides/props`). These are drawing scale-guides for the
+animatic: they link into board scenes and never render. See `docs/boards.md`.
+Declarative registry lives in `tools/guides.py`; covered by
+`tools/tests/test_guides.py` and the headless `tools/tests/test_blender_smoke.py`.
+
+### `tools/stage_property.py` — stage the cast + props into the property file
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/stage_property.py
+```
+
+Drops the greybox char/prop standins from `property.blend` and re-adds the full
+cast + props as **linked collection instances** (from `cast.blend`/`props.blend`)
+in a separate `blocking` collection — a scene sandbox for blocking out shots
+inside the property file. The `property` set collection stays pure (environment +
+set-dressing) and keeps its asset mark, so linking the `property` guide into a
+board never drags the cast/props along; in boards you instance cast/props
+individually via the Redwood Guides add-on. Idempotent; run it again after
+regenerating the guides or `property.blend`. `blockout_property.py` builds only
+the static set now — the cast/props live here.
 
 ### `tools/conform_edit.py` — build/rebuild the edit from what's rendered
 

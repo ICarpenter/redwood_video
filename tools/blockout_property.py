@@ -3,6 +3,11 @@
 road, and yards. Throwaway massing to establish the space so boards and
 shot cameras agree on where everything is.
 
+Builds the static SET only (environment + set-dressing). The cast and props are
+LINKED guide instances staged into a separate `blocking` collection by
+tools/stage_property.py, so they reference their source files and never travel
+with the linkable `property` set.
+
 Site convention (documented in docs/treatment/site.md):
   +X east / -X west, +Y north = BACKYARD, -Y south = ROAD, +Z up.
   House faces south. Sun rises east (opening) and sets west (final sprint).
@@ -195,10 +200,9 @@ def build(out_path, force):
     box("win_front", -6.0, -4.2, -4.05, -3.95, 1.2, 2.4, "window")
 
     # --- backyard set pieces ------------------------------------------------
-    # firing squad line (5 action figures), north end of the yard
-    for i in range(5):
-        fx = -6 + i * 3.0
-        box(f"figure_{i}", fx - 0.45, fx + 0.45, 19.6, 20.4, 0.0, 1.9, "figure")
+    # NOTE: the firing squad, the boy, the Santa, the vehicles and the guns are
+    # LINKED guide instances staged by tools/stage_property.py (into a separate
+    # `blocking` collection) — this script builds only the static set below.
 
     # old truck on blocks — moved into the east side corridor near the road
     # end: the ricochet surface that kicks the boy's stray shot to the
@@ -210,10 +214,6 @@ def build(out_path, force):
     # whole cast (and the Santa) when the boy's spray rakes it
     box("bbq", -6.7, -4.9, 5.4, 6.8, 0.0, 1.1, "bbq")
     cyl("propane_tank", -4.5, 6.15, 0.45, 0.28, 0.9, "bbq")
-
-    # vintage Santa — Mom's one rule, right by the back stoop in the BBQ
-    # blast zone, so the explosion is what finally topples it
-    cyl("santa", -9.25, 5.05, 0.9, 0.55, 1.8, "santa")
 
     # clothesline — east side, running north-south along the corridor; her
     # floral dress hangs here (ventilated in the firefight) and the kitchen's
@@ -244,10 +244,6 @@ def build(out_path, force):
         for coll in list(canopy.users_collection):
             coll.objects.unlink(canopy)
         collection.objects.link(canopy)
-
-    # --- action markers -----------------------------------------------------
-    cyl("mark_boy", -2.0, 8.5, 0.9, 0.45, 1.8, "marker")
-    cyl("mark_sheriff_crash", 10.0, -15.5, 0.5, 0.6, 1.0, "marker")
 
     # --- labels (site plan only; hidden before perspective renders) ---------
     for text, x, y in (

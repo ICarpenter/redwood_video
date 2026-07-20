@@ -23,6 +23,7 @@ import bpy
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
+import guides
 
 
 def gp_data_collection():
@@ -103,6 +104,27 @@ def ink_material():
     return mat
 
 
+def ensure_guides_collection(scene):
+    """Per-scene, non-rendering collection for movable drawing guides.
+
+    Names are globally unique in Blender, so each board owns
+    `<code>_guides`. hide_render keeps guides out of the animatic; it is set
+    active so Asset-Browser drops land here. Returns True if newly created.
+    """
+    name = guides.guides_collection_name(scene.name)
+    coll = scene.collection.children.get(name)
+    created = coll is None
+    if created:
+        coll = bpy.data.collections.new(name)
+        scene.collection.children.link(coll)
+    coll.hide_render = True
+    vl = scene.view_layers[0]
+    lc = vl.layer_collection.children.get(coll.name)
+    if lc is not None:
+        vl.active_layer_collection = lc
+    return created
+
+
 def build_scene(shot, track, ink, prompt):
     scene = bpy.data.scenes.new(shot.code)
     scene.world = paper_world()
@@ -138,6 +160,8 @@ def build_scene(shot, track, ink, prompt):
         strips = se.strips if hasattr(se, "strips") else se.sequences
         strips.new_sound(name="track", filepath=str(track), channel=1,
                          frame_start=1)
+
+    ensure_guides_collection(scene)
     return scene
 
 
@@ -166,6 +190,8 @@ def main():
         # missing the starter keyframe, or missing/stale script notes
         by_code = {s.code: s for s in shots}
         for sc in bpy.data.scenes:
+            if ensure_guides_collection(sc):
+                healed += 1
             if sc.world is None:
                 sc.world = paper_world()
                 healed += 1
