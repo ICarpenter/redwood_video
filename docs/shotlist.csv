@@ -2,7 +2,8 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 010,010,sunrise wide over the rural house,1,163,163,,scripted
 010,020,package sticks the landing on the porch,164,286,123,,scripted
 010,030,boy at the screen door clocks the package,287,409,123,,scripted
-010,040,garage unbox - NOT A TOY sticker pocketed,410,572,163,,scripted
+010,040,boy drags the box up the drive into the garage,410,490,81,boy;box,scripted
+010,045,reverse through garage from back yard - unbox and pocket the sticker,491,572,82,boy;box,scripted
 010,050,devious grin CU,573,654,82,,scripted
 010,060,printer boots and warms up,655,776,122,,scripted
 020,010,gun prints like soft-serve - bell ding,777,940,164,,scripted

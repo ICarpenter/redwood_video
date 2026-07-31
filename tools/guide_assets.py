@@ -17,6 +17,8 @@ Flags (after --):
   --previews=<dir>       render each guide to <dir>/<name>.png
   --check                build to a temp dir + assert invariants, then exit
   --mark-property        mark the `property` collection in property.blend
+  --add=<name>           append ONE new guide to its existing asset file and
+                         save in place; never wipes, refuses if it exists
 """
 import math
 import sys
@@ -223,6 +225,16 @@ def build_santa(c):
     box(c, "sa_tape", 0, -0.22, 0.90, 0.20, 0.02, 0.34, "white")
 
 
+def build_box(c):
+    # The printer's shipping carton: the boy drags it in sq010_sh040 and tears
+    # it open in sh045. Flaps and a tape stripe give the silhouette a definite
+    # top, so it reads as a carton rather than an anonymous crate.
+    box(c, "bx_body", 0.00, 0, 0.60, 1.10, 0.90, 1.20, "wood")
+    box(c, "bx_tape", 0.00, 0, 1.20, 1.12, 0.10, 0.02, "white")
+    box(c, "bx_flap_l", -0.28, 0, 1.21, 0.54, 0.88, 0.02, "wood")
+    box(c, "bx_flap_r", 0.28, 0, 1.21, 0.54, 0.88, 0.02, "wood")
+
+
 def build_scale_stick(c):
     cyl(c, "ss_pole", 0, 0, 1.00, 0.03, 2.00, "ref", axis="Z")
     for i in range(1, 5):
@@ -235,7 +247,7 @@ BUILDERS = {
     "machine_gun": build_machine_gun, "printer": build_printer,
     "action_figure": build_action_figure, "delivery_truck": build_delivery_truck,
     "cruiser": build_cruiser, "rosco": build_rosco, "big_pistol": build_big_pistol,
-    "santa": build_santa, "scale_stick": build_scale_stick,
+    "santa": build_santa, "box": build_box, "scale_stick": build_scale_stick,
 }
 
 
@@ -342,6 +354,44 @@ def render_previews(specs, outdir):
         print(f"preview: {spec.name}")
 
 
+def add_guide(name):
+    """Build ONE guide into its existing asset file, leaving the rest alone.
+
+    The default build path wipes the file and regenerates every guide, so it
+    refuses to touch a hand-maintained cast.blend/props.blend without --force.
+    This is the non-destructive way in: open the file, append the single new
+    collection, save. Refuses to overwrite a guide that already exists —
+    removing one is a deliberate act, done in Blender.
+    """
+    spec = guides.guide_by_name(name)
+    if spec is None:
+        known = ", ".join(sorted(BUILDERS))
+        sys.exit(f"error: no guide named {name!r}; known guides: {known}")
+    if spec.name not in BUILDERS:
+        sys.exit(f"error: {spec.name!r} has no builder (the `property` set is "
+                 "marked in place via --mark-property, never built)")
+
+    path = shotlib.project_root() / spec.file
+    if not path.exists():
+        sys.exit(f"error: {spec.file} does not exist; build it first")
+    bpy.ops.wm.open_mainfile(filepath=str(path))
+    if bpy.data.collections.get(spec.name) is not None:
+        sys.exit(f"error: {spec.name!r} already exists in {spec.file}; remove "
+                 "it in Blender first if you mean to rebuild it")
+
+    scene = bpy.context.scene
+    coll = bpy.data.collections.new(spec.name)
+    scene.collection.children.link(coll)
+    BUILDERS[spec.name](coll)
+    coll.asset_mark()
+    uuid, _path, _simple = guides.CATALOGS[spec.catalog]
+    coll.asset_data.catalog_id = uuid
+    check_structural([spec])
+    check_dimensions([spec])
+    bpy.ops.wm.save_as_mainfile(filepath=str(path), relative_remap=True)
+    print(f"added guide {spec.name!r} to {spec.file}")
+
+
 def mark_property_asset():
     root = shotlib.project_root()
     path = root / guides.PROPERTY_FILE
@@ -365,14 +415,20 @@ def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     force = "--force" in argv
     out_dir = previews = None
+    add_name = None
     for a in argv:
         if a.startswith("--out="):
             out_dir = Path(a.split("=", 1)[1])
         elif a.startswith("--previews="):
             previews = Path(a.split("=", 1)[1])
+        elif a.startswith("--add="):
+            add_name = a.split("=", 1)[1]
 
     if "--check" in argv:
         run_check()
+        return
+    if add_name is not None:
+        add_guide(add_name)
         return
     if "--mark-property" in argv:
         mark_property_asset()

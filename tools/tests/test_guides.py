@@ -8,9 +8,9 @@ import guides
 
 class RegistryTest(unittest.TestCase):
     def test_counts(self):
-        self.assertEqual(len(guides.GUIDES), 12)
+        self.assertEqual(len(guides.GUIDES), 13)
         self.assertEqual(len(guides.guides_for_file(guides.CAST_FILE)), 3)
-        self.assertEqual(len(guides.guides_for_file(guides.PROPS_FILE)), 9)
+        self.assertEqual(len(guides.guides_for_file(guides.PROPS_FILE)), 10)
 
     def test_names_unique(self):
         names = [g.name for g in guides.GUIDES]
@@ -26,8 +26,15 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(guides.guide_by_name("boy").file, guides.CAST_FILE)
         self.assertIsNone(guides.guide_by_name("nope"))
 
+    def test_box_guide(self):
+        box = guides.guide_by_name("box")
+        self.assertIsNotNone(box)
+        self.assertEqual(box.file, guides.PROPS_FILE)
+        self.assertEqual(box.catalog, "props")
+        self.assertAlmostEqual(box.height, 1.2)
+
     def test_droppable_includes_property_set(self):
-        self.assertEqual(len(guides.DROPPABLE), 13)
+        self.assertEqual(len(guides.DROPPABLE), 14)
         self.assertIn("property", [g.name for g in guides.DROPPABLE])
         prop = guides.guide_by_name("property")
         self.assertIsNotNone(prop)
