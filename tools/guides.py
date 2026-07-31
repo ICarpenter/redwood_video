@@ -59,6 +59,7 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("rosco", PROPS_FILE, "props", 0.22),
     GuideSpec("big_pistol", PROPS_FILE, "props", 0.5),
     GuideSpec("santa", PROPS_FILE, "props", 1.8),
+    GuideSpec("box", PROPS_FILE, "props", 1.2),
     GuideSpec("scale_stick", PROPS_FILE, "props", 2.0),
 ]
 

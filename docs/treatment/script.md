@@ -25,7 +25,8 @@ Bars counted from 0 · 1 bar ≈ 1.7s ≈ 40.85 frames · frames are song-global
 | 010 | 0–4 | 1–163 | 6.8s | Wide: sun rises over the rural house. Pedal steel yawns. Long and lazy — let the world breathe. |
 | 020 | 4–7 | 164–286 | 5.1s | Delivery truck never stops — the big package spirals out like a football and sticks the landing on the porch mat. [IF TIME: simplify to truck pulling away] |
 | 030 | 7–10 | 287–409 | 5.1s | Boy pushes open the screen door, clocks the package. ♪ door-slap on the beat. |
-| 040 | 10–14 | 410–572 | 6.8s | Garage unbox frenzy — he's dragged the box in the FRONT, the rear door open onto the backyard (establish the passthrough). Packing peanuts everywhere. He peels the big "NOT A TOY" sticker off the box and pockets it — deliberately. |
+| 040 | 10–12 | 410–490 | 3.4s | Boy drags the big box up the drive and in through the garage FRONT door. Packing peanuts already trailing. |
+| 045 | 12–14 | 491–572 | 3.4s | REVERSE — from the back yard, looking in through the open rear door: the passthrough established, road beyond. He tears the box open and peels the big "NOT A TOY" sticker off, pocketing it — deliberately. |
 | 050 | 14–16 | 573–654 | 3.4s | CLOSE UP: the devious grin. Hold it. |
 | 060 | 16–19 | 655–776 | 5.1s | Printer boots and warms up, little chugs and wiggles. ♪ warm-up chunks in time as verse 1 approaches. |
 

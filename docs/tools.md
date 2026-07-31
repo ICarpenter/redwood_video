@@ -168,8 +168,9 @@ sequencer so you scrub with music while drawing. The default run only ADDS
 scenes for new shotlist rows (safe after drawing begins) — inserting a cutaway
 later is one shotlist row + one rerun. A board "graduates" into the animatic
 automatically once its GP has any keyframe. Every board scene also gets a
-non-rendering `<shotcode>_guides` collection for movable drawing guides (see
-`docs/boards.md`); reruns heal it into existing scenes.
+`<shotcode>_guides` collection for movable drawing guides (see `docs/boards.md`);
+reruns heal it into existing scenes and re-sync guide render visibility, so
+newly drawn boards drop their guides out of the edit.
 
 ### `tools/guide_assets.py` — build the drawing-guide assets
 
@@ -181,15 +182,59 @@ non-rendering `<shotcode>_guides` collection for movable drawing guides (see
 # --previews=<dir>  render each guide to <dir>/<name>.png
 # --check           build to a temp dir + assert invariants
 # --mark-property   mark the `property` collection as a catalogued asset
+# --add=<name>      append ONE new guide to its asset file, in place
 ```
+
+`--add=<name>` is the non-destructive way to introduce a new guide once the
+asset files are hand-maintained: it opens the file, appends just that
+collection, marks and dimension-checks it, and saves. It refuses if the guide
+already exists. Adding a guide is therefore two edits (a `GuideSpec` in
+`guides.py`, a builder in `guide_assets.py`) plus one `--add` run — no `--force`,
+nothing else touched.
 
 Builds `assets/chars/cast.blend` and `assets/props/props.blend` — one
 recognisable, real-scale, primitive-built collection per cast member and hero
 prop — plus `assets/blender_assets.cats.txt`. Each collection is a catalogued
 Asset (`guides/cast`, `guides/props`). These are drawing scale-guides for the
-animatic: they link into board scenes and never render. See `docs/boards.md`.
+animatic: they link into board scenes and render only while a board is still
+blocked out (see `docs/boards.md`).
 Declarative registry lives in `tools/guides.py`; covered by
 `tools/tests/test_guides.py` and the headless `tools/tests/test_blender_smoke.py`.
+
+### `tools/resync_boards.py` — re-point boards at the shotlist's frame ranges
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/resync_boards.py
+# `-- --dry-run` reports what would change without saving
+```
+
+`make_boards.py` only ever ADDS scenes, so re-timing a shot in `shotlist.csv`
+leaves its board on the old range. This resets `frame_start`/`frame_end` on every
+existing board scene to match its row. Frame ranges only — no scene is created or
+removed, no Grease Pencil is touched, no guide moves. Scenes with no shotlist row
+are reported and left alone. Idempotent. Run it after any shotlist re-time, and
+after splitting a shot.
+
+### `tools/stage_boards.py` — drop starting guides into board scenes
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/stage_boards.py
+# `-- --dry-run` reports what would be staged without saving
+```
+
+Declarative `STAGING` table — scene code → the guides that shot needs, with a
+starting location and Z rotation — linked in as collection instances in the
+scene's `_guides` collection.
+
+**Additive, unlike `stage_property.py`.** That tool owns its `blocking`
+collection and clears it every run; doing that here would wipe framing you set by
+hand. A guide already present in a scene is left completely alone, matched by
+instance-collection identity rather than object name (instance objects get
+auto-suffixed to `property.003`, `boy.001`, so a name check would miss them and
+stack duplicates). Only missing guides are created. Re-running is a no-op once a
+shot is staged. Positions are a starting point for drawing, not final framing.
 
 ### `tools/stage_property.py` — stage the cast + props into the property file
 

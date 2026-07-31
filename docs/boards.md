@@ -32,8 +32,8 @@ All are catalogued Assets (`guides/cast`, `guides/props`, `guides/set`) via
 
 ### Drawing with guides
 
-Each board scene owns a non-rendering collection `<shotcode>_guides` (created by
-`make_boards.py`; its render toggle is off and it is the active collection).
+Each board scene owns a collection `<shotcode>_guides` (created by
+`make_boards.py`, and set as the active collection so drops land there).
 
 - **Add a guide:** Sidebar (N) ▸ **Redwood** ▸ Add Guide → pick one → it drops
   into the guides collection at `(0, 1.5, 0)` — just behind the paper — facing
@@ -45,11 +45,15 @@ Each board scene owns a non-rendering collection `<shotcode>_guides` (created by
 - **The property set** (`property` in the dropdown) drops in like any guide, but
   it's large — scale the instance down or pull the board camera back to frame
   the whole property for an establishing board.
-- **It won't render:** guides live in a `hide_render` collection, so `F12` and
-  `conform_edit` only ever see your strokes.
+- **Rendering is automatic:** guides render while a board is still blocked out,
+  and stop the moment it has real strokes — so a guide never prints under your
+  artwork. `boardlib.sync_guide_visibility` owns the toggle; `make_boards.py`
+  applies it to every board on each run.
 
-Guides are throwaway references — delete or leave them; they never reach the
-edit.
+This makes a guide blockout a real tier in the edit, between a slug and a
+drawing: `conform_edit` cuts in any board that has strokes **or** guides, so
+major story beats are watchable before a line is drawn. Re-run `make_boards.py`
+after a drawing session so newly drawn boards drop their guides from the edit.
 
 **Drag-drop caveat:** the **Add Guide** button always targets the correct
 `<shotcode>_guides` collection, but Asset-Browser drag-drop lands wherever the
