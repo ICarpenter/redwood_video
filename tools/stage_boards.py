@@ -27,6 +27,7 @@ import bpy
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import guides
 import shotlib
+import boardlib
 
 # scene code -> [(guide collection, source file, (x, y, z), rot_z degrees)]
 # Guides are authored facing -Y (toward the board camera at (0,-10,0)).
@@ -65,19 +66,6 @@ def link_collection(root, rel_file, name, cache):
     return existing
 
 
-def guides_collection(scene):
-    """The scene's non-rendering guides collection, created if absent."""
-    name = guides.guides_collection_name(scene.name)
-    coll = scene.collection.children.get(name)
-    if coll is None:
-        coll = bpy.data.collections.get(name)
-        if coll is None:
-            coll = bpy.data.collections.new(name)
-        scene.collection.children.link(coll)
-    coll.hide_render = True
-    return coll
-
-
 def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     dry_run = "--dry-run" in argv
@@ -96,7 +84,7 @@ def main():
         if scene is None:
             sys.exit(f"error: no scene {scene_name!r} in boards.blend; "
                      "run tools/make_boards.py first")
-        coll = guides_collection(scene)
+        coll = boardlib.guides_collection(scene, create=True)
         for guide_name, rel_file, loc, rot_z in entries:
             linked = link_collection(root, rel_file, guide_name, cache)
             # identity match, not name match: instance OBJECTS are auto-suffixed
@@ -116,6 +104,9 @@ def main():
             inst.location = loc
             inst.rotation_euler = (0.0, 0.0, math.radians(rot_z))
             coll.objects.link(inst)
+        # newly staged guides on an undrawn board must reach the edit
+        if not dry_run:
+            boardlib.sync_guide_visibility(scene)
 
     if dry_run:
         print(f"--dry-run: would create {created}, skip {skipped}")

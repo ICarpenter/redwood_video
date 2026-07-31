@@ -168,8 +168,9 @@ sequencer so you scrub with music while drawing. The default run only ADDS
 scenes for new shotlist rows (safe after drawing begins) — inserting a cutaway
 later is one shotlist row + one rerun. A board "graduates" into the animatic
 automatically once its GP has any keyframe. Every board scene also gets a
-non-rendering `<shotcode>_guides` collection for movable drawing guides (see
-`docs/boards.md`); reruns heal it into existing scenes.
+`<shotcode>_guides` collection for movable drawing guides (see `docs/boards.md`);
+reruns heal it into existing scenes and re-sync guide render visibility, so
+newly drawn boards drop their guides out of the edit.
 
 ### `tools/guide_assets.py` — build the drawing-guide assets
 
@@ -195,7 +196,8 @@ Builds `assets/chars/cast.blend` and `assets/props/props.blend` — one
 recognisable, real-scale, primitive-built collection per cast member and hero
 prop — plus `assets/blender_assets.cats.txt`. Each collection is a catalogued
 Asset (`guides/cast`, `guides/props`). These are drawing scale-guides for the
-animatic: they link into board scenes and never render. See `docs/boards.md`.
+animatic: they link into board scenes and render only while a board is still
+blocked out (see `docs/boards.md`).
 Declarative registry lives in `tools/guides.py`; covered by
 `tools/tests/test_guides.py` and the headless `tools/tests/test_blender_smoke.py`.
 
@@ -224,7 +226,7 @@ after splitting a shot.
 
 Declarative `STAGING` table — scene code → the guides that shot needs, with a
 starting location and Z rotation — linked in as collection instances in the
-scene's non-rendering `_guides` collection.
+scene's `_guides` collection.
 
 **Additive, unlike `stage_property.py`.** That tool owns its `blocking`
 collection and clears it every run; doing that here would wipe framing you set by

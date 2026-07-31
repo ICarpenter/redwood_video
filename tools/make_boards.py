@@ -24,6 +24,7 @@ import bpy
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
 import guides
+import boardlib
 
 
 def gp_data_collection():
@@ -105,19 +106,20 @@ def ink_material():
 
 
 def ensure_guides_collection(scene):
-    """Per-scene, non-rendering collection for movable drawing guides.
+    """Per-scene collection for movable drawing guides.
 
-    Names are globally unique in Blender, so each board owns
-    `<code>_guides`. hide_render keeps guides out of the animatic; it is set
-    active so Asset-Browser drops land here. Returns True if newly created.
+    Names are globally unique in Blender, so each board owns `<code>_guides`.
+    It is set active so Asset-Browser drops land here. Returns True if newly
+    created.
+
+    Render visibility is NOT set here — boardlib.sync_guide_visibility owns it,
+    so guides reach the edit while a board is still blocked out and drop out of
+    the render once it is drawn. A fresh collection defaults to rendering, which
+    is already correct for an undrawn board.
     """
     name = guides.guides_collection_name(scene.name)
-    coll = scene.collection.children.get(name)
-    created = coll is None
-    if created:
-        coll = bpy.data.collections.new(name)
-        scene.collection.children.link(coll)
-    coll.hide_render = True
+    created = scene.collection.children.get(name) is None
+    coll = boardlib.guides_collection(scene, create=True)
     vl = scene.view_layers[0]
     lc = vl.layer_collection.children.get(coll.name)
     if lc is not None:
@@ -162,6 +164,7 @@ def build_scene(shot, track, ink, prompt):
                          frame_start=1)
 
     ensure_guides_collection(scene)
+    boardlib.sync_guide_visibility(scene)
     return scene
 
 
@@ -191,6 +194,9 @@ def main():
         by_code = {s.code: s for s in shots}
         for sc in bpy.data.scenes:
             if ensure_guides_collection(sc):
+                healed += 1
+            # guides render while a board is blocked out, and stop once drawn
+            if boardlib.sync_guide_visibility(sc):
                 healed += 1
             if sc.world is None:
                 sc.world = paper_world()

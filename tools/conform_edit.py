@@ -25,25 +25,7 @@ import bpy
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
-
-def board_drawn(sc):
-    """A board scene counts once its Grease Pencil has actual strokes.
-
-    Board scenes ship with an empty starter keyframe, so keyframe existence
-    is not enough — look inside the frames (GPv3: frame.drawing.strokes;
-    legacy: frame.strokes).
-    """
-    for ob in sc.objects:
-        if ob.type in {"GREASEPENCIL", "GPENCIL"}:
-            for layer in ob.data.layers:
-                for fr in layer.frames:
-                    strokes = getattr(fr, "strokes", None)
-                    if strokes is None:
-                        drawing = getattr(fr, "drawing", None)
-                        strokes = getattr(drawing, "strokes", ()) if drawing else ()
-                    if len(strokes):
-                        return True
-    return False
+import boardlib
 
 
 def main():
@@ -93,8 +75,12 @@ def main():
         codes = {s.code for s in shots}
         with bpy.data.libraries.load(str(boards_blend), link=True) as (src, dst):
             dst.scenes = [name for name in src.scenes if name in codes]
+        # a board earns its strip once it is drawn OR blocked out with guides;
+        # boardlib.sync_guide_visibility (run by make_boards) has already set
+        # each scene's guides to render or not, so the strip shows the right
+        # thing either way
         board_scenes = {sc.name: sc for sc in bpy.data.scenes
-                        if sc.library is not None and board_drawn(sc)}
+                        if sc.library is not None and boardlib.board_ready(sc)}
 
     counts = {"render": 0, "board": 0, "slug": 0}
     for shot in shots:
