@@ -48,8 +48,17 @@ class RegistryTest(unittest.TestCase):
 
     def test_collection_name(self):
         self.assertEqual(
-            guides.guides_collection_name("sq010_sh010"), "sq010_sh010_guides"
+            guides.blocking_collection_name("sq010_sh010"), "sq010_sh010_blocking"
         )
+
+    def test_drop_distance_is_a_positive_fallback(self):
+        # Used only when the camera's view ray never meets the z=0 ground
+        # plane (camera pointing at or above the horizon).
+        self.assertGreater(guides.DROP_DISTANCE, 0.0)
+
+    def test_old_names_are_gone(self):
+        self.assertFalse(hasattr(guides, "guides_collection_name"))
+        self.assertFalse(hasattr(guides, "DROP_LOCATION"))
 
 
 class CatsFileTest(unittest.TestCase):

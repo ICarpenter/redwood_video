@@ -1,28 +1,30 @@
 #!/usr/bin/env python3
 """Declarative registry of animatic scale-guides.
 
-Stdlib only — imported by guide_assets.py, make_boards.py, and the
+Stdlib only — imported by guide_assets.py, make_layout.py, and the
 redwood_guides add-on inside Blender, and by the test suite under system
 Python. No bpy here (same rule shotlib.py follows).
 
-Board scenes place a Grease Pencil paper plane at the origin with the camera
-at (0,-10,0) looking +Y. Guides are authored facing -Y (front toward camera),
-feet at Z=0, centred on X=0; dropped at DROP_LOCATION they sit just behind the
-paper (Y=0) so strokes overlay them. They live in a per-scene collection whose
-render toggle is off, so conform_edit only ever sees the GP strokes.
+Layout scenes hold the property linked at identity (world origin, ground at
+z=0) and change framing by moving the camera, never the set. Guides are
+authored facing -Y, feet at Z=0, centred on X=0; they are dropped in WORLD
+space onto the property, so a guide's transform says where that character
+stands. They live in a per-scene `<code>_blocking` collection.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-DROP_LOCATION = (0.0, 1.5, 0.0)
+# Fallback distance along the camera's view ray when it never meets the
+# z=0 ground plane (camera level or tilted up). Metres.
+DROP_DISTANCE = 8.0
 
-GUIDES_SUFFIX = "_guides"
+BLOCKING_SUFFIX = "_blocking"
 
 
-def guides_collection_name(scene_name: str) -> str:
-    """Per-scene guides collection name (globally unique, one per board)."""
-    return f"{scene_name}{GUIDES_SUFFIX}"
+def blocking_collection_name(scene_name: str) -> str:
+    """Per-scene blocking collection name (globally unique, one per shot)."""
+    return f"{scene_name}{BLOCKING_SUFFIX}"
 
 
 # Project-root-relative paths to the asset files.
