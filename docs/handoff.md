@@ -24,7 +24,7 @@ machinery), `boards.md` (the drawing workflow).
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
 | 3. Storyboards / animatic | **in progress** — infrastructure done; 1 board drawn, 4 blocked out with guides |
-| 4. Asset production | started — property blockout + 13 scale guides |
+| 4. Asset production | started — property blockout + 13 scale guides + garage passthrough |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
 
 The film is **watchable right now**: `edit/edit.blend` holds the track,
@@ -173,25 +173,44 @@ discovery from the repo root fails with "Start directory is not importable".
 **Close Blender before running any of these.** They write `.blend` files
 headlessly; an open session's later save will clobber the result.
 
-Regenerable: `render/`, `delivery/`, playblasts, proxies, and
-`edit/edit.blend` (rebuild with `conform_edit.py -- --force`).
+Regenerable and gitignored: `render/`, `delivery/`, playblasts,
+`edit/proxies/`.
 
-> ⚠️ **Known discrepancy:** the previous handoff stated `edit/edit.blend`
-> is gitignored. It is not — `.gitignore` covers `edit/proxies/` only, so
-> `edit/edit.blend` shows as untracked. Decide whether to ignore it (it is
-> fully regenerable) or track it in LFS, and fix one side or the other.
+**`edit/edit.blend` is tracked in LFS**, decided 2026-07-31. It is
+regenerable (`conform_edit.py -- --force`), but committing it means the
+current cut is reviewable in a PR and watchable without a Blender run.
+The cost: it is a binary that re-serializes on every save, so expect
+diffs with no semantic change, and never merge two branches that both
+touched it — regenerate instead.
 
 ## Repo state
 
-- Working branch **`envs`**, with **3 commits not yet pushed** and not on
-  `origin/main`: the sh040 split spec, its implementation, and the guide
-  blockout tier. Needs a PR.
-- **Local `main` is 25 commits stale** — `origin/main` is at the PR #7
-  merge. `git fetch && git checkout main && git pull` before branching.
-- Everything through PR #7 (animatic scale-guides) is merged remotely.
-- `assets/envs/property/property.blend` has **uncommitted local changes**
-  from a hand-editing session on 2026-07-31 that no tool made. Review and
-  commit or discard.
+- Everything through PR #8 (sh040 split, box guide, guide blockout tier)
+  is merged. `main` is current.
+- Branch names describe the work; `envs` and `boards-guide-blockout` are
+  merged and can be deleted.
+
+## The garage passthrough
+
+The garage opening is a **boolean**, not modelled geometry. `garage`
+carries a `BOOLEAN DIFFERENCE` targeting `garage_door_rcutter`, which
+punches front-to-back through the shell (y −3.58..+3.56) to make the
+passthrough sq010_sh045 shoots along.
+
+Two things keep it from leaking into shots:
+
+- the cutter lives in a **`cutters` collection at scene root, deliberately
+  outside `property`** — so linking the `property` set never drags it in
+- it is `hide_render = True` at both object and collection level
+
+It still resolves through the link: Blender pulls the modifier target in
+as an *indirect* dependency, so `garage` evaluates 8 → 17 verts in
+boards.blend exactly as it does in property.blend. Verified — but it is a
+non-obvious dependency, so if the passthrough ever closes up in a board,
+check that `garage_door_rcutter` still came along.
+
+Both garage doors are modelled **open** — retracted horizontal panels at
+z 2.35..2.45, not slabs filling the opening.
 
 ## Open decisions
 
@@ -211,19 +230,18 @@ Regenerable: `render/`, `delivery/`, playblasts, proxies, and
 
 ## Next actions
 
-1. **PR the 3 pending commits** and refresh local `main`.
-2. **Keep blocking out story beats with guides.** Add a row to `STAGING`
+1. **Keep blocking out story beats with guides.** Add a row to `STAGING`
    in `stage_boards.py` per shot, or drop guides by hand with Sidebar ▸
    Redwood ▸ Add Guide. Conform and watch — beats read before anything is
    drawn.
-3. **Board the film.** A rough scribble pass over all 39 first, polish
+2. **Board the film.** A rough scribble pass over all 39 first, polish
    later. Re-run `make_boards.py` afterwards so drawn boards drop their
    guides out of the edit.
-4. **Arbitrate verse 2** with the animatic, then firm durations and move
+3. **Arbitrate verse 2** with the animatic, then firm durations and move
    statuses `scripted → boarded` (all 39 rows are still `scripted`).
-5. **Design pass on the property** once the boards say what the camera
+4. **Design pass on the property** once the boards say what the camera
    actually needs.
-6. Then asset production proper: clay material library, characters.
+5. Then asset production proper: clay material library, characters.
 
 ## Working notes
 
