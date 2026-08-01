@@ -879,15 +879,17 @@ def main():
         cam = scene.camera
 
         for ob in list(scene.objects):
-            if ob.instance_collection is not None:
-                stats["instances"] += 1
-                if not dry_run:
-                    bpy.data.objects.remove(ob, do_unlink=True)
-                continue
+            # Count actions BEFORE the instance branch. Most animation in this
+            # file lives on blocking instances, so checking after a `continue`
+            # would tally 3 of 10 and under-report what this script destroyed.
             if ob.animation_data is not None:
                 stats["actions"] += 1
                 if not dry_run:
                     ob.animation_data_clear()
+            if ob.instance_collection is not None:
+                stats["instances"] += 1
+                if not dry_run:
+                    bpy.data.objects.remove(ob, do_unlink=True)
 
         old = scene.collection.children.get(f"{scene.name}_guides")
         if old is not None:
@@ -942,8 +944,9 @@ rm -f boards/boards.blend1
     --python tools/migrate_layout.py -- --dry-run
 ```
 
-Expected: `--dry-run: {'scenes': 39, 'instances': 9, 'actions': 10, 'renamed': 39}`
-(9 instances and 10 actions is what the pre-migration audit found across `sq010_sh010`, `sh020`, `sh030`, `sh040`, `sh045`.)
+Expected: `--dry-run: {'scenes': 39, 'instances': 11, 'actions': 10, 'renamed': 39}`
+(11 instances and 10 actions, distributed 1/2/2/3/3 and 1/2/2/2/3 across
+`sq010_sh010`, `sh020`, `sh030`, `sh040`, `sh045` — from the pre-spec audit.)
 
 - [ ] **Step 3: Migrate for real, then verify**
 
