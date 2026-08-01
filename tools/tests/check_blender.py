@@ -38,6 +38,18 @@ assert abs(ml_gp.location.z + layoutlib.paper_distance(ml_cam)) < 1e-6
 half_w = layoutlib.paper_distance(ml_cam) * (ml_cam_data.sensor_width / 2.0) / ml_cam_data.lens
 assert abs(ml_gp.scale.x * layoutlib.PAPER_HALF_WIDTH - half_w) < 1e-9, "paper misfit"
 
+# an unparented note is exactly the drift the heal loop must repair — build
+# and heal share one helper (park_note) so they cannot disagree on the pose
+ml_note = make_layout.build_note(ml, "sq998_sh998_note_probe", "prompt")
+assert ml_note.parent is None, "sanity: build_note alone leaves the note unparented"
+make_layout.park_note(ml_note, ml_cam)
+assert ml_note.parent is ml_cam, "park_note must parent an existing note to the camera"
+# object transforms round-trip through single-precision RNA floats, so
+# compare with tolerance rather than exact equality (as the paper-fit
+# assertions above already do)
+assert all(abs(a - b) < 1e-5 for a, b in zip(ml_note.location, (-1.6, 0.9, -4.0))), \
+    "park_note must set the fixed offset"
+
 # the property links at identity and nowhere else
 prop = make_layout.link_property(ml)
 if prop is not None:
@@ -45,6 +57,17 @@ if prop is not None:
     assert tuple(prop.rotation_euler) == (0.0, 0.0, 0.0), "property rotated"
     assert tuple(prop.scale) == (1.0, 1.0, 1.0), "property scaled"
     assert make_layout.link_property(ml) is prop, "link_property must be idempotent"
+
+    # a drifted instance must be repaired, not trusted — this is exactly the
+    # drift the old stage_boards.py used to bake into the property transform
+    prop.location = (5.0, -2.0, 1.0)
+    prop.rotation_euler = (0.0, 0.0, 0.3)
+    prop.scale = (2.0, 2.0, 2.0)
+    healed_prop = make_layout.link_property(ml)
+    assert healed_prop is prop, "link_property must still return the existing instance"
+    assert tuple(healed_prop.location) == (0.0, 0.0, 0.0), "drifted location must reset"
+    assert tuple(healed_prop.rotation_euler) == (0.0, 0.0, 0.0), "drifted rotation must reset"
+    assert tuple(healed_prop.scale) == (1.0, 1.0, 1.0), "drifted scale must reset"
 print("make_layout: OK")
 
 # --- blocking collection + readiness -------------------------------------

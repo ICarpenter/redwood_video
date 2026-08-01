@@ -12,9 +12,12 @@ context.
 
 Default run ADDS scenes for new shotlist rows and leaves existing scenes
 untouched (safe after drawing/blocking has begun), while healing anything a
-scene is missing: world, blocking collection, linked property, starter
-keyframe, script note, or a paper unfit to its camera. --force rebuilds the
-whole file from scratch, DESTROYING all drawing and blocking.
+scene is missing or has drifted from: world, project settings, blocking
+collection, linked property (reset to identity if it has drifted), starter
+keyframe, script note (text and camera-parenting), or a paper unfit to its
+camera. A camera-less scene cannot be given a framing authority
+automatically, so it is reported instead of silently skipped. --force
+rebuilds the whole file from scratch, DESTROYING all drawing and blocking.
 
 Run:
   "$BLENDER" --background --factory-startup --python-exit-code 1 \
@@ -92,6 +95,27 @@ def build_note(scene, code, prompt):
     return ob
 
 
+def park_note(note, cam):
+    """Parent an existing note to `cam` at its fixed viewport offset.
+
+    The single owner of the note's pose, so build_scene and the heal loop
+    below cannot drift apart on where the note sits — that drift is exactly
+    what put it at the old 2D pose, unparented, whenever heal ran instead of
+    build.
+    """
+    note.parent = cam
+    note.matrix_parent_inverse = Matrix.Identity(4)
+    note.location = (-1.6, 0.9, -4.0)
+    note.rotation_euler = (0.0, 0.0, 0.0)
+
+
+def build_and_park_note(scene, code, prompt, cam):
+    """Create the script-prompt note and park it as a camera child."""
+    note = build_note(scene, code, prompt)
+    park_note(note, cam)
+    return note
+
+
 def layout_world():
     """Neutral grey so greybox blocking reads. Scenes made via the data API
     have NO world at all, which renders black."""
@@ -135,17 +159,33 @@ def ensure_blocking_collection(scene):
     return created
 
 
+def _at_identity(ob) -> bool:
+    """True if ob's location/rotation_euler/scale are all exactly identity."""
+    return (tuple(ob.location) == (0.0, 0.0, 0.0)
+            and tuple(ob.rotation_euler) == (0.0, 0.0, 0.0)
+            and tuple(ob.scale) == (1.0, 1.0, 1.0))
+
+
 def link_property(scene):
     """Link the property set at IDENTITY — the pipeline's first invariant.
 
-    The set never moves. Framing changes by moving the camera. Returns the
-    instance object, or None if the property file is missing.
+    The set never moves. Framing changes by moving the camera. An existing
+    instance is not just trusted: hide_select deters accidental nudges but
+    does not stop Alt+H, the outliner, or a script, so a drifted instance is
+    snapped back to identity here rather than left as the drift the old
+    stage_boards.py used to bake in. Returns the instance object, or None if
+    the property file is missing.
     """
     name = "property"
     existing = next((o for o in scene.objects
                      if o.instance_collection is not None
                      and o.instance_collection.name == name), None)
     if existing is not None:
+        if not _at_identity(existing):
+            existing.location = (0.0, 0.0, 0.0)
+            existing.rotation_euler = (0.0, 0.0, 0.0)
+            existing.scale = (1.0, 1.0, 1.0)
+            print(f"warning: {scene.name}: property had drifted off identity — reset")
         return existing
 
     root = shotlib.project_root()
@@ -202,11 +242,7 @@ def build_scene(shot, track, ink, prompt):
     scene.collection.objects.link(gp)
     layoutlib.fit_paper(gp, cam)
 
-    note = build_note(scene, shot.code, prompt)
-    note.parent = cam
-    note.matrix_parent_inverse = Matrix.Identity(4)
-    note.location = (-1.6, 0.9, -4.0)
-    note.rotation_euler = (0.0, 0.0, 0.0)
+    build_and_park_note(scene, shot.code, prompt, cam)
 
     if track is not None:
         se = scene.sequence_editor_create()
@@ -242,8 +278,11 @@ def main():
         existing = set(bpy.data.scenes.keys())
         todo = [s for s in shots if s.code not in existing]
         # heal scenes missing a world (black viewport/render without one),
-        # the blocking collection, a linked property, the starter keyframe,
-        # missing/stale script notes, or a paper unfit to its camera
+        # project settings drift, the blocking collection, a linked property
+        # (or one that has drifted off identity), the starter keyframe,
+        # missing/stale/unparented script notes, or a paper unfit to its
+        # camera. A missing camera cannot be healed automatically — it is
+        # the shot's only framing authority — so it is reported instead.
         by_code = {s.code: s for s in shots}
         for sc in bpy.data.scenes:
             if ensure_blocking_collection(sc):
@@ -254,29 +293,45 @@ def main():
             if sc.world is None:
                 sc.world = layout_world()
                 healed += 1
+            # project settings have exactly one owner (layoutlib); reapply
+            # unconditionally to heal drift. Returns None, so it cannot feed
+            # `healed` — that is fine, it is not optional the way the rest
+            # of this loop's fixes are.
+            layoutlib.apply_project_settings(sc, view_transform="Standard")
             for ob in sc.objects:
                 if ob.type in GP_TYPES_LOCAL:
                     for layer in ob.data.layers:
                         if len(layer.frames) == 0:
                             layer.frames.new(sc.frame_start)
                             healed += 1
+            cam = sc.camera
+            if cam is None:
+                print(f"warning: {sc.name}: no camera — shot has no framing authority")
             shot = by_code.get(sc.name)
             if shot is not None:
                 note = sc.objects.get(f"{sc.name}_note")
                 if note is None:
-                    build_note(sc, sc.name, prompt_for(shot))
+                    if cam is not None:
+                        build_and_park_note(sc, sc.name, prompt_for(shot), cam)
+                    else:
+                        build_note(sc, sc.name, prompt_for(shot))
                     healed += 1
-                elif note.data.body != prompt_for(shot):
-                    note.data.body = prompt_for(shot)
-                    healed += 1
-            had_property = any(o.instance_collection is not None
-                               and o.instance_collection.name == "property"
-                               for o in sc.objects)
-            if link_property(sc) is not None and not had_property:
+                else:
+                    if note.data.body != prompt_for(shot):
+                        note.data.body = prompt_for(shot)
+                        healed += 1
+                    if cam is not None and note.parent is not cam:
+                        park_note(note, cam)
+                        healed += 1
+            prop = next((o for o in sc.objects
+                        if o.instance_collection is not None
+                        and o.instance_collection.name == "property"), None)
+            had_property = prop is not None
+            property_drifted = had_property and not _at_identity(prop)
+            if link_property(sc) is not None and (not had_property or property_drifted):
                 healed += 1
-            cam = sc.camera
             for ob in sc.objects:
-                if ob.type in GP_TYPES_LOCAL and ob.parent is not cam and cam:
+                if cam is not None and ob.type in GP_TYPES_LOCAL and ob.parent is not cam:
                     layoutlib.fit_paper(ob, cam)
                     healed += 1
         if not todo and not healed:
