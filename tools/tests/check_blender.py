@@ -70,12 +70,19 @@ assert (ps.render.resolution_x, ps.render.resolution_y) == (1920, 1080)
 assert ps.render.image_settings.file_format == "PNG"
 assert ps.render.image_settings.color_depth == "16"
 assert ps.view_settings.view_transform == "AgX", ps.view_settings.view_transform
+assert ps.view_settings.look == "None", ps.view_settings.look
 assert ps.sync_mode == "AUDIO_SYNC"
 # layout scenes draw against greybox, so they opt out of AgX explicitly
 ps2 = bpy.data.scenes.new("settings_probe_std")
 layoutlib.apply_project_settings(ps2, view_transform="Standard")
 assert ps2.view_settings.view_transform == "Standard"
-assert ps2.render.fps == 24, "everything else must still apply"
+# everything else must still apply
+assert ps2.render.fps == 24, f"fps {ps2.render.fps}"
+assert (ps2.render.resolution_x, ps2.render.resolution_y) == (1920, 1080)
+assert ps2.render.image_settings.file_format == "PNG"
+assert ps2.render.image_settings.color_depth == "16"
+assert ps2.view_settings.look == "None", ps2.view_settings.look
+assert ps2.sync_mode == "AUDIO_SYNC"
 print("project settings: OK")
 
 print("ALL CHECKS OK")
