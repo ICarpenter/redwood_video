@@ -19,6 +19,7 @@ import make_layout  # noqa: E402
 import layoutlib  # noqa: E402
 import shotlib  # noqa: E402
 import stage_shots  # noqa: E402
+import continue_shot  # noqa: E402
 
 # Guide asset files build, mark, catalog, and dimension-check.
 guide_assets.run_check()
@@ -181,5 +182,115 @@ ss_scene.camera = None
 assert stage_shots.aim_camera(ss_scene, (0, 0, 0), (0, 1, 0), 50) is False, \
     "a scene with no camera has nothing to aim"
 print("stage_shots.aim_camera: OK")
+
+# --- continue_shot: apply_snapshot writes world matrices -----------------
+# apply_snapshot only writes, so it is tested directly against a hand-built
+# snapshot dict rather than one produced by snapshot() — that round-trip is
+# covered separately below.
+cs_target = bpy.data.collections.new("cs_probe_boy")
+cs_dst = bpy.data.scenes.new("sq997_sh020")
+cs_dst_cam = bpy.data.objects.new("sq997_sh020_cam", bpy.data.cameras.new("sq997_sh020_cam"))
+cs_dst.collection.objects.link(cs_dst_cam)
+cs_dst.camera = cs_dst_cam
+layoutlib.blocking_collection(cs_dst, create=True)
+
+# translation-only matrices (identity rotation) — rotation round-trips
+# through Euler decomposition can land on an equivalent-but-different-
+# looking angle (e.g. -180 vs 180), which is a distraction from what this
+# check is actually verifying.
+cs_snap = {
+    "cs_probe_boy": (
+        ((1.0, 0.0, 0.0, 1.25),
+         (0.0, 1.0, 0.0, 2.5),
+         (0.0, 0.0, 1.0, 0.0),
+         (0.0, 0.0, 0.0, 1.0)),
+        None,
+    ),
+    "__camera__": (
+        ((1.0, 0.0, 0.0, 3.0),
+         (0.0, 1.0, 0.0, -4.0),
+         (0.0, 0.0, 1.0, 1.5),
+         (0.0, 0.0, 0.0, 1.0)),
+        42.0,
+    ),
+}
+
+created, skipped = continue_shot.apply_snapshot(cs_dst, cs_snap)
+assert created == 1, f"expected 1 created, got {created}"
+
+moved = next(o for o in layoutlib.blocking_instances(cs_dst)
+             if o.instance_collection is cs_target)
+# .location, not .matrix_world: matrix_world stays stale until a depsgraph
+# evaluation, but apply_snapshot's `inst.matrix_world = m` assignment
+# decomposes into .location/.rotation_euler/.scale immediately, which is
+# what makes this readable without one.
+assert all(abs(a - b) < 1e-6 for a, b in zip(moved.location, (1.25, 2.5, 0.0))), \
+    f"blocking must land at the snapshot's world position, got {tuple(moved.location)}"
+assert abs(cs_dst_cam.location.x - 3.0) < 1e-6, "camera location must copy"
+assert abs(cs_dst_cam.location.y + 4.0) < 1e-6, "camera location must copy"
+assert abs(cs_dst_cam.location.z - 1.5) < 1e-6, "camera location must copy"
+assert abs(cs_dst_cam.data.lens - 42.0) < 1e-6, "camera lens must copy"
+
+# re-running must not stack duplicates
+created2, skipped2 = continue_shot.apply_snapshot(cs_dst, cs_snap)
+assert created2 == 0 and skipped2 == 1, f"not idempotent: {created2}, {skipped2}"
+print("continue_shot.apply_snapshot: OK")
+
+# --- continue_shot: snapshot() + apply_snapshot round-trip ---------------
+# snapshot()'s first statement is scene.frame_set(frame), which is what
+# builds the scene's depsgraph — scene.view_layers[0].depsgraph is None
+# before that (for a scene that has never been evaluated) and populated
+# after, so an in-memory scene built via bpy.data.scenes.new() CAN be
+# snapshotted here, same as a scene loaded from a file. The actual lesson
+# from this: .matrix_world stays stale in --background until something
+# evaluates the scene, but .location (and camera.data.lens) is always
+# live — assert on those, never on .matrix_world, for both the source
+# fixture and the snapshotted result.
+rt_src = bpy.data.scenes.new("sq996_sh010")
+rt_src.world = bpy.data.worlds.new("cs_world_rt_src")
+rt_src_cam = bpy.data.objects.new("sq996_sh010_cam", bpy.data.cameras.new("sq996_sh010_cam"))
+rt_src_cam.location = (3.0, -4.0, 1.5)
+rt_src_cam.data.lens = 42.0
+rt_src.collection.objects.link(rt_src_cam)
+rt_src.camera = rt_src_cam
+rt_src_bc = layoutlib.blocking_collection(rt_src, create=True)
+# named distinctly from any real guide collection (guide_assets.run_check()
+# above leaves guide collections behind in bpy.data) and from the
+# "cs_probe_boy" collection used above, so this fixture cannot collide with
+# — or be mistaken for — either
+rt_target = bpy.data.collections.new("rt_probe_boy")
+rt_probe = bpy.data.objects.new("boy", None)
+rt_probe.instance_type = "COLLECTION"
+rt_probe.instance_collection = rt_target
+rt_probe.location = (1.25, 2.5, 0.0)
+rt_src_bc.objects.link(rt_probe)
+
+rt_dst = bpy.data.scenes.new("sq996_sh020")
+rt_dst.world = bpy.data.worlds.new("cs_world_rt_dst")
+rt_dst_cam = bpy.data.objects.new("sq996_sh020_cam", bpy.data.cameras.new("sq996_sh020_cam"))
+rt_dst.collection.objects.link(rt_dst_cam)
+rt_dst.camera = rt_dst_cam
+layoutlib.blocking_collection(rt_dst, create=True)
+
+rt_snap = continue_shot.snapshot(rt_src, rt_src.frame_start)
+# snapshot() keys by instance-collection name (see its docstring), which is
+# "rt_probe_boy" here — the probe OBJECT is named "boy" to mirror real
+# staged instances, but that name is never the key.
+assert "rt_probe_boy" in rt_snap, f"snapshot missing blocking: {list(rt_snap)}"
+rt_created, rt_skipped = continue_shot.apply_snapshot(rt_dst, rt_snap)
+assert rt_created == 1, f"expected 1 created, got {rt_created}"
+
+rt_moved = next(o for o in layoutlib.blocking_instances(rt_dst)
+                if o.instance_collection is rt_target)
+assert (rt_moved.location - Vector((1.25, 2.5, 0.0))).length < 1e-5, \
+    f"blocking landed at {tuple(rt_moved.location)}, expected (1.25, 2.5, 0.0)"
+assert abs(rt_dst.camera.location.x - 3.0) < 1e-5, "camera location must copy"
+assert abs(rt_dst.camera.data.lens - 42.0) < 1e-5, "camera lens must copy"
+
+# re-running must not stack duplicates
+rt_created2, rt_skipped2 = continue_shot.apply_snapshot(rt_dst, rt_snap)
+assert rt_created2 == 0 and rt_skipped2 == 1, \
+    f"not idempotent: {rt_created2}, {rt_skipped2}"
+print("continue_shot: OK")
 
 print("ALL CHECKS OK")
