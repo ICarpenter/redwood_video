@@ -83,24 +83,40 @@ Each scene is named by shot code (`sq010_sh010`) and holds:
 | `<code>_cam` | The shot camera. Keyable within the shot. Carries all framing. |
 | `<code>_blocking` | Linked collection instances of cast/props at current fidelity, positioned in world space. Grows from greybox guides into real assets without changing shape. |
 | the property | Linked at identity, shared across all scenes. |
-| `<code>_paper` | GP object parented to `<code>_cam`, parked just past the near clip and sized to the frustum for that camera's lens. Screen-space stroke thickness. |
+| `<code>_paper` | GP object parented to `<code>_cam`, at a fixed 10 m and sized to the frustum for that camera's lens. Screen-space stroke thickness. |
 | `<code>_note` | Existing text label, also camera-parented. |
 
 Frame range comes from the shotlist row; the track sits on the scene sequencer
 for scrubbing; render settings come from **one shared function** so the layout
 file and `tools/shot_template.blend` cannot drift.
 
-### Paper depth
+### Paper depth — resolved by measurement, 2026-07-31
 
 The paper must render in front of everything, including close foreground
-objects. The mechanism is geometric rather than flag-based: park it just past
-`clip_start` (~0.11 m at the default 0.1) and size it to the frustum there.
-Nothing can be in front of it without being clipped. Screen-space stroke
-thickness means an 11 cm plane draws and reads identically to a 10 m one.
+objects. This design originally proposed achieving that geometrically, by
+parking the paper just past `clip_start`. **Measurement showed that mechanism
+is unnecessary and the reasoning behind it was wrong.**
 
-**Verify in Blender before building on it.** If near-field drawing feels bad in
-practice, the fallback is rendering the GP on its own view layer composited
-over — which also frees the paper from near-field placement.
+Grease Pencil strokes composite over mesh geometry in EEVEE
+**unconditionally** — independent of distance, and independent of
+`stroke_depth_order` (2D and 3D behave identically here). Measured in Blender
+5.1.2: a stroke renders at 488 ink pixels whether its paper sits at 0.11 m in
+front of an occluding wall or at 10 m behind it, in all four combinations.
+
+Consequences:
+
+- The requirement is satisfied, more robustly than by placement.
+- Paper distance is therefore free, and is chosen for **framing and drawing
+  ergonomics**: 10 m, which makes `fit_paper`'s scale exactly 1.0 at the 50 mm
+  lens and so matches `sq010_sh010`'s existing strokes 1:1, instead of
+  drawing on an 11 cm plane against the clip plane.
+- The proposed render-based verification gate was **deleted**: it asserted
+  ink pixels survive over close geometry, which is true unconditionally, so it
+  could not fail. A gate that cannot fail is worse than none.
+- GP-over-mesh compositing is now a **documented Blender behaviour this
+  pipeline depends on**. If a future Blender makes GP respect scene depth,
+  paper placement becomes load-bearing again and this section is where to
+  start.
 
 ### Visibility rule (inverted)
 
@@ -202,8 +218,8 @@ reset, not a conversion.
 1. `git mv boards/boards.blend layout/layout.blend` (LFS path move).
 2. Per scene: delete every instance object, clear every object Action, rename
    `<code>_guides` → `<code>_blocking`, link the property at identity, parent
-   the GP and `_note` to `<code>_cam`, fit the paper to the near field, and
-   reset the camera by seeding it from `cam_intro` in `property.blend` (an
+   the GP and `_note` to `<code>_cam`, fit the paper via `layoutlib.fit_paper`,
+   and reset the camera by seeding it from `cam_intro` in `property.blend` (an
    existing preview camera — no invented default numbers).
 3. Re-stage fresh through `stage_shots.py`.
 
@@ -225,8 +241,6 @@ is about Blender state:
 
 - Migration leaves `sq010_sh010` with 119 strokes, zero instance objects in any
   scene, and the GP parented to its camera.
-- The near-field paper renders strokes over geometry placed close to camera.
-  (This is also the verification gate for the paper-depth mechanism.)
 - `continue_shot` round-trip: copy A→B at frame F, then assert B's blocking
   world matrices equal A's evaluated matrices at F.
 - `export_shot` produces a file that opens with its camera, blocking, and frame

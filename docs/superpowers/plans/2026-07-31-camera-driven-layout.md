@@ -4,7 +4,7 @@
 
 **Goal:** Replace the boards/shots split with one camera-driven layout file where the property is static at world origin, the camera is the sole framing authority, and blocking is world-space and reusable.
 
-**Architecture:** `boards/boards.blend` becomes `layout/layout.blend` — one scene per shotlist row, each holding a shot camera, a `<code>_blocking` collection of linked cast/prop instances positioned in world space, the property linked at identity, and a Grease Pencil "paper" parented to the camera in the near field as an optional overlay. Shot `.blend` files stop being a mandatory stage and become an on-demand export.
+**Architecture:** `boards/boards.blend` becomes `layout/layout.blend` — one scene per shotlist row, each holding a shot camera, a `<code>_blocking` collection of linked cast/prop instances positioned in world space, the property linked at identity, and a Grease Pencil "paper" parented to the camera as an optional overlay. Shot `.blend` files stop being a mandatory stage and become an on-demand export.
 
 **Tech Stack:** Blender 5.1.2 (`bpy`, `mathutils`), stdlib-only Python 3 for the bpy-free modules, `unittest`, bash.
 
@@ -148,7 +148,7 @@ Note: the repo is temporarily broken — `boardlib.py`, `make_boards.py`, `stage
 
 ### Task 2: `layoutlib.py` and the paper-depth verification
 
-The riskiest assumption in the spec — that a near-field camera-parented GP plane renders over close geometry — gets proven here, before anything is built on it.
+Builds the shared bpy-aware helper module. **Amended 2026-07-31:** this task originally gated on proving a near-field paper wins the depth test. Measurement showed GP strokes composite over meshes unconditionally in EEVEE, so the gate could not fail and was deleted, and the paper sits at 10 m (scale 1.0 at 50 mm, matching `sq010_sh010`'s strokes 1:1) rather than at the near clip. See the spec's "Paper depth" section.
 
 **Files:**
 - Create: `tools/layoutlib.py` (via `git mv tools/boardlib.py tools/layoutlib.py`)
@@ -276,13 +276,23 @@ def apply_hide_blocking(scene) -> bool:
     return True
 
 
+# Distance from camera to paper, in metres. Chosen for framing, NOT for
+# occlusion: Grease Pencil strokes composite over mesh geometry in EEVEE
+# unconditionally — measured in Blender 5.1.2, identical results at 0.11m in
+# front of a wall and 10m behind it, under both stroke_depth_order modes. So
+# nothing can hide the paper and the distance is free. 10m makes the scale
+# below exactly 1.0 at a 50mm lens, which matches sq010_sh010's existing
+# strokes 1:1.
+PAPER_DISTANCE = 10.0
+
+
 def paper_distance(cam) -> float:
-    """Just past the near clip: nothing can get in front of the paper there."""
-    return cam.data.clip_start * 1.1
+    """Distance from camera to paper. Framing choice, not a depth trick."""
+    return PAPER_DISTANCE
 
 
 def fit_paper(gp, cam, distance=None) -> None:
-    """Park the GP paper in the camera's near field, sized to the frustum.
+    """Park the GP paper in front of the camera, sized to the frustum.
 
     Parents `gp` to `cam` and sets its local transform so a stroke at paper
     coordinate x=PAPER_HALF_WIDTH lands exactly on the right edge of frame,
@@ -291,6 +301,9 @@ def fit_paper(gp, cam, distance=None) -> None:
     relationship the original boards had (GP unrotated at the origin, camera
     rotated +90 deg about X). Preserving it is what keeps existing strokes
     framed as drawn.
+
+    The paper does not need to be near the camera to stay visible — see
+    PAPER_DISTANCE. It is in front purely so drawing happens in camera space.
     """
     d = paper_distance(cam) if distance is None else distance
     half_w = d * (cam.data.sensor_width / 2.0) / cam.data.lens
@@ -333,72 +346,13 @@ del sc["hide_blocking"]
 layoutlib.apply_hide_blocking(sc)
 assert bc.hide_render is False, "clearing the flag must restore rendering"
 
-# --- THE PAPER DEPTH GATE ------------------------------------------------
-# The whole design assumes a near-field camera-parented paper draws over
-# close geometry. Prove it with an actual render before anything is built on
-# it. If this fails, STOP: the fallback is rendering the GP on its own view
-# layer composited over, which changes make_layout and conform_edit.
-import os
-import tempfile
-
-# Use the CONTEXT scene, not a fresh one: bpy.ops.render.render has no
-# `scene` argument and --background has no window to switch the active scene
-# through, so a new scene would render the wrong thing or not at all.
-depth = bpy.context.scene
-depth.world = bpy.data.worlds.new("depth_world")
-depth.world.use_nodes = True
-depth.world.node_tree.nodes["Background"].inputs["Color"].default_value = (1, 1, 1, 1)
-# EEVEE's engine id here is BLENDER_EEVEE (not _NEXT) — pick from the enum
-# rather than hardcoding, so this survives a Blender bump.
-_engines = depth.render.bl_rna.properties["engine"].enum_items.keys()
-depth.render.engine = "BLENDER_EEVEE" if "BLENDER_EEVEE" in _engines else _engines[0]
-depth.render.resolution_x = 64
-depth.render.resolution_y = 64
-depth.render.image_settings.file_format = "PNG"
-depth.render.use_sequencer = False
-depth.view_settings.view_transform = "Standard"
-for _ob in list(depth.objects):
-    bpy.data.objects.remove(_ob, do_unlink=True)
-
-cam_data = bpy.data.cameras.new("depth_cam")
-cam = bpy.data.objects.new("depth_cam", cam_data)
-cam.location = (0.0, 0.0, 0.0)
-depth.collection.objects.link(cam)
-depth.camera = cam
-
-# An obstruction 0.5m in front of camera, filling frame — far closer than
-# any real foreground character, and 4x nearer than the old 10m paper.
-bpy.ops.mesh.primitive_cube_add(size=4.0, location=(0.0, 0.0, -0.5))
-
-gp_data = (bpy.data.grease_pencils_v3 if hasattr(bpy.data, "grease_pencils_v3")
-           else bpy.data.grease_pencils).new("depth_paper")
-gp_layer = gp_data.layers.new("lines")
-gp_frame = gp_layer.frames.new(1)
-gp_frame.drawing.add_strokes([4])
-stroke_pts = gp_frame.drawing.strokes[0].points
-# a fat X across the middle of the paper, in paper-local units
-for pt, co in zip(stroke_pts, [(-2.0, 0.0, -2.0), (2.0, 0.0, 2.0),
-                               (2.0, 0.0, -2.0), (-2.0, 0.0, 2.0)]):
-    pt.position = co
-    pt.radius = 0.35
-gp = bpy.data.objects.new("depth_paper", gp_data)
-depth.collection.objects.link(gp)
-layoutlib.fit_paper(gp, cam)
-
-out = os.path.join(tempfile.mkdtemp(), "depth.png")
-depth.render.filepath = out
-bpy.ops.render.render(write_still=True)
-img = bpy.data.images.load(out)
-px = list(img.pixels)
-# The cube is grey (~0.8 default) and the world is white. Ink strokes are the
-# only thing that can be dark, so dark pixels prove the paper beat the cube.
-dark = sum(1 for i in range(0, len(px), 4) if px[i] < 0.25)
-assert dark > 0, (
-    f"PAPER DEPTH GATE FAILED: no ink pixels in {out} — the near-field paper "
-    "did not render over geometry 0.5m from camera. Do not proceed; switch to "
-    "the view-layer/compositor fallback in the spec."
-)
-print(f"paper depth gate: {dark} ink pixels over a 0.5m obstruction — OK")
+# --- NOTE: the paper-depth gate was removed ------------------------------
+# This plan originally gated here on a render proving a near-field paper
+# draws over close geometry. Measured in Blender 5.1.2 during Task 2: GP
+# strokes composite over meshes UNCONDITIONALLY — same 488 ink pixels at
+# 0.11m in front of a wall and at 10m behind it, under both
+# stroke_depth_order modes. The assertion could not fail, so it is deleted
+# rather than kept as false assurance. See the spec's "Paper depth" section.
 ```
 
 - [ ] **Step 3: Run the check to verify it fails**
@@ -410,15 +364,13 @@ To see the new assertions run before Task 4 lands, temporarily comment out the `
 
 - [ ] **Step 4: Verify the gate passes**
 
-Expected: `paper depth gate: N ink pixels over a 0.5m obstruction — OK` with N > 0.
-
-If it fails, **stop and report**. The fallback (GP on its own view layer, composited over) changes Tasks 4 and 8 and needs a spec amendment before proceeding.
+Expected: the blocking, `hide_blocking`, and `fit_paper` assertions all pass. There is no depth gate to satisfy.
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add tools/layoutlib.py tools/tests/check_blender.py
-git commit -m "feat: layoutlib with camera-locked paper; prove near-field depth"
+git commit -m "feat: layoutlib with camera-locked paper at a fixed framing distance"
 ```
 
 ---
@@ -1902,7 +1854,7 @@ It currently describes the paper-at-origin model in full. Replace its "Scale gui
 - The four invariants (property static at origin with ground at z=0; the camera is the only framing authority; blocking is world-space; shot files are a derived export).
 - **Add Guide** drops onto the ground where the camera is looking, feet at z=0.
 - Blocking and paper both render; `scene["hide_blocking"] = True` is the hand-set opt-out and no tool writes it.
-- The X-ray caveat is **gone** — the paper is camera-locked in the near field, so nothing occludes strokes.
+- The X-ray caveat is **gone** — Grease Pencil composites over mesh geometry in EEVEE regardless of depth, so nothing occludes strokes.
 - The "re-run `make_boards.py` after a drawing session" rule is **gone** — there is no automatic visibility rule left to re-sync.
 - Continuing a shot: `continue_shot.py --from <code> --to <code>`.
 
@@ -1962,7 +1914,7 @@ EOF
 After Task 12, all of these must hold:
 
 - [ ] `python3 -m unittest discover -s tools/tests -t tools/tests` passes
-- [ ] `check_blender.py` prints `ALL CHECKS OK` including the paper depth gate
+- [ ] `check_blender.py` prints `ALL CHECKS OK`
 - [ ] `check_addon.py` prints `ground drop: OK`
 - [ ] Every property instance in `layout/layout.blend` is at identity
 - [ ] `sq010_sh010` still has 119 strokes
