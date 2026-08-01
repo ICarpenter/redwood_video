@@ -436,6 +436,9 @@ def apply_project_settings(scene, view_transform="AgX") -> None:
     scene.render.image_settings.color_mode = "RGB"
     scene.render.image_settings.color_depth = "16"
     scene.view_settings.view_transform = view_transform
+    # the block this replaces set `look` too; dropping it would make "one
+    # place" a lie the moment a scene carries a non-default look
+    scene.view_settings.look = "None"
     scene.sync_mode = "AUDIO_SYNC"
 ```
 
