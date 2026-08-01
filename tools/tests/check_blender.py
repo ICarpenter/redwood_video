@@ -4,8 +4,6 @@ runnable by hand:
 
   "$BLENDER" --background --factory-startup --python-exit-code 1 \
       --python tools/tests/check_blender.py
-
-# Task 4 extends this with make_boards guides-collection assertions.
 """
 import sys
 from pathlib import Path
@@ -15,20 +13,39 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # tools/
 import bpy  # noqa: E402,F401
 import guides  # noqa: E402,F401
 import guide_assets  # noqa: E402
-import make_boards  # noqa: E402
+import make_layout  # noqa: E402
 import layoutlib  # noqa: E402
 
 # Guide asset files build, mark, catalog, and dimension-check.
 guide_assets.run_check()
 
-# make_boards ensures an idempotent per-scene guides collection.
-sc = bpy.data.scenes.new("sq999_sh999")
-created = make_boards.ensure_guides_collection(sc)
-assert created is True, "guides collection should be created on first call"
-gname = guides.guides_collection_name(sc.name)
-gc = sc.collection.children.get(gname)
-assert gc is not None, f"missing {gname}"
-assert make_boards.ensure_guides_collection(sc) is False, "must be idempotent"
+# --- make_layout builds the invariants into every scene ------------------
+ml = bpy.data.scenes.new("sq998_sh998")
+assert make_layout.ensure_blocking_collection(ml) is True, "created on first call"
+assert make_layout.ensure_blocking_collection(ml) is False, "must be idempotent"
+
+ml_cam_data = bpy.data.cameras.new("sq998_sh998_cam")
+ml_cam = bpy.data.objects.new("sq998_sh998_cam", ml_cam_data)
+ml.collection.objects.link(ml_cam)
+ml.camera = ml_cam
+ml_gp = bpy.data.objects.new(
+    "sq998_sh998_board", make_layout.gp_data_collection().new("sq998_sh998_board"))
+ml.collection.objects.link(ml_gp)
+layoutlib.fit_paper(ml_gp, ml_cam)
+assert ml_gp.parent is ml_cam, "paper must be a camera child"
+assert abs(ml_gp.location.z + layoutlib.paper_distance(ml_cam)) < 1e-6
+# a stroke at the paper's half-width must land on the frame edge
+half_w = layoutlib.paper_distance(ml_cam) * (ml_cam_data.sensor_width / 2.0) / ml_cam_data.lens
+assert abs(ml_gp.scale.x * layoutlib.PAPER_HALF_WIDTH - half_w) < 1e-9, "paper misfit"
+
+# the property links at identity and nowhere else
+prop = make_layout.link_property(ml)
+if prop is not None:
+    assert tuple(prop.location) == (0.0, 0.0, 0.0), f"property moved: {prop.location}"
+    assert tuple(prop.rotation_euler) == (0.0, 0.0, 0.0), "property rotated"
+    assert tuple(prop.scale) == (1.0, 1.0, 1.0), "property scaled"
+    assert make_layout.link_property(ml) is prop, "link_property must be idempotent"
+print("make_layout: OK")
 
 # --- blocking collection + readiness -------------------------------------
 sc = bpy.data.scenes.new("sq999_sh999")
