@@ -1360,7 +1360,11 @@ def snapshot(scene, frame):
     scene.frame_set(frame)
     # matrix_world is identity in --background until a depsgraph evaluation,
     # and camera.matrix_world silently returns garbage rather than erroring.
-    deps = bpy.context.evaluated_depsgraph_get()
+    # It must be THIS scene's depsgraph: bpy.context.evaluated_depsgraph_get()
+    # returns the CONTEXT scene's, and the source scene here is never the
+    # context scene — that exact mistake put a camera at the world origin
+    # during the migration and nothing raised.
+    deps = scene.view_layers[0].depsgraph
     snap = {}
     for ob in layoutlib.blocking_instances(scene):
         m = ob.evaluated_get(deps).matrix_world.copy()
@@ -1369,6 +1373,13 @@ def snapshot(scene, frame):
     if cam is not None:
         m = cam.evaluated_get(deps).matrix_world.copy()
         snap["__camera__"] = (tuple(tuple(r) for r in m), cam.data.lens)
+    # A degenerate read is indistinguishable from a real one unless checked.
+    # If every matrix came back at the origin, the depsgraph did not evaluate
+    # and copying this forward would silently plant the destination at 0,0,0.
+    if snap and all(Matrix(rows).to_translation().length < 1e-6
+                    for rows, _ in snap.values()):
+        sys.exit(f"error: {scene.name} evaluated to all-identity matrices at "
+                 f"frame {frame} — refusing to copy a degenerate snapshot")
     return snap
 
 
