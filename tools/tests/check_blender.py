@@ -11,10 +11,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # tools/
 
 import bpy  # noqa: E402,F401
+from mathutils import Vector  # noqa: E402
+
 import guides  # noqa: E402,F401
 import guide_assets  # noqa: E402
 import make_layout  # noqa: E402
 import layoutlib  # noqa: E402
+import shotlib  # noqa: E402
+import stage_shots  # noqa: E402
 
 # Guide asset files build, mark, catalog, and dimension-check.
 guide_assets.run_check()
@@ -124,5 +128,58 @@ assert ps2.render.image_settings.color_depth == "16"
 assert ps2.view_settings.look == "None", ps2.view_settings.look
 assert ps2.sync_mode == "AUDIO_SYNC"
 print("project settings: OK")
+
+# --- stage_shots: seed_camera + aim_camera --------------------------------
+# seed_camera is deliberately unused by STAGING in stage_shots.py — none of
+# property.blend's six preview cameras frames the four beats staged there,
+# they were composed to show off the property, not to shoot those actions.
+# It stays implemented (and covered here) because it is the natural way to
+# start a shot from cam_backyard or cam_road later; nothing else exercises
+# it, so assert its contract directly.
+root = shotlib.project_root()
+before = len(bpy.data.objects)
+loc, rot, lens = stage_shots.seed_camera(root, "cam_backyard")
+assert len(bpy.data.objects) == before, \
+    "seed_camera must remove its temporary appended object"
+assert len(loc) == 3 and len(rot) == 3, "seed_camera must return (loc, rot, lens)"
+assert isinstance(lens, float) and lens > 0.0, f"bad lens {lens!r}"
+# cam_backyard's transform is authored in tools/blockout_property.py at
+# (-4.5, 6.4, 2.5) aimed at (1, 19, 1.2), lens=32 — check the real numbers
+# came back, not just plausible-looking ones.
+assert all(abs(a - b) < 1e-4 for a, b in zip(loc, (-4.5, 6.4, 2.5))), loc
+assert abs(lens - 32.0) < 1e-4, lens
+expected_rot = (Vector((1, 19, 1.2)) - Vector((-4.5, 6.4, 2.5))
+                ).to_track_quat("-Z", "Y").to_euler()
+assert all(abs(a - b) < 1e-4 for a, b in zip(rot, expected_rot)), \
+    f"seed_camera rotation {rot} != {tuple(expected_rot)}"
+try:
+    stage_shots.seed_camera(root, "not_a_real_camera")
+except SystemExit:
+    pass
+else:
+    raise AssertionError("seed_camera must sys.exit on an unknown camera name")
+print("stage_shots.seed_camera: OK")
+
+# aim_camera: place and aim a scene's camera with the same to_track_quat
+# construction used above (hand-rolled Euler math gets the yaw sign wrong,
+# which is exactly what to_track_quat avoids).
+ss_scene = bpy.data.scenes.new("sq997_sh997")
+ss_cam_data = bpy.data.cameras.new("sq997_sh997_cam")
+ss_cam = bpy.data.objects.new("sq997_sh997_cam", ss_cam_data)
+ss_scene.collection.objects.link(ss_cam)
+ss_scene.camera = ss_cam
+assert stage_shots.aim_camera(ss_scene, (5.0, -10.0, 2.0), (0.0, 0.0, 1.0), 40) is True
+assert tuple(ss_cam.location) == (5.0, -10.0, 2.0)
+assert ss_cam.data.lens == 40
+aim_expected = (Vector((0.0, 0.0, 1.0)) - Vector((5.0, -10.0, 2.0))
+               ).to_track_quat("-Z", "Y")
+aim_got = ss_cam.rotation_euler.to_quaternion()
+assert aim_expected.rotation_difference(aim_got).angle < 1e-6, \
+    "aim_camera must aim with to_track_quat, not hand-rolled Euler math"
+
+ss_scene.camera = None
+assert stage_shots.aim_camera(ss_scene, (0, 0, 0), (0, 1, 0), 50) is False, \
+    "a scene with no camera has nothing to aim"
+print("stage_shots.aim_camera: OK")
 
 print("ALL CHECKS OK")
