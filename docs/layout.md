@@ -43,6 +43,29 @@ All are catalogued Assets (`guides/cast`, `guides/props`, `guides/set`) via
 2. **Add-on:** Preferences ▸ Add-ons ▸ Install → `tools/addons/redwood_guides.py`
    → enable **Redwood Guides**.
 
+   **Install COPIES the file** to
+   `~/Library/Application Support/Blender/5.1/scripts/addons/redwood_guides.py`.
+   It does not link it. So editing `tools/addons/redwood_guides.py` in the
+   repo changes nothing in Blender until you install it again — and the
+   test suite will not tell you, because `check_addon.py` imports the repo
+   copy, not the installed one. This has bitten once already: after the
+   camera-driven refactor the installed copy still imported the renamed
+   `make_boards`, so `_load_guides()` raised inside the dropdown's items
+   callback and **Add Guide showed an empty list** while every test stayed
+   green.
+
+   To make the two copies impossible to desync, symlink instead of
+   installing — then the add-on Blender runs *is* the repo file:
+
+   ```sh
+   ln -sf "$PWD/tools/addons/redwood_guides.py" \
+     ~/Library/Application\ Support/Blender/5.1/scripts/addons/redwood_guides.py
+   ```
+
+   Either way, **reloading the add-on requires restarting Blender** (or
+   disabling and re-enabling it in Preferences) — Python does not re-import
+   a module that is already loaded.
+
 ### Blocking with guides
 
 Each layout scene owns a collection `<shotcode>_blocking` (created by

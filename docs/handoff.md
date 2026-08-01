@@ -132,6 +132,18 @@ still line up.
 
 ## Blender 5.1.2 gotchas already paid for
 
+- **The Redwood Guides add-on exists in TWO copies and they silently
+  desync.** Blender's Install *copies* `tools/addons/redwood_guides.py` to
+  `~/Library/Application Support/Blender/5.1/scripts/addons/`. Editing the
+  repo file changes nothing in Blender until you reinstall, and
+  `check_addon.py` imports the *repo* copy — so the suite can be fully
+  green while the artist's Add Guide dropdown is empty. That is exactly
+  what happened after this refactor: the installed copy still imported the
+  renamed `make_boards`, `_load_guides()` raised inside the EnumProperty
+  items callback, and the dropdown came up blank with no error shown.
+  Symlink instead of installing (see `layout.md`), and restart Blender
+  after any add-on change.
+
 - **Storypencil does not work on Blender 5.x** (upstream rewrite pending).
   Layout scenes are plain camera + Grease Pencil scenes; our conform does
   the assembly.
