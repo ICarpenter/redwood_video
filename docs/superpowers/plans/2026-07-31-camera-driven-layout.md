@@ -1043,39 +1043,63 @@ In `tools/stage_shots.py`: change `import boardlib` → `import layoutlib`, `boa
 # These are a starting point for framing, not final composition. A guide
 # already present in a scene is LEFT ALONE, so re-running never disturbs work.
 STAGING = {
+    # "package sticks the landing on the porch" — camera on the front lawn,
+    # three-quarter onto the porch; the truck is out on the road.
     "sq010_sh020": {
-        "camera": ((-6.0, -14.0, 2.2), (0.0, -2.0, 1.0), 40),
+        "camera": ((4.0, -13.0, 1.8), (-2.0, -5.2, 1.0), 40),
         "blocking": [
-            ("delivery_truck", guides.PROPS_FILE, (-14.0, -8.0, 0.0), 90),
-            ("box", guides.PROPS_FILE, (0.5, -3.0, 0.0), 0),
+            ("delivery_truck", guides.PROPS_FILE, (2.0, -19.0, 0.0), 90),
+            ("box", guides.PROPS_FILE, (-1.5, -5.0, 0.5), 0),
         ],
     },
+    # "boy at the screen door clocks the package" — he is ON the porch deck
+    # (z=0.5) at the front door, facing -Y out toward the road.
     "sq010_sh030": {
-        "camera": ((2.5, -8.0, 1.5), (0.0, -1.0, 1.2), 50),
+        "camera": ((1.5, -10.0, 1.5), (-1.9, -4.6, 1.2), 50),
         "blocking": [
-            ("boy", guides.CAST_FILE, (0.0, -1.5, 0.0), 180),
-            ("box", guides.PROPS_FILE, (0.5, -3.0, 0.0), 0),
+            ("boy", guides.CAST_FILE, (-1.9, -4.6, 0.5), 0),
+            ("box", guides.PROPS_FILE, (-1.5, -5.6, 0.5), 0),
         ],
     },
+    # "boy drags the box up the drive into the garage" — driveway runs
+    # y -14..-3 at x -12.5..-7.5, into the garage front door. He walks +Y
+    # (rotZ 180) with the box trailing behind him at lower Y.
     "sq010_sh040": {
-        "camera": ((4.0, -9.0, 1.4), (7.0, -1.0, 1.0), 35),
+        "camera": ((-7.0, -15.0, 1.4), (-10.0, -3.0, 1.0), 35),
         "blocking": [
-            ("boy", guides.CAST_FILE, (6.5, -5.0, 0.0), 0),
-            ("box", guides.PROPS_FILE, (6.5, -6.2, 0.0), 0),
+            ("boy", guides.CAST_FILE, (-10.0, -8.0, 0.0), 180),
+            ("box", guides.PROPS_FILE, (-10.0, -9.2, 0.0), 180),
         ],
     },
-    # The reverse: shooting down the side corridor through the garage
-    # passthrough (the boolean cut) out to the driveway. Seeded from the
-    # property file's own cam_sidecorridor, which already looks down that axis.
+    # "reverse through garage from back yard" — camera in the BACKYARD at
+    # +Y looking -Y straight down the garage axis (x=-10) and out through
+    # the boolean passthrough to the driveway beyond. The boy faces the
+    # camera (+Y, rotZ 180) crouched over the box.
     "sq010_sh045": {
-        "camera": "cam_sidecorridor",
+        "camera": ((-10.0, 9.0, 1.4), (-10.0, -6.0, 1.0), 35),
         "blocking": [
-            ("boy", guides.CAST_FILE, (7.5, 0.0, 0.0), 180),
-            ("box", guides.PROPS_FILE, (7.5, -1.2, 0.0), 0),
+            ("boy", guides.CAST_FILE, (-10.0, 0.0, 0.0), 180),
+            ("box", guides.PROPS_FILE, (-10.0, -1.0, 0.0), 0),
         ],
     },
 }
 ```
+
+All coordinates were measured off `property.blend`'s actual world bounds on
+2026-07-31, not guessed: house `x -7..5, y -4..5`; porch `x -5..1,
+y -6.4..-4` at deck height `z 0.5`; garage `x -13..-7, y -3..3` with its
+boolean passthrough running front-to-back along Y at `x ~= -10`; driveway
+`x -12.5..-7.5, y -14..-3`; road `y -23..-17`; back stoop `y 5..6.2`.
+Guides are authored facing `-Y`, so `rotZ 180` faces `+Y` (into the
+backyard) and `rotZ 90` faces `+X` (east).
+
+**No shot seeds from a preview camera.** `seed_camera` is still implemented
+below — the spec calls for it and it is the natural way to start a shot from
+`cam_backyard` or `cam_road` later — but none of `property.blend`'s six
+preview cameras frames any of these four beats: they were composed to show
+off the *property*, not to shoot these actions. Forcing one in would produce
+worse staging than an explicit transform. Cover the function with an
+assertion rather than a STAGING row; do not delete it as dead code.
 
 A `"camera"` value may be either an explicit `(loc, look_at, lens)` tuple or the **name of a seed camera** in `property.blend`. The property file already carries six framed cameras — `cam_site`, `cam_intro`, `cam_backyard`, `cam_kitchen`, `cam_road`, `cam_sidecorridor` — and under a camera-driven model those stop being previews and become the starting vocabulary for shots. Reading one is a plain append, not a link, because we want its transform copied and then owned by the scene:
 
