@@ -182,6 +182,7 @@ def main():
 
     cache = {}
     created = skipped = 0
+    changed = False
     for scene_name, entry in STAGING.items():
         scene = bpy.data.scenes.get(scene_name)
         if scene is None:
@@ -208,6 +209,7 @@ def main():
                     loc, look_at, lens = spec_cam
                     aim_camera(scene, loc, look_at, lens)
                     print(f"  {scene_name}: camera framed at {loc} -> {look_at}")
+                changed = True
                 # the paper's fit depends on the lens, so refit after aiming
                 for ob in scene.objects:
                     if ob.type in layoutlib.GP_TYPES:
@@ -238,9 +240,13 @@ def main():
     if dry_run:
         print(f"--dry-run: would create {created}, skip {skipped}")
         return
-    if created:
+    # A STAGING row can move only a camera (blocking already present, or its
+    # "blocking" list simply empty) — created/skipped alone would miss that
+    # and this would print success while saving nothing.
+    if created or changed:
         bpy.ops.wm.save_mainfile()
-    print(f"stage_shots: created {created}, skipped {skipped}")
+    print(f"stage_shots: created {created}, skipped {skipped}"
+          f"{', camera(s) framed' if changed else ''}")
 
 
 if __name__ == "__main__":

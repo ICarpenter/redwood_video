@@ -44,16 +44,9 @@ def main():
 
     scene = bpy.context.scene
     scene.name = "edit"
-    scene.render.fps = 24
-    scene.render.resolution_x = 1920
-    scene.render.resolution_y = 1080
-    scene.render.image_settings.file_format = "PNG"
-    scene.render.image_settings.color_mode = "RGB"
-    scene.render.image_settings.color_depth = "16"
     # Standard, NOT AgX: shot renders already carry AgX baked in — the edit
     # must pass them through untouched or the transform applies twice
-    scene.view_settings.view_transform = "Standard"
-    scene.sync_mode = "AUDIO_SYNC"
+    layoutlib.apply_project_settings(scene, view_transform="Standard")
 
     for obj in list(bpy.data.objects):
         bpy.data.objects.remove(obj, do_unlink=True)

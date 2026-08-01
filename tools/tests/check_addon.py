@@ -69,17 +69,21 @@ assert len(guide_instances) == 2, \
     f"expected 2 instances of the linked 'boy' collection in {bcoll.name}, " \
     f"got {len(guide_instances)}"
 
-# The whole property SET is droppable too (LIBRARY link from property.blend).
-prop_inst = redwood_guides.add_guide_instance(scene, "property")
-assert prop_inst.instance_collection is not None, "property instance_collection not set"
-assert prop_inst.instance_collection.name == "property", \
-    f"expected linked collection 'property', got {prop_inst.instance_collection.name!r}"
-assert prop_inst.instance_collection.library is not None, \
-    "property collection should be a LIBRARY link"
-assert Path(prop_inst.instance_collection.library.filepath).name == "property.blend", \
-    f"expected library property.blend, got {prop_inst.instance_collection.library.filepath!r}"
-assert prop_inst.name in bcoll.objects, \
-    f"{prop_inst.name} not linked into {bcoll.name}.objects"
+# The property must NEVER be droppable: it is linked at identity in every
+# layout scene already (invariant 1), and a second instance dropped as
+# "just another guide" cannot be told apart from staged blocking by any
+# later heal pass, so it would survive forever. Requesting it must refuse.
+try:
+    redwood_guides.add_guide_instance(scene, "property")
+except RuntimeError as e:
+    assert "property" in str(e).lower(), f"unexpected refusal message: {e}"
+else:
+    raise AssertionError("add_guide_instance must refuse to drop the property")
+
+# ...and it must not even be offered in the Add Guide dropdown.
+offered = [item[0] for item in redwood_guides._guide_items(None, None)]
+assert "property" not in offered, \
+    f"property must not be offered in the Add Guide dropdown, got {offered}"
 
 redwood_guides.unregister()
 

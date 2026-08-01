@@ -108,23 +108,49 @@ assert bc.hide_render is False, "clearing the flag must restore rendering"
 # "Paper depth" section.
 
 # --- project settings live in exactly one place --------------------------
+# Seed wrong values first: nearly every project setting matches Blender's
+# factory default, so asserting the post-state alone proves nothing — the
+# assertions passed even with the function gutted.
 ps = bpy.data.scenes.new("settings_probe")
+ps.render.fps = 12
+ps.render.resolution_x, ps.render.resolution_y = 640, 480
+ps.render.resolution_percentage = 50
+ps.render.image_settings.file_format = "JPEG"
+ps.render.image_settings.color_mode = "BW"
+ps.render.image_settings.color_depth = "8"
+ps.view_settings.view_transform = "Standard"
+ps.view_settings.look = "Very High Contrast"
+ps.sync_mode = "NONE"
 layoutlib.apply_project_settings(ps)
 assert ps.render.fps == 24, f"fps {ps.render.fps}"
 assert (ps.render.resolution_x, ps.render.resolution_y) == (1920, 1080)
+assert ps.render.resolution_percentage == 100
 assert ps.render.image_settings.file_format == "PNG"
+assert ps.render.image_settings.color_mode == "RGB"
 assert ps.render.image_settings.color_depth == "16"
 assert ps.view_settings.view_transform == "AgX", ps.view_settings.view_transform
 assert ps.view_settings.look == "None", ps.view_settings.look
 assert ps.sync_mode == "AUDIO_SYNC"
-# layout scenes draw against greybox, so they opt out of AgX explicitly
+# layout scenes draw against greybox, so they opt out of AgX explicitly —
+# seeded to AgX here so the Standard override below has to actually change it
 ps2 = bpy.data.scenes.new("settings_probe_std")
+ps2.render.fps = 12
+ps2.render.resolution_x, ps2.render.resolution_y = 640, 480
+ps2.render.resolution_percentage = 50
+ps2.render.image_settings.file_format = "JPEG"
+ps2.render.image_settings.color_mode = "BW"
+ps2.render.image_settings.color_depth = "8"
+ps2.view_settings.view_transform = "AgX"
+ps2.view_settings.look = "AgX - Very High Contrast"
+ps2.sync_mode = "NONE"
 layoutlib.apply_project_settings(ps2, view_transform="Standard")
 assert ps2.view_settings.view_transform == "Standard"
 # everything else must still apply
 assert ps2.render.fps == 24, f"fps {ps2.render.fps}"
 assert (ps2.render.resolution_x, ps2.render.resolution_y) == (1920, 1080)
+assert ps2.render.resolution_percentage == 100
 assert ps2.render.image_settings.file_format == "PNG"
+assert ps2.render.image_settings.color_mode == "RGB"
 assert ps2.render.image_settings.color_depth == "16"
 assert ps2.view_settings.look == "None", ps2.view_settings.look
 assert ps2.sync_mode == "AUDIO_SYNC"
@@ -215,8 +241,9 @@ cs_snap = {
     ),
 }
 
-created, skipped = continue_shot.apply_snapshot(cs_dst, cs_snap)
+created, skipped, updated = continue_shot.apply_snapshot(cs_dst, cs_snap)
 assert created == 1, f"expected 1 created, got {created}"
+assert updated == 0, f"expected 0 updated, got {updated}"
 
 moved = next(o for o in layoutlib.blocking_instances(cs_dst)
              if o.instance_collection is cs_target)
@@ -232,8 +259,9 @@ assert abs(cs_dst_cam.location.z - 1.5) < 1e-6, "camera location must copy"
 assert abs(cs_dst_cam.data.lens - 42.0) < 1e-6, "camera lens must copy"
 
 # re-running must not stack duplicates
-created2, skipped2 = continue_shot.apply_snapshot(cs_dst, cs_snap)
-assert created2 == 0 and skipped2 == 1, f"not idempotent: {created2}, {skipped2}"
+created2, skipped2, updated2 = continue_shot.apply_snapshot(cs_dst, cs_snap)
+assert created2 == 0 and skipped2 == 1 and updated2 == 0, \
+    f"not idempotent: {created2}, {skipped2}, {updated2}"
 print("continue_shot.apply_snapshot: OK")
 
 # --- continue_shot: snapshot() + apply_snapshot round-trip ---------------
@@ -277,20 +305,23 @@ rt_snap = continue_shot.snapshot(rt_src, rt_src.frame_start)
 # "rt_probe_boy" here — the probe OBJECT is named "boy" to mirror real
 # staged instances, but that name is never the key.
 assert "rt_probe_boy" in rt_snap, f"snapshot missing blocking: {list(rt_snap)}"
-rt_created, rt_skipped = continue_shot.apply_snapshot(rt_dst, rt_snap)
+rt_created, rt_skipped, rt_updated = continue_shot.apply_snapshot(rt_dst, rt_snap)
 assert rt_created == 1, f"expected 1 created, got {rt_created}"
+assert rt_updated == 0, f"expected 0 updated, got {rt_updated}"
 
 rt_moved = next(o for o in layoutlib.blocking_instances(rt_dst)
                 if o.instance_collection is rt_target)
 assert (rt_moved.location - Vector((1.25, 2.5, 0.0))).length < 1e-5, \
     f"blocking landed at {tuple(rt_moved.location)}, expected (1.25, 2.5, 0.0)"
 assert abs(rt_dst.camera.location.x - 3.0) < 1e-5, "camera location must copy"
+assert abs(rt_dst.camera.location.y + 4.0) < 1e-5, "camera location must copy"
+assert abs(rt_dst.camera.location.z - 1.5) < 1e-5, "camera location must copy"
 assert abs(rt_dst.camera.data.lens - 42.0) < 1e-5, "camera lens must copy"
 
 # re-running must not stack duplicates
-rt_created2, rt_skipped2 = continue_shot.apply_snapshot(rt_dst, rt_snap)
-assert rt_created2 == 0 and rt_skipped2 == 1, \
-    f"not idempotent: {rt_created2}, {rt_skipped2}"
+rt_created2, rt_skipped2, rt_updated2 = continue_shot.apply_snapshot(rt_dst, rt_snap)
+assert rt_created2 == 0 and rt_skipped2 == 1 and rt_updated2 == 0, \
+    f"not idempotent: {rt_created2}, {rt_skipped2}, {rt_updated2}"
 print("continue_shot: OK")
 
 print("ALL CHECKS OK")

@@ -93,6 +93,18 @@ def main():
                  "`git mv boards/boards.blend layout/layout.blend` first")
     bpy.ops.wm.open_mainfile(filepath=str(out))
 
+    # State-derived, not a sentinel: this asks the migration's own defining
+    # question — is the file still in the old shape? — so it cannot drift out
+    # of sync with what the script does, and nothing is written into the
+    # .blend. Measured: a second run deletes 46 objects, including every
+    # staged blocking instance, and no tool restores them.
+    if not any(s.collection.children.get(f"{s.name}_guides")
+               for s in bpy.data.scenes):
+        sys.exit("error: no <code>_guides collections found — layout.blend "
+                 "has already been migrated. Re-running would delete every "
+                 "staged blocking instance and clear every Action in all 39 "
+                 "scenes. Refusing.")
+
     solved = {}
     if DRAWN_SCENE in bpy.data.scenes:
         m = solve_camera(bpy.data.scenes[DRAWN_SCENE])

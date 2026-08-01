@@ -1,13 +1,19 @@
 """Redwood scale-guide dropper.
 
-Drops a linked instance of a cast/prop guide — or the whole property set —
-into the current layout scene's per-shot `<code>_blocking` collection, feet
-on the ground where the camera is looking: the camera's view ray is cast
-onto the property's z=0 ground plane, so the guide lands at a real place on
-the set rather than a fixed spot in a picture. Guides are authored facing
--Y; a drop does not rotate them, the artist turns them by hand. Locates the
-project by walking up from the open .blend (layout.blend), so enable it
-with a layout file open. Asset-Browser drag-drop is the manual equivalent.
+Drops a linked instance of a cast/prop guide into the current layout scene's
+per-shot `<code>_blocking` collection, feet on the ground where the camera is
+looking: the camera's view ray is cast onto the property's z=0 ground plane,
+so the guide lands at a real place on the set rather than a fixed spot in a
+picture. Guides are authored facing -Y; a drop does not rotate them, the
+artist turns them by hand. Locates the project by walking up from the open
+.blend (layout.blend), so enable it with a layout file open. Asset-Browser
+drag-drop is the manual equivalent.
+
+The property set is deliberately NOT offered here: it is linked at identity
+in every layout scene already (invariant 1 — the property never moves), and
+a second instance dropped as "just another guide" cannot be told apart from
+staged blocking by any later heal pass, so it survives forever. To frame a
+wide establishing shot, move the *camera* instead (invariant 2).
 """
 import sys
 from pathlib import Path
@@ -112,6 +118,12 @@ def add_guide_instance(scene, name):
     if mods is None:
         raise RuntimeError("Open layout.blend from the project first")
     guides_mod, make_layout = mods
+    if name == guides_mod.SET_GUIDE.name:
+        raise RuntimeError(
+            "the property is linked at identity in every layout scene "
+            "already and must never be instanced again — pull the camera "
+            "back to frame a wide shot instead"
+        )
     spec = guides_mod.guide_by_name(name)
     if spec is None:
         raise RuntimeError(f"Unknown guide {name}")
@@ -152,8 +164,11 @@ def _guide_items(self, context):
     root, mods = _load_guides()
     if mods is not None:
         guides_mod, _ = mods
+        # GUIDES (cast + props) only, never DROPPABLE — the property is
+        # linked at identity in every layout scene and must not be offered
+        # as something to drop in. See the module docstring.
         _ITEMS_CACHE = [(g.name, g.name.replace("_", " "), g.catalog)
-                        for g in guides_mod.DROPPABLE]
+                        for g in guides_mod.GUIDES]
     return _ITEMS_CACHE
 
 

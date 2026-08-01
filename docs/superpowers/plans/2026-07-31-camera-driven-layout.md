@@ -1044,7 +1044,8 @@ In `tools/stage_shots.py`: change `import boardlib` → `import layoutlib`, `boa
 # already present in a scene is LEFT ALONE, so re-running never disturbs work.
 STAGING = {
     # "package sticks the landing on the porch" — camera on the front lawn,
-    # three-quarter onto the porch; the truck is out on the road.
+    # three-quarter onto the porch. The package is already down; the truck
+    # has gone (and could not be framed from here anyway — see below).
     "sq010_sh020": {
         "camera": ((4.0, -13.0, 1.8), (-2.0, -5.2, 1.0), 40),
         # No truck: at 40mm from y=-13 the road (y=-19) is BEHIND the
@@ -1071,10 +1072,13 @@ STAGING = {
     "sq010_sh040": {
         "camera": ((-7.0, -15.0, 1.4), (-10.0, -3.0, 1.0), 35),
         "blocking": [
-            # offset laterally from each other: both at x=-10 put the box
-            # squarely in front of the boy (verified by render, 2026-07-31)
-            ("boy", guides.CAST_FILE, (-10.6, -8.0, 0.0), 180),
-            ("box", guides.PROPS_FILE, (-9.5, -9.4, 0.0), 160),
+            # Side by side, not in depth: from a camera looking down the
+            # driveway these are nearly collinear, and 1.1m of lateral
+            # offset bought only ~3 deg of angular separation — the box
+            # still ate the boy. 2m apart gives 12 deg inside a 27 deg
+            # half-FOV, so both read clearly. Verified by render.
+            ("boy", guides.CAST_FILE, (-11.2, -8.0, 0.0), 180),
+            ("box", guides.PROPS_FILE, (-9.2, -8.6, 0.0), 170),
         ],
     },
     # "reverse through garage from back yard" — camera in the BACKYARD at

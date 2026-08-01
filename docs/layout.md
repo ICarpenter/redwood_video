@@ -29,7 +29,8 @@ composition.
   `action_figure`, `delivery_truck`, `cruiser`, `rosco`, `big_pistol`, `santa`,
   `box`, `scale_stick`.
 - **Set** (`assets/envs/property/property.blend`): the whole `property`
-  massing, droppable the same way for wide establishing compositions.
+  massing. It is linked at identity in every layout scene already
+  (invariant 1) — it is not a guide you drop; see below.
 
 All are catalogued Assets (`guides/cast`, `guides/props`, `guides/set`) via
 `assets/blender_assets.cats.txt`. Regenerate cast/props with
@@ -59,9 +60,12 @@ Each layout scene owns a collection `<shotcode>_blocking` (created by
   guide's transform says where that character actually stands. Guides are
   rigid; if you need a distinct pose (e.g. the boy aiming), ask for a
   variant collection rather than trying to deform the instance.
-- **The property set** (`property` in the dropdown) drops in like any guide,
-  for a wide establishing shot — it's large, so scale the instance down or
-  pull the camera back to frame it.
+- **The property never moves.** It is already linked at identity in every
+  layout scene (invariant 1), so it is not in the Add Guide dropdown and
+  must never be instanced or transformed again — the Add Guide operator
+  refuses it outright. To frame a wide establishing shot, pull the
+  **camera** back instead: the camera is the only framing authority
+  (invariant 2).
 - **Rendering is not automatic.** Blocking and any Grease Pencil paper both
   render, always — the drawing is an overlay on top of blocked 3D, not a
   replacement for it. There is no tool-owned visibility rule left to
@@ -92,4 +96,11 @@ re-blocking the source afterwards never disturbs the destination. See
 `<shotcode>_blocking` collection, but Asset-Browser drag-drop lands wherever
 the *active* collection is — if you've clicked into a rendering collection, a
 dragged instance can end up there too, so prefer the button (or re-select the
-blocking collection before dragging).
+blocking collection before dragging). **Never drag in `property`:** it is
+still a catalogued Asset (`guides/set`), so the browser keeps offering it,
+but the Add Guide button's refusal cannot reach drag-drop. A dragged copy
+instances the set a second time at a non-identity transform — indistinguishable
+from ordinary blocking, so it survives every `make_layout` heal forever and
+gets copied forward by `continue_shot` and baked by `export_shot`. The
+property is already linked at identity in every layout scene; to frame
+wider, move the **camera** instead (invariant 2).

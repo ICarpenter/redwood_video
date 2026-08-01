@@ -84,11 +84,11 @@ def snapshot(scene, frame):
 
 
 def apply_snapshot(scene, snap, force=False):
-    """Write a snapshot into `scene`. Returns (created, skipped)."""
+    """Write a snapshot into `scene`. Returns (created, skipped, updated)."""
     coll = layoutlib.blocking_collection(scene, create=True)
     present = {o.instance_collection.name: o
                for o in layoutlib.blocking_instances(scene)}
-    created = skipped = 0
+    created = skipped = updated = 0
 
     for name, (rows, _lens) in snap.items():
         if name == "__camera__":
@@ -100,10 +100,12 @@ def apply_snapshot(scene, snap, force=False):
             continue
         if existing is not None:
             existing.matrix_world = m
+            updated += 1
             continue
         linked = next((c for c in bpy.data.collections if c.name == name), None)
         if linked is None:
             print(f"warning: collection {name!r} not linked in this file, skipped")
+            skipped += 1
             continue
         inst = bpy.data.objects.new(name, None)
         inst.instance_type = "COLLECTION"
@@ -122,7 +124,7 @@ def apply_snapshot(scene, snap, force=False):
         for ob in scene.objects:
             if ob.type in layoutlib.GP_TYPES:
                 layoutlib.fit_paper(ob, scene.camera)
-    return created, skipped
+    return created, skipped, updated
 
 
 def main():
@@ -155,9 +157,10 @@ def main():
         print(f"--dry-run: would continue {args.dst} from this state")
         return
 
-    created, skipped = apply_snapshot(dst, snap, force=args.force)
+    created, skipped, updated = apply_snapshot(dst, snap, force=args.force)
     bpy.ops.wm.save_mainfile()
-    print(f"continue_shot: {args.dst} created {created}, skipped {skipped}"
+    print(f"continue_shot: {args.dst} created {created}, skipped {skipped}, "
+          f"updated {updated}"
           f"{' (use --force to overwrite)' if skipped else ''}")
 
 

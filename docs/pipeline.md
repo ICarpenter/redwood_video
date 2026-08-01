@@ -21,7 +21,9 @@ What each tool does and the end-to-end flow: `tools.md`
 Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 - `start_frame`/`end_frame` inclusive, song-global. `duration` = end−start+1
   (validated; may be left blank).
-- `assets`: `;`-separated paths under `assets/`, e.g. `chars/redwood;envs/forest`.
+- `assets`: `;`-separated guide-registry names, validated against `guides.py`
+  at parse time (e.g. `boy;box`) — planning metadata, not a link path; see
+  "Assets" below.
 - `status` flow: `scripted → boarded → blocked → animated → rendered → comped → final`.
 
 ## Assets

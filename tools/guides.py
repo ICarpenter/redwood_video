@@ -65,11 +65,14 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("scale_stick", PROPS_FILE, "props", 2.0),
 ]
 
-# The whole property SET is droppable/linkable too, but it is NOT built by
-# guide_assets (marked in place via --mark-property) and never
-# dimension-checked. Its height is nominal (house ridge). Kept out of GUIDES so
-# the build/check paths stay "cast + props only"; DROPPABLE is the full set the
-# add-on offers (the 12 guides + the property set).
+# The whole property SET is linkable too, but it is NOT built by guide_assets
+# (marked in place via --mark-property) and never dimension-checked. Its
+# height is nominal (house ridge). Kept out of GUIDES so the build/check
+# paths stay "cast + props only". DROPPABLE is the 13 guides plus the
+# property set, used by guide_by_name and shotlist asset validation — NOT by
+# the add-on's Add Guide dropdown, which offers GUIDES only: the property is
+# linked at identity in every layout scene already and must never be
+# instanced again (see docs/layout.md).
 SET_GUIDE = GuideSpec("property", PROPERTY_FILE, "set", 5.2)
 DROPPABLE: list[GuideSpec] = GUIDES + [SET_GUIDE]
 
