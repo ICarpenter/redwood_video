@@ -27,6 +27,15 @@ GP_TYPES = {"GREASEPENCIL", "GPENCIL"}
 # sq010_sh010's existing 119 strokes framed exactly as drawn.
 PAPER_HALF_WIDTH = 3.6
 
+# Distance from camera to paper, in metres. Chosen for framing, NOT for
+# occlusion: Grease Pencil strokes composite over mesh geometry in EEVEE
+# unconditionally — measured in Blender 5.1.2, identical results at 0.11m in
+# front of a wall and 10m behind it, under both stroke_depth_order modes. So
+# nothing can hide the paper and the distance is free. 10m makes the scale
+# below exactly 1.0 at a 50mm lens, which matches sq010_sh010's existing
+# strokes 1:1.
+PAPER_DISTANCE = 10.0
+
 
 def has_strokes(scene) -> bool:
     """True once the shot's Grease Pencil holds actual strokes.
@@ -99,12 +108,18 @@ def apply_hide_blocking(scene) -> bool:
 
 
 def paper_distance(cam) -> float:
-    """Just past the near clip: nothing can get in front of the paper there."""
-    return cam.data.clip_start * 1.1
+    """Distance from camera to paper. Framing choice, not a depth trick."""
+    return PAPER_DISTANCE
 
 
 def fit_paper(gp, cam, distance=None) -> None:
-    """Park the GP paper in the camera's near field, sized to the frustum.
+    """Park the GP paper in front of the camera, sized to the frustum.
+
+    The paper sits in front of the camera purely so drawing happens in
+    camera space (a stable, camera-relative surface to draw on as the shot
+    is framed) — not because distance protects it from occlusion. It
+    doesn't need to: see PAPER_DISTANCE for why nothing can hide it and the
+    distance is free.
 
     Parents `gp` to `cam` and sets its local transform so a stroke at paper
     coordinate x=PAPER_HALF_WIDTH lands exactly on the right edge of frame,
