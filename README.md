@@ -7,18 +7,19 @@ An animated music video produced end-to-end in Blender — stylized clay look
 - Design spec: `docs/superpowers/specs/2026-07-19-redwood-video-pipeline-design.md`
 - Conventions: `docs/pipeline.md`
 - Tools & production flow: `docs/tools.md`
+- Layout & drawing guides: `docs/layout.md`
 - Source of truth for shots: `docs/shotlist.csv`
 
-## Layout
+## Directory layout
 
 | Path | What lives there |
 |---|---|
 | `docs/` | ideation, treatment, shotlist.csv, beatmap.csv, pipeline docs |
 | `refs/` | style references, palette |
 | `audio/track/` | the final track (drop the WAV here) |
-| `boards/` | Grease Pencil storyboards + animatic |
+| `layout/` | `layout.blend` — one camera-driven scene per shot: camera, world-space blocking, optional Grease Pencil paper |
 | `assets/` | chars/, props/, envs/, materials/ — linked libraries |
-| `shots/` | per-shot .blends (`sq010/sh010/sh010.blend`) |
+| `shots/` | on-demand per-shot exports (`sq010/sh010/sh010.blend`) — not every shot has one |
 | `render/` | versioned frame sequences (gitignored) |
 | `edit/` | VSE master edit |
 | `delivery/` | final encodes (gitignored) |
@@ -28,11 +29,14 @@ An animated music video produced end-to-end in Blender — stylized clay look
 
 - [x] 1. Ideation — concept notes in `docs/ideation/`, refs into `refs/`
 - [x] 2. Writing — treatment in `docs/treatment/`, beat map, first shotlist
-- [ ] 3. Storyboards & animatic — `boards/` (Grease Pencil), durations → shotlist
-      *(in progress: 38 board scenes seeded, slug animatic cut, drawing next)*
+- [ ] 3. Layout & animatic — `layout/` (camera + world-space blocking +
+      optional Grease Pencil), durations → shotlist
+      *(in progress: 39 layout scenes seeded, 1 shot drawn, 4 blocked out,
+      slug animatic cut)*
 - [ ] 4. Asset production — `assets/` registered in the Asset Browser
       *(started: property blockout — see `docs/treatment/site.md`)*
-- [ ] 5. Animation — `shots/` via `tools/build_shots.py`, playblasts into edit
+- [ ] 5. Animation — export a layout scene to `shots/` on demand with
+      `tools/export_shot.py`, playblasts into edit
 - [ ] 6. Rendering — `tools/render_shot.sh` per shot
 - [ ] 7. Compositing — per-shot compositor (Uber Compositor)
 - [ ] 8. Editing — `edit/edit.blend` against the track
@@ -43,9 +47,11 @@ An animated music video produced end-to-end in Blender — stylized clay look
 ```sh
 # after dropping the track into audio/track/:
 python3 tools/beatmap.py --bpm <BPM> --length <SECONDS>  # → docs/beatmap.csv
-python3 tools/build_shots.py --dry-run                   # what would be created
-python3 tools/build_shots.py                             # create missing shots
-tools/render_shot.sh 010 010                             # render one shot
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/make_layout.py                        # seed layout/layout.blend
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/export_shot.py -- --shot sq010_sh010   # only once a shot earns its own file
+tools/render_shot.sh 010 010                              # render that exported shot
 ```
 
 Blender is expected at `/Applications/Blender.app/Contents/MacOS/Blender`;

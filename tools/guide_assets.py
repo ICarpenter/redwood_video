@@ -5,7 +5,7 @@ Writes assets/chars/cast.blend and assets/props/props.blend: one collection
 per guide (see tools/guides.py), each assembled from primitives into a
 recognisable silhouette, marked as a catalogued Asset. Also writes
 assets/blender_assets.cats.txt. Guides are authored in real metres, facing -Y,
-feet at Z=0, centred on X=0 (see guides.py for the board-camera rationale).
+feet at Z=0, centred on X=0 (see guides.py for the placement rationale).
 
 Run (default → the real asset paths; refuses to clobber without --force):
   "$BLENDER" --background --factory-startup --python-exit-code 1 \

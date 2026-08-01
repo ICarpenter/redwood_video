@@ -2,7 +2,8 @@
 """Shared helpers for the redwood_video pipeline.
 
 Stdlib only: this module runs under both system Python and Blender's
-bundled Python (imported by new_shot.py inside Blender).
+bundled Python (imported by make_layout.py, export_shot.py, and the other
+in-Blender tools).
 """
 from __future__ import annotations
 

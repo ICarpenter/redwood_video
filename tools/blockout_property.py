@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Build assets/envs/property/property.blend — greybox layout of the house,
-road, and yards. Throwaway massing to establish the space so boards and
+road, and yards. Throwaway massing to establish the space so layout scenes and
 shot cameras agree on where everything is.
 
-Builds the static SET only (environment + set-dressing). The cast and props are
-LINKED guide instances staged into a separate `blocking` collection by
-tools/stage_property.py, so they reference their source files and never travel
-with the linkable `property` set.
+Builds the static SET only (environment + set-dressing). The cast and props
+are never staged here: each layout scene stages its own cast/prop guide
+instances, in world space, into its own `<code>_blocking` collection (via
+tools/stage_shots.py or the Redwood Guides add-on) — so they reference their
+source files directly and never travel with the linkable `property` set.
 
 Site convention (documented in docs/treatment/site.md):
   +X east / -X west, +Y north = BACKYARD, -Y south = ROAD, +Z up.
@@ -201,8 +202,9 @@ def build(out_path, force):
 
     # --- backyard set pieces ------------------------------------------------
     # NOTE: the firing squad, the boy, the Santa, the vehicles and the guns are
-    # LINKED guide instances staged by tools/stage_property.py (into a separate
-    # `blocking` collection) — this script builds only the static set below.
+    # LINKED guide instances staged per-shot in layout/layout.blend (world
+    # space, via tools/stage_shots.py or the Redwood Guides add-on) — this
+    # script builds only the static set below.
 
     # old truck on blocks — moved into the east side corridor near the road
     # end: the ricochet surface that kicks the boy's stray shot to the

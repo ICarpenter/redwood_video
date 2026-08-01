@@ -25,20 +25,47 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
 - `status` flow: `scripted → boarded → blocked → animated → rendered → comped → final`.
 
 ## Assets
-- One .blend per asset at `assets/<kind>/<name>/<name>.blend`.
-- Each asset blend exposes ONE root collection named `<name>` — that is what
-  shots link. Shots LINK, never append; rig animation via library overrides.
+- **Single-asset files** (a character/prop built as a full asset) follow
+  `assets/<kind>/<name>/<name>.blend`, exposing ONE root collection named
+  `<name>` — that is what shots link. `property.blend` is the working
+  example.
+- **Guide libraries are the exception, deliberately:** `assets/chars/cast.blend`
+  and `assets/props/props.blend` each hold many catalogued collections, one
+  per guide, with no collection matching the filename — built by
+  `guide_assets.py`, registered in `guides.py`. Nothing resolves a guide by
+  path; `docs/shotlist.csv`'s `assets` column names guides from the
+  registry and is validated against it at parse time. It's planning
+  metadata — `export_shot.py` exports what a layout scene actually contains
+  and never reads this column.
+- Shots LINK, never append, either shape; rig animation via library overrides.
 - Clay materials: `assets/materials/clay_library.blend` (Clay Doh-derived,
   palette-matched — built during look-dev).
 - Polyhaven assets: fine. AI text-to-3D / Sketchfab: blockouts only, resculpt
   into the clay style before a shot renders.
 
+## Layout
+- The property is **linked at identity** (world origin, ground at `z=0`) in
+  every layout scene, and never moves.
+- The **camera is the only framing authority** — a different angle means a
+  different camera transform, never a moved or rotated set.
+- **Blocking is world-space** — a guide's transform says where that
+  character or prop actually stands on the property.
+- **Shot files are a derived export, not a stage** — nothing is required to
+  pass through `shots/`. Most shots never need one.
+
+Full detail, including drawing guides and the drop-on-ground rule for the
+Redwood Guides add-on: `layout.md`.
+
 ## Shots
-- All missing shots: `python3 tools/build_shots.py`
-- `--force` rebuilds existing shots from the empty template — it OVERWRITES animation work and asks for confirmation.
-- One shot:
-  `"$BLENDER" --background tools/shot_template.blend --python-exit-code 1 \
-      --python tools/new_shot.py -- --sq 010 --sh 010`
+- Layout scenes already carry everything a shot needs (camera, blocking, the
+  linked property, the frame range) — a `.blend` under `shots/` is an
+  on-demand export, not a required stage.
+- Export one when it earns its own file (a per-shot compositor, a sim, a 4K
+  re-render, lighting that must not touch its neighbours):
+  `"$BLENDER" --background --python-exit-code 1 \
+      --python tools/export_shot.py -- --shot sq010_sh040 [--force]`
+- Export is one-way: afterwards the shot file is authoritative and the
+  layout scene is a stale reference (`conform_edit` flags it as such).
 - Playblasts: viewport render into `shots/sqXXX/shXXX/playblast/` (gitignored).
 
 ## Render
@@ -52,13 +79,16 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
   upgraded animatic → playblast → final render without changing the cut.
 - Seed/rebuild it with `tools/conform_edit.py`. Per shotlist row it places the
   best available tier at the shot's song-global frames: rendered frames
-  (latest vNNN) → board scene from `boards/boards.blend` (scene named by shot
-  code, linked) → slug (text strip). Refuses to overwrite a hand-cut edit
+  (latest vNNN) → layout scene from `layout/layout.blend` (scene named by
+  shot code, linked) → slug (text strip). Refuses to overwrite a hand-cut edit
   without `--force`.
-- Storypencil does NOT work on Blender 5.x (rewrite pending upstream) —
-  boards are plain Grease Pencil scenes in `boards/boards.blend`, one scene
-  per shot, named `sqXXX_shXXX`. Seed/extend with `tools/make_boards.py`;
-  a board graduates from slug to scene strip once its GP has any keyframe.
+- The three tiers are **render → layout → slug**. A layout scene earns its
+  strip once it has real Grease Pencil strokes **or** world-space blocking —
+  either one makes a shot worth watching before the other is done. Seed/extend
+  layout scenes with `tools/make_layout.py`, one scene per shot, named
+  `sqXXX_shXXX`. (Storypencil does NOT work on Blender 5.x — rewrite pending
+  upstream — so layout scenes are plain camera + Grease Pencil scenes; our
+  conform does the assembly.)
 - The edit scene uses the **Standard** view transform — shot renders already
   carry AgX baked in; AgX in the edit would apply twice and wash everything out.
 - `tools/encode_delivery.sh <frames_dir> <audio> <name>` → `delivery/`

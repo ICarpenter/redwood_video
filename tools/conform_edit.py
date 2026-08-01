@@ -7,7 +7,7 @@ best available tier per shot:
   2. layout scene named <code> in layout/layout.blend -> linked scene strip
   3. otherwise -> slug (text strip: shot code + description)
 
-So the edit is watchable at every stage: slugs -> boards -> renders, same
+So the edit is watchable at every stage: slugs -> layout -> renders, same
 cut throughout.
 
 DESTRUCTIVE: regenerating replaces the whole edit — any hand-cut changes in
