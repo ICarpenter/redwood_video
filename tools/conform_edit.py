@@ -4,7 +4,7 @@ docs/shotlist.csv row on channel 2 at its song-global position, choosing the
 best available tier per shot:
 
   1. rendered frames (latest render/<code>/vNNN/) -> image strip
-  2. board scene named <code> in boards/boards.blend -> linked scene strip
+  2. layout scene named <code> in layout/layout.blend -> linked scene strip
   3. otherwise -> slug (text strip: shot code + description)
 
 So the edit is watchable at every stage: slugs -> boards -> renders, same
@@ -25,7 +25,7 @@ import bpy
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
-import boardlib
+import layoutlib
 
 
 def main():
@@ -68,21 +68,25 @@ def main():
 
     shots = shotlib.read_shotlist(root / "docs" / "shotlist.csv")
 
-    # link all available board scenes (named by shot code) in one pass
-    board_scenes = {}
-    boards_blend = root / "boards" / "boards.blend"
-    if boards_blend.exists():
+    # link all available layout scenes (named by shot code) in one pass
+    layout_scenes = {}
+    layout_blend = root / "layout" / "layout.blend"
+    if layout_blend.exists():
         codes = {s.code for s in shots}
-        with bpy.data.libraries.load(str(boards_blend), link=True) as (src, dst):
+        with bpy.data.libraries.load(str(layout_blend), link=True) as (src, dst):
             dst.scenes = [name for name in src.scenes if name in codes]
-        # a board earns its strip once it is drawn OR blocked out with guides;
-        # boardlib.sync_guide_visibility (run by make_boards) has already set
-        # each scene's guides to render or not, so the strip shows the right
-        # thing either way
-        board_scenes = {sc.name: sc for sc in bpy.data.scenes
-                        if sc.library is not None and boardlib.board_ready(sc)}
+        # a shot earns its strip once it is drawn OR blocked out. Blocking and
+        # paper both render, so the strip shows blocking, a drawing, or a
+        # drawing over blocking — whatever the scene actually holds.
+        layout_scenes = {sc.name: sc for sc in bpy.data.scenes
+                         if sc.library is not None and layoutlib.shot_ready(sc)}
+        stale = sorted(name for name, sc in layout_scenes.items()
+                       if sc.get("exported"))
+        if stale:
+            print(f"note: {len(stale)} layout scene(s) already exported to "
+                  f"shot files — their blocking may be stale: {', '.join(stale)}")
 
-    counts = {"render": 0, "board": 0, "slug": 0}
+    counts = {"render": 0, "layout": 0, "slug": 0}
     for shot in shots:
         rdir = shotlib.render_dir(shot.sq, shot.sh, root)
         versions = sorted(d for d in rdir.iterdir()
@@ -97,15 +101,15 @@ def main():
             for f in frames[1:]:
                 strip.elements.append(f.name)
             counts["render"] += 1
-        elif shot.code in board_scenes:
-            strip = strips.new_scene(name=f"{shot.code}_board",
-                                     scene=board_scenes[shot.code],
+        elif shot.code in layout_scenes:
+            strip = strips.new_scene(name=f"{shot.code}_layout",
+                                     scene=layout_scenes[shot.code],
                                      channel=2, frame_start=shot.start_frame)
             strip.frame_final_duration = shot.duration
-            # render the board scene's camera view; its own sequencer (the
+            # render the layout scene's camera view; its own sequencer (the
             # scrub-audio strip) must not feed the edit
             strip.scene_input = "CAMERA"
-            counts["board"] += 1
+            counts["layout"] += 1
         else:
             strip = strips.new_effect(name=f"{shot.code}_slug", type="TEXT",
                                       channel=2, frame_start=shot.start_frame,
@@ -127,7 +131,7 @@ def main():
     out.parent.mkdir(exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), relative_remap=True)
     print(f"conformed edit/edit.blend: track [1-{scene.frame_end}], "
-          f"{counts['render']} render / {counts['board']} board / "
+          f"{counts['render']} render / {counts['layout']} layout / "
           f"{counts['slug']} slug strip(s), {marked} section marker(s)")
 
 
