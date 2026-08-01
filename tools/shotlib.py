@@ -13,6 +13,8 @@ import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import guides
+
 FPS = 24
 AUDIO_EXTS = {".wav", ".mp3", ".flac", ".aif", ".aiff"}
 STATUSES = ("scripted", "boarded", "blocked", "animated", "rendered", "comped", "final")
@@ -107,6 +109,17 @@ def read_shotlist(path) -> list[Shot]:
                 raise ValueError(f"{path}:{lineno}: duplicate shot {code}")
             seen.add(code)
             assets = [a.strip() for a in row["assets"].split(";") if a.strip()]
+            # Planning metadata, NOT a link instruction: blocking lives in the
+            # layout scene and export_shot exports what the scene holds. It is
+            # still validated, so a typo fails here instead of warning into
+            # the void the way new_shot.py used to.
+            known = {g.name for g in guides.DROPPABLE}
+            for a in assets:
+                if a not in known:
+                    raise ValueError(
+                        f"{path}:{lineno}: unknown asset {a!r}; "
+                        f"expected one of {', '.join(sorted(known))}"
+                    )
             shots.append(Shot(sq, sh, row["description"].strip(), start, end,
                               assets, status))
     return shots

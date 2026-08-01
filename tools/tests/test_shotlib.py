@@ -48,13 +48,13 @@ class ReadShotlistTest(unittest.TestCase):
         return Path(f.name)
 
     def test_happy_path(self):
-        p = self.write("010,010,opening,1,48,48,chars/redwood;envs/forest,boarded\n")
+        p = self.write("010,010,opening,1,48,48,boy;box,boarded\n")
         (shot,) = shotlib.read_shotlist(p)
         self.assertEqual(shot.code, "sq010_sh010")
         self.assertEqual(
             (shot.start_frame, shot.end_frame, shot.duration), (1, 48, 48)
         )
-        self.assertEqual(shot.assets, ["chars/redwood", "envs/forest"])
+        self.assertEqual(shot.assets, ["boy", "box"])
 
     def test_scripted_status_ok(self):
         p = self.write("010,010,x,1,48,,,scripted\n")
@@ -108,6 +108,17 @@ class ReadShotlistTest(unittest.TestCase):
         p = self.write("010,010,x,1,48\n")
         with self.assertRaisesRegex(ValueError, r"columns"):
             shotlib.read_shotlist(p)
+
+    def test_unknown_asset_name_is_rejected(self):
+        p = self.write("010,010,a shot,1,10,10,boy;nonesuch,scripted\n")
+        with self.assertRaises(ValueError) as ctx:
+            shotlib.read_shotlist(p)
+        self.assertIn("nonesuch", str(ctx.exception))
+
+    def test_known_guide_names_are_accepted(self):
+        p = self.write("010,040,drags the box,410,490,81,boy;box,scripted\n")
+        (shot,) = shotlib.read_shotlist(p)
+        self.assertEqual(shot.assets, ["boy", "box"])
 
 
 class ReadSectionsTest(unittest.TestCase):
