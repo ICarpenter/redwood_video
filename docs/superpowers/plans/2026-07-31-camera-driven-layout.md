@@ -1047,8 +1047,10 @@ STAGING = {
     # three-quarter onto the porch; the truck is out on the road.
     "sq010_sh020": {
         "camera": ((4.0, -13.0, 1.8), (-2.0, -5.2, 1.0), 40),
+        # No truck: at 40mm from y=-13 the road (y=-19) is BEHIND the
+        # camera. The beat is the package landing, not the delivery — the
+        # truck has gone. Verified by render, 2026-07-31.
         "blocking": [
-            ("delivery_truck", guides.PROPS_FILE, (2.0, -19.0, 0.0), 90),
             ("box", guides.PROPS_FILE, (-1.5, -5.0, 0.5), 0),
         ],
     },
@@ -1058,7 +1060,9 @@ STAGING = {
         "camera": ((1.5, -10.0, 1.5), (-1.9, -4.6, 1.2), 50),
         "blocking": [
             ("boy", guides.CAST_FILE, (-1.9, -4.6, 0.5), 0),
-            ("box", guides.PROPS_FILE, (-1.5, -5.6, 0.5), 0),
+            # off the camera axis and screen-left: on the axis it eclipsed
+            # the boy completely (verified by render, 2026-07-31)
+            ("box", guides.PROPS_FILE, (-3.4, -5.4, 0.5), 0),
         ],
     },
     # "boy drags the box up the drive into the garage" — driveway runs
@@ -1067,8 +1071,10 @@ STAGING = {
     "sq010_sh040": {
         "camera": ((-7.0, -15.0, 1.4), (-10.0, -3.0, 1.0), 35),
         "blocking": [
-            ("boy", guides.CAST_FILE, (-10.0, -8.0, 0.0), 180),
-            ("box", guides.PROPS_FILE, (-10.0, -9.2, 0.0), 180),
+            # offset laterally from each other: both at x=-10 put the box
+            # squarely in front of the boy (verified by render, 2026-07-31)
+            ("boy", guides.CAST_FILE, (-10.6, -8.0, 0.0), 180),
+            ("box", guides.PROPS_FILE, (-9.5, -9.4, 0.0), 160),
         ],
     },
     # "reverse through garage from back yard" — camera in the BACKYARD at
