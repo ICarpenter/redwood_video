@@ -107,6 +107,26 @@ def apply_hide_blocking(scene) -> bool:
     return True
 
 
+def apply_project_settings(scene, view_transform="AgX") -> None:
+    """The project's locked render settings, in one place.
+
+    Applied to shot_template.blend and to every layout scene, so the two can
+    never drift. Layout scenes pass view_transform="Standard" — they show
+    greybox blocking and flat GP ink, which AgX only muddies. Renders keep
+    AgX, and the edit passes them through with Standard so it is not applied
+    twice.
+    """
+    scene.render.fps = 24
+    scene.render.resolution_x = 1920
+    scene.render.resolution_y = 1080
+    scene.render.resolution_percentage = 100
+    scene.render.image_settings.file_format = "PNG"
+    scene.render.image_settings.color_mode = "RGB"
+    scene.render.image_settings.color_depth = "16"
+    scene.view_settings.view_transform = view_transform
+    scene.sync_mode = "AUDIO_SYNC"
+
+
 def paper_distance(cam) -> float:
     """Distance from camera to paper. Framing choice, not a depth trick."""
     return PAPER_DISTANCE

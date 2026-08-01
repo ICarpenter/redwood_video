@@ -5,11 +5,14 @@ Run:
   "$BLENDER" --background --factory-startup --python-exit-code 1 \
       --python tools/make_template.py
 """
+import sys
 from pathlib import Path
 
 import bpy
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import layoutlib
 
 scene = bpy.context.scene
 scene.name = "shot"
@@ -23,16 +26,7 @@ scene.render.engine = (
     "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in engines else "BLENDER_EEVEE"
 )
 
-scene.render.fps = 24
-scene.render.resolution_x = 1920
-scene.render.resolution_y = 1080
-scene.render.resolution_percentage = 100
-scene.render.image_settings.file_format = "PNG"
-scene.render.image_settings.color_mode = "RGB"
-scene.render.image_settings.color_depth = "16"
-scene.view_settings.view_transform = "AgX"
-scene.view_settings.look = "None"
-scene.sync_mode = "AUDIO_SYNC"
+layoutlib.apply_project_settings(scene)
 
 # Empty stage: wipe factory objects, build the shot collection layout.
 for obj in list(bpy.data.objects):
