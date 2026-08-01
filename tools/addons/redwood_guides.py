@@ -62,10 +62,22 @@ def ground_drop_location(scene):
     has been evaluated (e.g. frame_set() has run) — a real trap for a scene
     built entirely in-script with no such call, which is exactly how
     check_addon.py's ground-drop check constructs its camera. matrix_basis
-    is composed live from location/rotation/scale on every read, and since
-    layout cameras are never parented it is numerically identical to a
-    correctly-evaluated matrix_world — safe in both the add-on's live
-    interactive context and this headless one.
+    is composed live from location/rotation/scale on every read, sidestepping
+    that cache — safe in both the add-on's live interactive context and this
+    headless one.
+
+    matrix_basis ignores parenting AND constraints (see migrate_layout.py's
+    solve_camera for the same tradeoff spelled out the other way — it uses
+    the scene's depsgraph specifically because it needs both folded in).
+    Neither exists on any layout camera today (checked: cameras are
+    top-level objects; only the script-prompt note is ever parented, and
+    always TO the camera, never the reverse), so matrix_basis is exactly
+    equal to a correctly-evaluated matrix_world here. If a future camera
+    rig adds a parent (e.g. a dolly empty) or a constraint (e.g. Track To),
+    this needs to go back to an evaluated matrix_world instead — via the
+    target scene's own depsgraph (scene.view_layers[0].depsgraph, after
+    something has built it), not bpy.context's, which may be a different
+    scene entirely.
     """
     root, mods = _load_guides()
     guides_mod = mods[0] if mods else None

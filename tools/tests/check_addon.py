@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "tools" / "addons"))
 
 import bpy  # noqa: E402
+import mathutils  # noqa: E402
 import guides  # noqa: E402
 import redwood_guides  # noqa: E402
 
@@ -96,6 +97,16 @@ sc.camera = cam
 loc = redwood_guides.ground_drop_location(sc)
 assert abs(loc[2]) < 1e-6, f"guides drop with feet on the ground, got z={loc[2]}"
 assert loc[1] > cam.location.y, "drop must be IN FRONT of the camera"
+
+# Pin the actual intersection, not just "on the ground, ahead of camera" —
+# the fallback satisfies both of those too, so a wrong t formula (e.g. a
+# flipped sign) would otherwise pass. Expected point derived independently
+# from the camera's own transform.
+fwd = cam.matrix_basis.to_quaternion() @ mathutils.Vector((0.0, 0.0, -1.0))
+t = -cam.matrix_basis.translation.z / fwd.z
+expect = cam.matrix_basis.translation + fwd * t
+assert (mathutils.Vector(loc) - mathutils.Vector((expect.x, expect.y, 0.0))).length < 1e-5, \
+    f"raycast landed at {loc}, expected {(expect.x, expect.y, 0.0)}"
 
 # camera level with the horizon: the ray never meets z=0, so fall back
 cam.rotation_euler = (math.radians(90), 0.0, 0.0)
