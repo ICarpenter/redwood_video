@@ -108,5 +108,6 @@ look, interiors (only the kitchen window matters so far). Preview cameras
 collection.
 
 Movable, correctly-scaled drawing guides for the cast and hero props live in
-`assets/chars/cast.blend` and `assets/props/props.blend`; the `property` set is
-itself a linkable guide. See `docs/boards.md` for the drawing-guide workflow.
+`assets/chars/cast.blend` and `assets/props/props.blend`. The `property` set
+is linked at identity in every layout scene already, not a guide you drop.
+See `docs/layout.md` for the drawing-guide workflow.

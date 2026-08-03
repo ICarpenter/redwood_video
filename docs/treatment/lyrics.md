@@ -6,17 +6,32 @@ note `../beatmap.csv`'s bar column is 1-indexed — its bar 1 is this bar 0).
 
 ## Structure
 
+Frames below are **measured off the recording**, not derived from the written
+chart — they come from the timeline markers hand-placed in `edit/edit.blend`
+on 2026-08-02 and copied into `../sections.csv`. The chart this table used to
+carry ran one bar late against the actual take: every section landed on
+beatmap bar N while the file claimed N+1.
+
 | Section  | Bars    | Frames    | Length |
 |----------|---------|-----------|--------|
-| Intro    | 0–19    | 1–776     | 32.3s  |
-| Verse 1  | 19–39   | 777–1593  | 34.0s  |
-| Chorus 1 | 39–47   | 1594–1920 | 13.6s  |
-| Verse 2  | 47–67   | 1921–2737 | 34.0s  |
-| Chorus 2 | 67–75   | 2738–3064 | 13.6s  |
-| Solo     | 75–87   | 3065–3554 | 20.4s  |
-| Verse 3  | 87–103  | 3555–4208 | 27.2s  |
-| Chorus 3 | 103–111 | 4209–4534 | 13.6s  |
+| *(lead-in silence)* | 0–2 | 1–80 | 3.3s |
+| Intro    | 2–18    | 81–735    | 27.3s  |
+| Verse 1  | 18–38   | 736–1552  | 34.0s  |
+| Chorus 1 | 38–46   | 1553–1878 | 13.6s  |
+| Verse 2 intro | 46–50 | 1879–2042 | 6.8s |
+| Verse 2  | 50–66   | 2043–2695 | 27.2s  |
+| Chorus 2 | 66–74   | 2696–3023 | 13.7s  |
+| Solo     | 74–86   | 3024–3513 | 20.4s  |
+| Verse 3  | 86–102  | 3514–4166 | 27.2s  |
+| Chorus 3 | 102–111 | 4167–4534 | 15.3s  |
 | Tail (audio only) | 111–150 | 4535–6124 | 66.2s |
+
+Every section boundary is a downbeat and every section is a whole number of
+bars. Two corrections the old chart got wrong: the track opens with **3.3s of
+silence** before the music enters at frame 81 (bar 2) — picture still starts
+at frame 1 and plays the sunrise over it — and verse 2 is preceded by a 4-bar
+instrumental lead-in (**Verse 2 intro**) that the old chart folded into the
+verse.
 
 (The song ends dead on the last chorus hit at bar 111; bars 111–150 are
 just the audio ringing out. Picture ends with a title card early in the

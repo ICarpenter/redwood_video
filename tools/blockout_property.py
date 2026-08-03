@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Build assets/envs/property/property.blend — greybox layout of the house,
-road, and yards. Throwaway massing to establish the space so boards and
+road, and yards. Throwaway massing to establish the space so layout scenes and
 shot cameras agree on where everything is.
 
-Builds the static SET only (environment + set-dressing). The cast and props are
-LINKED guide instances staged into a separate `blocking` collection by
-tools/stage_property.py, so they reference their source files and never travel
-with the linkable `property` set.
+Builds the static SET only (environment + set-dressing). The cast and props
+are never staged here: each layout scene stages its own cast/prop guide
+instances, in world space, into its own `<code>_blocking` collection (via
+tools/stage_shots.py or the Redwood Guides add-on) — so they reference their
+source files directly and never travel with the linkable `property` set.
 
 Site convention (documented in docs/treatment/site.md):
   +X east / -X west, +Y north = BACKYARD, -Y south = ROAD, +Z up.
@@ -46,6 +47,14 @@ PALETTE = {
     "truck":     (0.45, 0.28, 0.20),
     "marker":    (0.85, 0.20, 0.55),
     "label":     (0.05, 0.05, 0.05),
+    # hanging sheets on the clothesline. Its own entry because it used to
+    # borrow "window", and windows are now transparent — sheets are not.
+    "laundry":   (0.90, 0.89, 0.86),
+}
+
+# Per-material alpha. Anything absent is fully opaque.
+ALPHA = {
+    "window": 0.25,
 }
 
 collection = None
@@ -59,10 +68,21 @@ def mat(name):
         m.use_nodes = True
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         col = PALETTE.get(name, (0.5, 0.5, 0.5))
+        alpha = ALPHA.get(name, 1.0)
         if bsdf:
             bsdf.inputs["Base Color"].default_value = (*col, 1.0)
             bsdf.inputs["Roughness"].default_value = 0.85
-        m.diffuse_color = (*col, 1.0)
+            bsdf.inputs["Alpha"].default_value = alpha
+        if alpha < 1.0:
+            # EEVEE Next alpha-blends via surface_render_method (5.x); older
+            # builds only have blend_method — set whichever exists. Same
+            # approach guide_assets.py uses for the cruiser's glass.
+            if hasattr(m, "surface_render_method"):
+                m.surface_render_method = "BLENDED"
+            elif hasattr(m, "blend_method"):
+                m.blend_method = "BLEND"
+            m.show_transparent_back = False
+        m.diffuse_color = (*col, alpha)
     return m
 
 
@@ -201,8 +221,9 @@ def build(out_path, force):
 
     # --- backyard set pieces ------------------------------------------------
     # NOTE: the firing squad, the boy, the Santa, the vehicles and the guns are
-    # LINKED guide instances staged by tools/stage_property.py (into a separate
-    # `blocking` collection) — this script builds only the static set below.
+    # LINKED guide instances staged per-shot in layout/layout.blend (world
+    # space, via tools/stage_shots.py or the Redwood Guides add-on) — this
+    # script builds only the static set below.
 
     # old truck on blocks — moved into the east side corridor near the road
     # end: the ricochet surface that kicks the boy's stray shot to the
@@ -220,7 +241,7 @@ def build(out_path, force):
     # east window looks straight down it
     for i, cy in enumerate((5.78, 14.78)):
         cyl(f"line_post_{i}", 8.6, cy, 1.1, 0.09, 2.2, "porch")
-    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "window")
+    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "laundry")
 
     # --- yard boundary: fence + treeline contain the backyard ---------------
     for i in range(15):

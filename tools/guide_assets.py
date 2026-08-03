@@ -5,7 +5,7 @@ Writes assets/chars/cast.blend and assets/props/props.blend: one collection
 per guide (see tools/guides.py), each assembled from primitives into a
 recognisable silhouette, marked as a catalogued Asset. Also writes
 assets/blender_assets.cats.txt. Guides are authored in real metres, facing -Y,
-feet at Z=0, centred on X=0 (see guides.py for the board-camera rationale).
+feet at Z=0, centred on X=0 (see guides.py for the placement rationale).
 
 Run (default → the real asset paths; refuses to clobber without --force):
   "$BLENDER" --background --factory-startup --python-exit-code 1 \
@@ -19,6 +19,8 @@ Flags (after --):
   --mark-property        mark the `property` collection in property.blend
   --add=<name>           append ONE new guide to its existing asset file and
                          save in place; never wipes, refuses if it exists
+  --build-set=<name>     build ONE mini set into assets/envs/<name>/<name>.blend
+                         (refuses to clobber an existing file without --force)
 """
 import math
 import sys
@@ -48,13 +50,26 @@ PALETTE = {
     "tire":     (0.06, 0.06, 0.06),
     "truck":    (0.45, 0.28, 0.20),
     "cruiser":  (0.14, 0.20, 0.45),
+    "glass":    (0.55, 0.72, 0.85),
     "lightbar": (0.85, 0.20, 0.20),
     "santa":    (0.72, 0.13, 0.13),
     "white":    (0.90, 0.90, 0.90),
     "ref":      (0.90, 0.50, 0.10),
     "dark":     (0.10, 0.10, 0.12),
     "wood":     (0.50, 0.35, 0.20),
+    "bread":    (0.87, 0.78, 0.60),
+    "egg":      (0.90, 0.74, 0.25),
+    # war flashback
+    "helmet":   (0.22, 0.26, 0.19),
+    "sandbag":  (0.62, 0.55, 0.38),
+    "mud":      (0.34, 0.28, 0.20),
+    "jungle":   (0.16, 0.34, 0.15),
+    "bamboo":   (0.58, 0.56, 0.30),
+    "tin":      (0.42, 0.42, 0.40),
 }
+
+
+GLASS_ALPHA = 0.25
 
 
 def _mat(color_key):
@@ -64,11 +79,20 @@ def _mat(color_key):
         m = bpy.data.materials.new(name)
         m.use_nodes = True
         col = PALETTE.get(color_key, (0.5, 0.5, 0.5))
+        alpha = GLASS_ALPHA if color_key == "glass" else 1.0
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         if bsdf:
             bsdf.inputs["Base Color"].default_value = (*col, 1.0)
             bsdf.inputs["Roughness"].default_value = 0.9
-        m.diffuse_color = (*col, 1.0)
+            bsdf.inputs["Alpha"].default_value = alpha
+        if alpha < 1.0:
+            # EEVEE Next alpha-blends via surface_render_method (5.x);
+            # older builds only have blend_method — set whichever exists.
+            if hasattr(m, "surface_render_method"):
+                m.surface_render_method = "BLENDED"
+            elif hasattr(m, "blend_method"):
+                m.blend_method = "BLEND"
+        m.diffuse_color = (*col, alpha)
     return m
 
 
@@ -197,8 +221,22 @@ def build_delivery_truck(c):
 
 
 def build_cruiser(c):
+    # Hollow greenhouse instead of a solid cabin block: corner pillars, a
+    # thin roof, and alpha-blended glass panes, so blocking inside the car
+    # (the sheriff at the wheel) reads through the windows. Nose is -X,
+    # matching dt_cab; driver side is -Y.
     box(c, "cr_body", 0, 0, 0.70, 3.60, 1.70, 0.60, "cruiser")
-    box(c, "cr_cabin", 0, 0, 1.15, 1.90, 1.60, 0.60, "cruiser")
+    box(c, "cr_roof", 0, 0, 1.42, 1.70, 1.44, 0.06, "cruiser")
+    for px, fx in ((-0.90, "f"), (0.90, "b")):
+        for py, fy in ((-0.72, "l"), (0.72, "r")):
+            box(c, f"cr_pillar_{fx}{fy}", px, py, 1.20, 0.10, 0.10, 0.40,
+                "cruiser")
+    box(c, "cr_glass_front", -0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
+    box(c, "cr_glass_back", 0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
+    box(c, "cr_glass_left", 0, -0.78, 1.20, 1.70, 0.04, 0.36, "glass")
+    box(c, "cr_glass_right", 0, 0.78, 1.20, 1.70, 0.04, 0.36, "glass")
+    box(c, "cr_dash", -0.70, 0, 1.06, 0.30, 1.40, 0.16, "dark")
+    cyl(c, "cr_steering", -0.50, -0.40, 1.14, 0.09, 0.03, "dark", axis="X")
     for i, (x, y) in enumerate([(-1.2, -0.85), (-1.2, 0.85),
                                 (1.2, -0.85), (1.2, 0.85)]):
         cyl(c, f"cr_wheel_{i}", x, y, 0.35, 0.35, 0.25, "tire", axis="Y")
@@ -235,6 +273,17 @@ def build_box(c):
     box(c, "bx_flap_r", 0.28, 0, 1.21, 0.54, 0.88, 0.02, "wood")
 
 
+def build_egg_salad_sando(c):
+    # Hand-prop scale (a 12 cm sandwich): two bread slices around a filling
+    # layer that squishes proud of the cut face, which faces -Y so the
+    # egg-chunk cross-section reads from the preview camera.
+    box(c, "es_bread_bot", 0, 0, 0.0125, 0.12, 0.12, 0.025, "bread")
+    box(c, "es_filling", 0, -0.003, 0.035, 0.125, 0.121, 0.02, "egg")
+    box(c, "es_bread_top", 0, 0, 0.0575, 0.12, 0.12, 0.025, "bread")
+    ball(c, "es_egg_0", -0.030, -0.060, 0.035, 0.012, "white")
+    ball(c, "es_egg_1", 0.035, -0.058, 0.036, 0.010, "white")
+
+
 def build_scale_stick(c):
     cyl(c, "ss_pole", 0, 0, 1.00, 0.03, 2.00, "ref", axis="Z")
     for i in range(1, 5):
@@ -242,12 +291,139 @@ def build_scale_stick(c):
         cyl(c, f"ss_tick_{i}", 0, 0, i * 0.5, 0.12, 0.02, col, axis="Z")
 
 
+def build_gun_cabinet(c):
+    """Mom's gun cabinet: glazed door, racked long guns, drawer plinth.
+
+    Authored facing -Y like every guide, so the glass door faces the viewer at
+    rotZ 0. Reuses the `glass` material, which already carries the alpha +
+    BLENDED setup the cruiser's windows use, so the guns read THROUGH the door
+    rather than the door reading as a slab.
+    """
+    box(c, "gc_base", 0, 0, 0.13, 0.94, 0.46, 0.26, "dark")
+    box(c, "gc_body", 0, 0, 1.10, 0.90, 0.42, 1.68, "wood")
+    box(c, "gc_back", 0, 0.19, 1.10, 0.86, 0.03, 1.62, "dark")
+    for i, x in enumerate((-0.25, 0.0, 0.25)):
+        box(c, f"gc_barrel_{i}", x, 0.04, 1.34, 0.06, 0.06, 1.02, "metal")
+        box(c, f"gc_stock_{i}", x, 0.04, 0.74, 0.09, 0.09, 0.34, "wood")
+    box(c, "gc_rail", 0, 0.04, 1.86, 0.82, 0.06, 0.05, "dark")
+    box(c, "gc_glass", 0, -0.20, 1.18, 0.78, 0.03, 1.44, "glass")
+    box(c, "gc_handle", 0.31, -0.23, 1.12, 0.04, 0.05, 0.24, "metal")
+
+
+def build_sheriff_war(c):
+    """The sheriff in-country: same body, M1 helmet instead of the stetson.
+
+    Body dimensions are copied from build_sheriff verbatim and deliberately so
+    — the flashback cuts against present-day shots of the same man, and if the
+    silhouette changed size the match would read as a different character
+    rather than the same one, younger. Only the head-dress and a flak vest
+    differ, which is what carries the setting change.
+    """
+    box(c, "sw_leg_l", -0.13, 0, 0.34, 0.18, 0.20, 0.68, "sheriff")
+    box(c, "sw_leg_r", 0.13, 0, 0.34, 0.18, 0.20, 0.68, "sheriff")
+    ball(c, "sw_belly", 0, -0.06, 0.98, 0.30, "sheriff")
+    box(c, "sw_torso", 0, 0, 1.20, 0.46, 0.26, 0.40, "sheriff")
+    box(c, "sw_vest", 0, -0.15, 1.18, 0.44, 0.10, 0.44, "helmet")
+    box(c, "sw_arm_l", -0.34, 0, 1.10, 0.11, 0.11, 0.50, "sheriff")
+    box(c, "sw_arm_r", 0.34, 0, 1.10, 0.11, 0.11, 0.50, "sheriff")
+    ball(c, "sw_head", 0, 0, 1.58, 0.16, "skin")
+    # dome + shallow brim: reads as a helmet against the stetson's wide flat
+    # brim even in silhouette, which is all a 6.8s sepia flashback gets
+    ball(c, "sw_helmet", 0, 0, 1.64, 0.19, "helmet")
+    cyl(c, "sw_helmet_brim", 0, 0, 1.58, 0.22, 0.03, "helmet", axis="Z")
+    box(c, "sw_chinstrap", 0, -0.15, 1.50, 0.24, 0.03, 0.03, "dark")
+
+
+def build_trench(c):
+    """Vietnam trench mini-set for the sq050 war flashback.
+
+    The cut MIRRORS the property's roadside ditch on purpose: ditch_floor is
+    y -17..-14 (3 m across) with its floor at z=-0.85, so this is 3 m across
+    and 0.85 m deep too. That means the sheriff's blocking reads at the same
+    height in the flashback as in the present-day ditch he is lying in, and a
+    match cut between them lands.
+
+    Everything above the parapet is what does the transporting: sandbags,
+    bamboo stakes, wire and broad jungle leaves instead of a white picket
+    fence and oaks. It is 18 m long, enough to fill a wide frame.
+
+    Ground sits at z=0 like every other asset, so instance it AWAY from the
+    property (whose ground_yard spans x -45..45, y -32..45) or the two ground
+    planes will z-fight.
+    """
+    HALF_W, DEPTH, L = 1.5, 0.85, 9.0
+
+    # the cut itself: floor, both walls, and a shelf either side so the set
+    # reads as trench-in-ground on its own, with no property underneath
+    box(c, "tr_floor", 0, 0, -DEPTH - 0.03, L * 2, HALF_W * 2, 0.06, "mud")
+    box(c, "tr_wall_n", 0, HALF_W, -DEPTH / 2, L * 2, 0.10, DEPTH, "mud")
+    box(c, "tr_wall_s", 0, -HALF_W, -DEPTH / 2, L * 2, 0.10, DEPTH, "mud")
+    # generous shelf either side and past both ends: a 3 m apron left every
+    # camera placed outside the footprint staring into void
+    box(c, "tr_shelf_n", 0, HALF_W + 6.5, -0.05, L * 2.6, 13.0, 0.10, "mud")
+    box(c, "tr_shelf_s", 0, -HALF_W - 6.5, -0.05, L * 2.6, 13.0, 0.10, "mud")
+    box(c, "tr_shelf_e", L + 3.0, 0, -0.05, 6.0, HALF_W * 2, 0.10, "mud")
+    box(c, "tr_shelf_w", -L - 3.0, 0, -0.05, 6.0, HALF_W * 2, 0.10, "mud")
+    # end caps, so looking down the trench does not show the world background
+    box(c, "tr_end_e", L, 0, -DEPTH / 2, 0.12, HALF_W * 2, DEPTH, "mud")
+    box(c, "tr_end_w", -L, 0, -DEPTH / 2, 0.12, HALF_W * 2, DEPTH, "mud")
+
+    for i in range(8):                       # duckboards underfoot
+        box(c, f"tr_duck_{i}", -7.9 + i * 2.25, 0, -DEPTH + 0.05,
+            1.5, HALF_W * 1.85, 0.07, "wood")
+
+    for i in range(9):                       # timber revetment shoring the walls
+        x = -8.2 + i * 2.05
+        box(c, f"tr_post_n_{i}", x, HALF_W - 0.09, -DEPTH / 2, 0.14, 0.10, DEPTH, "wood")
+        box(c, f"tr_post_s_{i}", x, -HALF_W + 0.09, -DEPTH / 2, 0.14, 0.10, DEPTH, "wood")
+
+    for i in range(10):                      # sandbag parapet, staggered courses
+        x = -8.1 + i * 1.8
+        box(c, f"tr_bag_n_{i}", x, HALF_W + 0.26, 0.13, 0.78, 0.46, 0.26, "sandbag")
+        box(c, f"tr_bag_s_{i}", x, -HALF_W - 0.26, 0.13, 0.78, 0.46, 0.26, "sandbag")
+        if i < 9:
+            box(c, f"tr_bag_n2_{i}", x + 0.9, HALF_W + 0.20, 0.38,
+                0.78, 0.46, 0.26, "sandbag")
+
+    for i in range(6):                       # bamboo stakes + a wire strand
+        x = -7.5 + i * 3.0
+        cyl(c, f"tr_stake_{i}", x, HALF_W + 1.5, 0.45, 0.045, 0.95, "bamboo", axis="Z")
+    cyl(c, "tr_wire_hi", 0, HALF_W + 1.5, 0.82, 0.02, L * 1.9, "metal", axis="X")
+    cyl(c, "tr_wire_lo", 0, HALF_W + 1.5, 0.52, 0.02, L * 1.9, "metal", axis="X")
+
+    # ammo crates and a sheet of corrugated tin over one end as overhead cover
+    box(c, "tr_crate_a", -5.6, -0.55, -DEPTH + 0.30, 0.80, 0.50, 0.44, "wood")
+    box(c, "tr_crate_b", -4.7, -0.60, -DEPTH + 0.22, 0.70, 0.45, 0.36, "wood")
+    box(c, "tr_crate_c", 4.9, 0.60, -DEPTH + 0.26, 0.75, 0.48, 0.40, "wood")
+    box(c, "tr_tin", 6.9, 0, 0.06, 2.6, HALF_W * 2.1, 0.05, "tin")
+    box(c, "tr_tin_prop", 5.7, 1.1, -DEPTH / 2, 0.10, 0.10, DEPTH, "wood")
+
+    # jungle canopy: clustered, tilted fronds on each stem. Single flat discs
+    # read as lollipops from every angle, which is a fence line with mushrooms,
+    # not a jungle
+    for i in range(8):
+        x = -7.6 + i * 2.2
+        side = 1 if i % 2 else -1
+        base_y = side * (HALF_W + 2.1)
+        h = 1.05 + 0.3 * (i % 3)
+        cyl(c, f"tr_stem_{i}", x, base_y, h / 2, 0.05, h, "bamboo", axis="Z")
+        for j in range(3):
+            a = math.radians(35 + j * 118 + i * 27)
+            leaf = ball(c, f"tr_leaf_{i}_{j}", x + 0.46 * math.cos(a),
+                        base_y + 0.46 * math.sin(a), h - 0.06, 0.52, "jungle")
+            leaf.scale = (1.55, 0.40, 0.20)
+            leaf.rotation_euler = (math.radians(16), math.radians(-24), a)
+
+
 BUILDERS = {
     "boy": build_boy, "mom": build_mom, "sheriff": build_sheriff,
+    "sheriff_war": build_sheriff_war, "trench": build_trench,
     "machine_gun": build_machine_gun, "printer": build_printer,
     "action_figure": build_action_figure, "delivery_truck": build_delivery_truck,
     "cruiser": build_cruiser, "rosco": build_rosco, "big_pistol": build_big_pistol,
     "santa": build_santa, "box": build_box, "scale_stick": build_scale_stick,
+    "egg_salad_sando": build_egg_salad_sando,
+    "gun_cabinet": build_gun_cabinet,
 }
 
 
@@ -392,6 +568,32 @@ def add_guide(name):
     print(f"added guide {spec.name!r} to {spec.file}")
 
 
+def build_set(name, force=False):
+    """Build ONE mini set into its own assets/envs/<name>/<name>.blend.
+
+    Sets get their own single-asset file rather than a slot in props.blend,
+    matching the property: one root collection named after the file. They are
+    structurally checked but NOT dimension-checked — a trench's lowest point
+    is its floor below z=0, which would fail the feet-at-zero rule.
+    """
+    spec = next((s for s in guides.SETS if s.name == name), None)
+    if spec is None:
+        known = ", ".join(s.name for s in guides.SETS)
+        sys.exit(f"error: no set named {name!r}; known sets: {known}")
+    if spec.name == "property":
+        sys.exit("error: the property set is hand-built and marked in place "
+                 "via --mark-property, never generated")
+    if spec.name not in BUILDERS:
+        sys.exit(f"error: {spec.name!r} has no builder")
+
+    path = shotlib.project_root() / spec.file
+    if path.exists() and not force:
+        sys.exit(f"error: {spec.file} exists; pass --force to regenerate "
+                 "(DESTROYS manual edits to that file)")
+    build_guide_file([spec], path)
+    print(f"built set {spec.name!r} -> {spec.file}")
+
+
 def mark_property_asset():
     root = shotlib.project_root()
     path = root / guides.PROPERTY_FILE
@@ -415,7 +617,7 @@ def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     force = "--force" in argv
     out_dir = previews = None
-    add_name = None
+    add_name = set_name = None
     for a in argv:
         if a.startswith("--out="):
             out_dir = Path(a.split("=", 1)[1])
@@ -423,12 +625,17 @@ def main():
             previews = Path(a.split("=", 1)[1])
         elif a.startswith("--add="):
             add_name = a.split("=", 1)[1]
+        elif a.startswith("--build-set="):
+            set_name = a.split("=", 1)[1]
 
     if "--check" in argv:
         run_check()
         return
     if add_name is not None:
         add_guide(add_name)
+        return
+    if set_name is not None:
+        build_set(set_name, force=force)
         return
     if "--mark-property" in argv:
         mark_property_asset()

@@ -2,7 +2,8 @@
 
 What each script in `tools/` does, what it reads and writes, and how the whole
 thing runs from a finished song to a delivered video. Conventions (naming,
-statuses, linking rules) live in `pipeline.md`; this doc is the narrative.
+statuses, linking rules) live in `pipeline.md`; the layout invariants and the
+drawing-guide workflow live in `layout.md`; this doc is the narrative.
 
 ## The big picture
 
@@ -16,26 +17,32 @@ Two conventions make the math trivial everywhere:
 
 - **Timeline frame 1 = song time 0, at 24 fps.** Shot frame ranges are
   *song-global* — shot `sq020_sh030` covering frames 481–528 is literally
-  seconds 20–22 of the track. Any shot's playblast drops into the edit at its
-  own frame numbers and is automatically in sync.
+  seconds 20–22 of the track. Any layout scene or render drops into the edit
+  at its own frame numbers and is automatically in sync.
 - **Settings live in one place.** Resolution, fps, color management, and
-  output format are locked into `tools/shot_template.blend`. Shots inherit
-  them at creation; the render script deliberately does not override them.
+  output format are all applied through `tools/layoutlib.py`'s
+  `apply_project_settings()` — `make_template.py` and `make_layout.py` both
+  call it, so they cannot independently drift the way they once did (layout
+  scenes pass `view_transform="Standard"` since they show greybox blocking
+  and flat GP ink, which AgX only muddies; everything else stays AgX).
 
 ```mermaid
 flowchart TD
     track["audio/track/*.wav<br/>(finished song)"] --> beatmap["tools/beatmap.py"]
     beatmap --> bcsv["docs/beatmap.csv<br/>(bar/beat → frame)"]
-    bcsv -.timing for boards<br/>and shot boundaries.-> shotlist["docs/shotlist.csv<br/>(SOURCE OF TRUTH)"]
-    tmplscript["tools/make_template.py"] --> tmpl["tools/shot_template.blend<br/>(locked settings)"]
-    shotlist --> build["tools/build_shots.py<br/>(→ new_shot.py per shot)"]
-    tmpl --> build
-    assets["assets/&lt;kind&gt;/&lt;name&gt;/&lt;name&gt;.blend<br/>(linked, never appended)"] --> build
-    track -.sound strip at frame 1.-> build
-    build --> shots["shots/sqXXX/shXXX/shXXX.blend<br/>(animate here)"]
+    bcsv -.timing for layout<br/>and shot boundaries.-> shotlist["docs/shotlist.csv<br/>(SOURCE OF TRUTH)"]
+    shotlist --> makelayout["tools/make_layout.py"]
+    assets["assets/&lt;kind&gt;/&lt;name&gt;/&lt;name&gt;.blend<br/>(linked, never appended)"] --> makelayout
+    track -.per-scene scrub audio.-> makelayout
+    makelayout --> layout["layout/layout.blend<br/>(one camera-driven scene per shot)"]
+    stageshots["tools/stage_shots.py"] -.starting camera +<br/>world-space blocking.-> layout
+    continueshot["tools/continue_shot.py"] -.copy camera + blocking<br/>shot to shot.-> layout
+    layout --> conform["tools/conform_edit.py"]
+    layout --> export["tools/export_shot.py<br/>(on demand)"]
+    export --> shots["shots/sqXXX/shXXX/shXXX.blend<br/>(animate here)"]
     shots --> render["tools/render_shot.sh"]
     render --> frames["render/sqXXX_shXXX/vNNN/<br/>(versioned frame sequences)"]
-    frames --> conform["tools/conform_edit.py"]
+    frames --> conform
     conform --> edit["edit/edit.blend<br/>(VSE: track + shot strips)"]
     edit -->|render the final edit| final["final frame sequence"]
     final --> encode["tools/encode_delivery.sh"]
@@ -51,7 +58,8 @@ A stdlib-only Python module the other tools import. It owns the project's
 path math and data contracts so they exist in exactly one place:
 
 - parses and *validates* `docs/shotlist.csv` (3-digit ids, sane frame ranges,
-  duration consistency, known statuses, no duplicate shots — bad rows fail
+  duration consistency, known statuses, no duplicate shots, and every
+  `assets` entry is a known guide name from `guides.py` — bad rows fail
   loudly with `file:line` errors instead of corrupting downstream work)
 - converts musical beats to frames (`beat_to_frame`)
 - derives canonical paths (`shots/sq010/sh010/sh010.blend`,
@@ -62,6 +70,44 @@ path math and data contracts so they exist in exactly one place:
 It runs under both system Python and Blender's bundled Python, which is what
 lets the same logic serve CLI tools and in-Blender scripts. Covered by the
 test suite in `tools/tests/`.
+
+### `tools/guides.py` — the drawing-guide registry (not run directly)
+
+Also stdlib-only, bpy-free (same rule `shotlib.py` follows — both import
+under system Python for `guide_assets.py --check` and the test suite, and
+under Blender's Python for the add-on and the layout tools). Declares:
+
+- `GuideSpec` / `GUIDES` / `DROPPABLE` — the catalog of cast, prop, and set
+  guides, each authored facing `-Y`, feet at `z=0`, centred on `x=0`
+- `blocking_collection_name(scene_name)` → `<scene_name>_blocking` — the one
+  place that owns the per-shot blocking collection's name
+- `DROP_DISTANCE` — the fallback distance the Redwood Guides add-on drops a
+  guide along the camera's view ray when it never meets the ground plane
+- the asset-catalog UUIDs/paths and the `.cats.txt` file text
+
+### `tools/layoutlib.py` — the shared bpy-aware brain (not run directly)
+
+`shotlib.py` and `guides.py` are deliberately bpy-free so they import under
+system Python; this is their counterpart for code that must touch Blender
+data, shared by `make_layout.py`, `stage_shots.py`, `continue_shot.py`,
+`export_shot.py`, and `conform_edit.py` — they all need to ask the same
+questions about a shot, and the answers must agree:
+
+- `has_strokes` / `blocking_instances` / `shot_ready` — whether a layout
+  scene has real Grease Pencil ink, staged blocking, or either (which is
+  what earns it a strip in the edit)
+- `blocking_collection` — get-or-create the scene's `<code>_blocking`
+  collection
+- `apply_hide_blocking` — honours the hand-set `scene["hide_blocking"]`
+  opt-out; blocking and paper both render by default, and **no tool ever
+  writes this flag**
+- `apply_project_settings` — the one place fps/resolution/color-management
+  live (see "Settings live in one place" above)
+- `fit_paper` — parents a Grease Pencil "paper" to a camera and sizes it to
+  the frustum, so a stroke at the paper's edge lands exactly at frame edge
+  for any lens or distance; `PAPER_DISTANCE` is a framing choice, not an
+  occlusion trick (Grease Pencil composites over mesh geometry in EEVEE
+  unconditionally — see `handoff.md`)
 
 ### `tools/beatmap.py` — turn BPM into frame numbers
 
@@ -84,47 +130,15 @@ downbeat of bar 17 hits.
 ```
 
 Generates `tools/shot_template.blend`: an empty stage with a camera, the
-`cam`/`chars`/`env`/`fx` collection layout, and the locked project settings —
-1920×1080, 24 fps, EEVEE, AgX view transform, PNG 16-bit output, audio-synced
-playback. Already generated and committed; you only rerun this if the project
-settings themselves change (e.g. look-dev decides to link the clay material
-library into it). Changing the template changes every shot created *after*
-that point — existing shots keep their settings.
-
-### `tools/new_shot.py` — stamp one shot file
-
-```sh
-"$BLENDER" --background tools/shot_template.blend --python-exit-code 1 \
-    --python tools/new_shot.py -- --sq 010 --sh 010
-```
-
-Runs *inside* Blender with the template open. Looks up the shot's row in the
-shotlist and saves `shots/sq010/sh010/sh010.blend` with:
-
-- the scene named `sq010_sh010` and the frame range set to the row's
-  song-global start/end frames
-- the track from `audio/track/` as a sound strip at frame 1 (so scrubbing and
-  playblasts are in sync; warns and continues if no track yet)
-- every entry in the row's `assets` column **linked** (never appended) as a
-  collection — `chars/redwood` links the `redwood` collection from
-  `assets/chars/redwood/redwood.blend`; missing assets warn and skip
-
-Refuses to overwrite an existing shot file unless `--force` is passed. You
-rarely run this directly — `build_shots.py` calls it for you.
-
-### `tools/build_shots.py` — materialize the whole shotlist
-
-```sh
-python3 tools/build_shots.py --dry-run   # preview what would be created
-python3 tools/build_shots.py             # create every missing shot
-```
-
-The batch driver. Reads the shotlist, skips shots whose `.blend` already
-exists, and runs `new_shot.py` once per missing shot. Run it after
-storyboarding fills the shotlist, and again any time new rows are added —
-it only ever creates what's missing. `--force` rebuilds existing shots from
-the empty template; because that **overwrites animation work**, it lists the
-affected shots and requires you to type `yes` before touching anything.
+`cam`/`chars`/`env`/`fx` collection layout, and the locked project settings
+(via `layoutlib.apply_project_settings`) — 1920×1080, 24 fps, EEVEE, AgX view
+transform, PNG 16-bit output, audio-synced playback. Already generated and
+committed; you only rerun this if the project settings themselves change.
+Nothing downstream opens this file directly any more — layout scenes are
+built by `make_layout.py`, not stamped from the template — but it is the
+canonical reference for the locked settings, and sharing
+`apply_project_settings` with `make_layout.py` is what keeps the two from
+drifting the way they once did.
 
 ### `tools/env.sh` — shared shell plumbing (not run directly)
 
@@ -140,37 +154,45 @@ tools/render_shot.sh 010 010          # → v002 (auto-increments, v001 kept)
 tools/render_shot.sh 010 010 v002     # explicit version = resume/re-render INTO v002
 ```
 
-Headless-renders a shot as an image sequence. The frame range is read from
-the shot's `docs/shotlist.csv` row *at render time* — the shotlist governs at
-both ends of the pipeline, so retiming a row re-renders correctly without
-recreating the shot file (the blend's stored range only drives in-UI
-scrubbing and playblasts). Every run gets a fresh `vNNN` directory by
-default, so old renders are never lost — you can
-always A/B against the previous version. Passing an explicit version is the
-crash-resume path: it re-renders into that directory (overwriting those
-frames). Format and resolution come from the shot file's own settings (locked
-by the template — PNG by default, switch a specific shot to EXR for
-comp-heavy work and the script honors it). Frame sequences rather than movie
-files because a crashed render resumes instead of starting over.
+Headless-renders a shot as an image sequence. Requires the shot to already
+exist under `shots/sqXXX/shXXX/shXXX.blend` — export it first with
+`export_shot.py` if it hasn't been. The frame range is read from the shot's
+`docs/shotlist.csv` row *at render time* — the shotlist governs at both ends
+of the pipeline, so retiming a row re-renders correctly without recreating
+the shot file (the blend's stored range only drives in-UI scrubbing and
+playblasts). Every run gets a fresh `vNNN` directory by default, so old
+renders are never lost — you can always A/B against the previous version.
+Passing an explicit version is the crash-resume path: it re-renders into
+that directory (overwriting those frames). Format and resolution come from
+the shot file's own settings (PNG by default, switch a specific shot to EXR
+for comp-heavy work and the script honors it). Frame sequences rather than
+movie files because a crashed render resumes instead of starting over.
 
-### `tools/make_boards.py` — seed the storyboard file
+### `tools/make_layout.py` — seed the camera-driven layout file
 
 ```sh
 "$BLENDER" --background --factory-startup --python-exit-code 1 \
-    --python tools/make_boards.py
-# `-- --force` rebuilds from scratch (DESTROYS all drawings)
+    --python tools/make_layout.py
+# `-- --force` rebuilds from scratch (DESTROYS all drawing and blocking)
 ```
 
-Creates/extends `boards/boards.blend`: one Grease Pencil scene per shotlist
-row, named by shot code, with the shot's song-global frame range, a camera
-framed for 1080p drawing, an empty GP object, and the track on the scene's
-sequencer so you scrub with music while drawing. The default run only ADDS
-scenes for new shotlist rows (safe after drawing begins) — inserting a cutaway
-later is one shotlist row + one rerun. A board "graduates" into the animatic
-automatically once its GP has any keyframe. Every board scene also gets a
-`<shotcode>_guides` collection for movable drawing guides (see `docs/boards.md`);
-reruns heal it into existing scenes and re-sync guide render visibility, so
-newly drawn boards drop their guides out of the edit.
+Creates/extends `layout/layout.blend`: one scene per shotlist row, named by
+shot code, holding the project's four layout invariants (see `layout.md`) —
+the property linked at identity, a starting camera as the shot's sole
+framing authority, a per-scene `<code>_blocking` collection for world-space
+blocking, and a Grease Pencil "paper" fit to the camera's frustum for
+animatic drawing — plus a script-prompt note parented to the camera and the
+track on the scene's sequencer so drawing happens with audio scrubbing in
+context.
+
+The default run only ADDS scenes for new shotlist rows (safe after
+drawing/blocking has begun) — inserting a cutaway later is one shotlist row +
+one rerun. Reruns also heal anything an existing scene is missing or has
+drifted from: world, project settings, the blocking collection, the linked
+property (snapped back to identity if it has drifted off), the starter
+Grease Pencil keyframe, the script note, or a paper unfit to its camera. A
+camera-less scene can't be given a framing authority automatically, so it's
+reported instead of silently skipped.
 
 ### `tools/guide_assets.py` — build the drawing-guide assets
 
@@ -195,71 +217,146 @@ nothing else touched.
 Builds `assets/chars/cast.blend` and `assets/props/props.blend` — one
 recognisable, real-scale, primitive-built collection per cast member and hero
 prop — plus `assets/blender_assets.cats.txt`. Each collection is a catalogued
-Asset (`guides/cast`, `guides/props`). These are drawing scale-guides for the
-animatic: they link into board scenes and render only while a board is still
-blocked out (see `docs/boards.md`).
+Asset (`guides/cast`, `guides/props`). These are scale guides for blocking out
+and drawing a shot: they link into layout scenes as world-space blocking
+instances or Asset-Browser drops (see `docs/layout.md`).
 Declarative registry lives in `tools/guides.py`; covered by
 `tools/tests/test_guides.py` and the headless `tools/tests/test_blender_smoke.py`.
 
-### `tools/resync_boards.py` — re-point boards at the shotlist's frame ranges
+### `tools/resync_layout.py` — re-point layout scenes at the shotlist's frame ranges
 
 ```sh
 "$BLENDER" --background --factory-startup --python-exit-code 1 \
-    --python tools/resync_boards.py
+    --python tools/resync_layout.py
 # `-- --dry-run` reports what would change without saving
 ```
 
-`make_boards.py` only ever ADDS scenes, so re-timing a shot in `shotlist.csv`
-leaves its board on the old range. This resets `frame_start`/`frame_end` on every
-existing board scene to match its row. Frame ranges only — no scene is created or
-removed, no Grease Pencil is touched, no guide moves. Scenes with no shotlist row
-are reported and left alone. Idempotent. Run it after any shotlist re-time, and
-after splitting a shot.
+`make_layout.py` only ever ADDS scenes, so re-timing a shot in `shotlist.csv`
+leaves its layout scene on the old range. This resets `frame_start`/`frame_end`
+on every existing layout scene to match its row. Frame ranges only — no scene
+is created or removed, no Grease Pencil is touched, no camera or blocking
+instance moves. Scenes with no shotlist row are reported and left alone.
+Idempotent. Run it after any shotlist re-time, and after splitting a shot.
 
-### `tools/stage_boards.py` — drop starting guides into board scenes
+### `tools/stage_shots.py` — frame starting cameras and drop starting blocking
 
 ```sh
 "$BLENDER" --background --factory-startup --python-exit-code 1 \
-    --python tools/stage_boards.py
-# `-- --dry-run` reports what would be staged without saving
+    --python tools/stage_shots.py
+# `-- --dry-run` reports what would change without saving
 ```
 
-Declarative `STAGING` table — scene code → the guides that shot needs, with a
-starting location and Z rotation — linked in as collection instances in the
-scene's `_guides` collection.
+Declarative `STAGING` table — scene code → a starting camera (an explicit
+world-space location/look-at/lens, or a named preview camera appended from
+`property.blend` and copied in) and the world-space blocking that shot
+needs, all measured off the property's actual bounds. Scoped to
+*composition*, on top of the scene structure `make_layout.py` already built.
 
-**Additive, unlike `stage_property.py`.** That tool owns its `blocking`
-collection and clears it every run; doing that here would wipe framing you set by
-hand. A guide already present in a scene is left completely alone, matched by
-instance-collection identity rather than object name (instance objects get
-auto-suffixed to `property.003`, `boy.001`, so a name check would miss them and
-stack duplicates). Only missing guides are created. Re-running is a no-op once a
-shot is staged. Positions are a starting point for drawing, not final framing.
+Two additive, left-alone update rules, so re-running is always safe:
 
-### `tools/stage_property.py` — stage the cast + props into the property file
+- **Camera:** only a camera still at the `make_layout.py` default
+  `(0, -10, 1.6)` gets framed. A camera that has moved — by this script or by
+  hand — is finished work and is never reset.
+- **Blocking:** a guide already present in a scene (matched by
+  instance-collection identity, not object name, since instance objects get
+  auto-suffixed) is left untouched. Only missing ones are created.
+
+Positions here are a starting point for framing and blocking, not final
+composition — the artist takes it from there.
+
+### `tools/continue_shot.py` — carry a shot's staging forward
 
 ```sh
 "$BLENDER" --background --python-exit-code 1 \
-    --python tools/stage_property.py
+    --python tools/continue_shot.py -- --from sq010_sh040 --to sq010_sh045 \
+    [--at-frame 490] [--force] [--dry-run]
 ```
 
-Drops the greybox char/prop standins from `property.blend` and re-adds the full
-cast + props as **linked collection instances** (from `cast.blend`/`props.blend`)
-in a separate `blocking` collection — a scene sandbox for blocking out shots
-inside the property file. The `property` set collection stays pure (environment +
-set-dressing) and keeps its asset mark, so linking the `property` guide into a
-board never drags the cast/props along; in boards you instance cast/props
-individually via the Redwood Guides add-on. Idempotent; run it again after
-regenerating the guides or `property.blend`. `blockout_property.py` builds only
-the static set now — the cast/props live here.
+Because the property is linked at identity in *every* layout scene, two
+scenes share one world origin — so continuing a shot is a direct world-matrix
+copy of the camera and every blocking instance, read at a given frame (the
+source's last frame by default) and written into the destination. Snapshot
+semantics, not a live link: the destination is independent the moment it's
+written, so re-blocking the source afterwards never disturbs it. A blocking
+instance already present in the destination is left alone unless `--force`.
+Refuses to copy a snapshot that evaluated to all-identity matrices (the
+depsgraph trap described in `handoff.md`) rather than silently plant the
+destination at the world origin.
+
+### `tools/export_shot.py` — export one layout scene into its own shot file
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/export_shot.py -- --shot sq010_sh040 [--force]
+```
+
+Shot files are a **derived export, not a stage** — most shots never need
+one, since a layout scene already carries the camera, the blocking, the
+linked property, and the frame range. Export a shot when it earns its own
+file: a per-shot compositor, a sim, a 4K re-render, lighting that must not
+touch its neighbours.
+
+Opens `layout/layout.blend`, marks the source scene `exported = True` (so
+`conform_edit.py` can flag it as a possibly-stale reference) and saves that
+back into `layout.blend`, then strips every other scene from an in-memory
+copy, switches the surviving scene to AgX (layout scenes draw in Standard;
+renders need AgX), turns off `use_sequencer` (the scene's scrub-audio track
+would otherwise make `render_shot.sh` render the sequencer instead of the
+camera — black frames), purges the orphaned datablocks the other 38 scenes
+left behind, and saves `shots/sqXXX/shXXX/shXXX.blend`. One-way: refuses to
+overwrite an existing shot file unless `--force`.
+
+### `tools/migrate_layout.py` — one-shot migration (already run; do not rerun)
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/migrate_layout.py [-- --dry-run]
+```
+
+The script that reset `boards/boards.blend` (moved to `layout/layout.blend`)
+into the camera-driven model: it deleted every blocking instance and cleared
+every object's Action in every scene, renamed each `<code>_guides` collection
+to `<code>_blocking`, linked the property at identity, and — for
+`sq010_sh010` only — solved a static camera transform that reproduces the
+old fixed-camera framing, so that shot's 119 drawn strokes keep 3D standing
+behind them at the angle they were drawn at. Its own docstring explains why
+the old animation was discarded rather than converted (the old model had
+begun keyframing the property instance to fake camera moves — see
+`handoff.md`'s "Blender gotchas" for the old model this replaced).
+
+**This has already been run, once, against the pre-migration file. Do not
+run it again** — see the "which tools destroy work" table in `handoff.md`.
 
 ### `tools/conform_edit.py` — build/rebuild the edit from what's rendered
 
 ```sh
 "$BLENDER" --background --factory-startup --python-exit-code 1 \
-    --python tools/conform_edit.py            # first build
-# add `-- --force` to rebuild (DESTROYS manual edit work — it's a full regen)
+    --python tools/conform_edit.py            # update in place (safe)
+# `-- --dry-run` reports what would change without saving
+# `-- --force`   full rebuild (DESTROYS manual edit work AND the file's UI)
 ```
+
+**The default run updates in place and is safe to repeat.** It opens the
+existing `edit.blend` and reconciles the shot strips against the shotlist:
+retimes strips whose frames moved, replaces those whose tier changed
+(slug→layout→render, including a `vNNN` bump), adds missing ones, and drops
+strips for shots that left the shotlist. A retime is a couple of property
+writes, not a rebuild.
+
+Everything else is left alone — the file's UI, the sound strip, and anything
+hand-cut that does not carry a shot code, on any channel. Shot strips are
+matched by **name**, across all channels: a strip Blender bumped off channel 2
+to dodge an overlap is still recognised as the tool's, which is what stops a
+duplicate appearing on the next run. (That bump only happens if two shotlist
+rows overlap, and it is reported as a warning.)
+
+**Markers are only ever added, never moved.** The hand-placed markers in
+`edit.blend` are the measured truth about the recording — `sections.csv` is
+downstream of them. If a marker disagrees with the CSV it is reported and left
+where it is, so you can decide whether to pull the new position back into
+`sections.csv`.
+
+Use `--force` only for the first build or a deliberate reset.
 
 Creates `edit/edit.blend`: the track as the spine on channel 1 (the scene's
 frame range is derived from the actual audio length), and one strip per
@@ -267,14 +364,30 @@ frame range is derived from the actual audio length), and one strip per
 best available tier per shot:
 
 1. **render** — latest `render/<code>/vNNN/` as an image strip
-2. **board** — Grease Pencil scene named `<code>` in `boards/boards.blend`,
-   linked in as a scene strip (board edits appear in the animatic live)
+2. **layout** — the scene named `<code>` in `layout/layout.blend`, linked in
+   as a scene strip rendering its camera (its own sequencer, which only
+   carries scrub audio, is excluded), once it has real Grease Pencil strokes
+   **or** staged blocking — either makes a shot worth watching
 3. **slug** — a text strip showing the shot code + description
 
 So the animatic exists from day one as a slug cut and upgrades shot by shot
-as boards and renders land — same cut throughout. If `docs/sections.csv`
-exists, each song section also becomes a timeline marker (intro, verse_1,
-chorus_1, …), so every scrub is oriented by song structure.
+as blocking, drawing, and renders land — same cut throughout. If a layout
+scene has already been exported to a shot file (`scene["exported"]`), a note
+is printed: its blocking may now be stale relative to the exported file. If
+`docs/sections.csv` exists, each song section also becomes a timeline marker
+(intro, verse_1, chorus_1, …), so every scrub is oriented by song structure.
+
+**The regen replaces the file's UI too.** It is saved out of a
+`--factory-startup` session, so workspaces and screens are overwritten along
+with the strips — and factory startup has no **Video Editing** workspace
+(that one is normally added by hand from the workspace `+` menu). Every
+regen therefore used to drop it, and it had to be re-added by hand. It is now
+appended back from Blender's stock `Video_Editing` app template, so the
+workspace is always present. Two limits worth knowing: the file still
+**opens on Layout** — `window.workspace` cannot be set under `--background`
+(it is silently ignored), so the VSE tab needs one click — and only the
+*stock* workspace comes back, so panel sizes and editor tweaks inside it do
+not survive a regen.
 
 Two things to know: it's a **from-scratch regen**, so once you start hand-
 cutting (cutaways on higher channels, trims, transitions) stop conforming and
@@ -302,24 +415,30 @@ YouTube/Vimeo). Needs `ffmpeg` (installed via Homebrew).
    `refs/`, treatment in `docs/treatment/`. Drop the track into
    `audio/track/` and run **`beatmap.py`**. Draft `docs/shotlist.csv` with
    shot boundaries picked off the beat map.
-2. **Storyboards & animatic** — draw Grease Pencil boards (Storypencil) cut
-   against the real track; the animatic locks each shot's true duration,
-   which flows back into the shotlist. Statuses become `boarded`.
+2. **Layout & animatic** — **`make_layout.py`** seeds `layout/layout.blend`,
+   one camera-driven scene per shot. Frame starting cameras and block out
+   cast/props in world space (`stage_shots.py`, the Redwood Guides add-on,
+   or `continue_shot.py` to carry a beat forward), and draw Grease Pencil
+   over it when a shot is ready for ink. Both tiers cut into the animatic
+   immediately (see step 5). Statuses become `boarded` → `blocked`.
 3. **Assets** — build characters/props/environments in `assets/`, one blend
    per asset, each exposing a root collection named after itself. Fill in
-   each shot row's `assets` column.
-4. **Shot creation** — **`build_shots.py`**. Fifty shot files appear, each
-   already at the right frame range, with synced audio and linked assets.
-5. **Animation** — open a shot, animate. Viewport playblasts go into
-   `shots/.../playblast/` and replace animatic panels in `edit/edit.blend`,
-   so the full video stays watchable while it's half-made. Statuses:
-   `blocked` → `animated`.
-6. **Rendering / comp** — **`render_shot.sh`** per shot (overnight batches:
-   it's a loop in the shell away). Per-shot compositor tweaks re-render into
-   the next version. Statuses: `rendered` → `comped`.
-7. **Edit** — in `edit/edit.blend` (VSE), swap playblast strips for rendered
-   `vNNN` sequences. Same cut from animatic to final; strips just upgrade.
-8. **Delivery** — render the finished edit to a frame sequence, then
+   each shot row's `assets` column (planning metadata, validated against
+   `guides.py`, no longer a link instruction).
+4. **Shot export & animation** — most shots stay in `layout.blend`
+   indefinitely. Export one to its own file with **`export_shot.py`** only
+   when it needs something a shared layout scene can't give it (a per-shot
+   compositor, a sim, a 4K re-render, isolated lighting), then animate there.
+   Viewport playblasts go into `shots/.../playblast/` and replace layout
+   panels in `edit/edit.blend`, so the full video stays watchable while it's
+   half-made. Statuses: `blocked` → `animated`.
+5. **Rendering / comp** — **`render_shot.sh`** per exported shot (overnight
+   batches: it's a loop in the shell away). Per-shot compositor tweaks
+   re-render into the next version. Statuses: `rendered` → `comped`.
+6. **Edit** — in `edit/edit.blend` (VSE), rebuilt or extended with
+   **`conform_edit.py`**: render → layout → slug, same cut throughout as
+   tiers upgrade.
+7. **Delivery** — render the finished edit to a frame sequence, then
    **`encode_delivery.sh`** for the ProRes master and the upload encode.
 
 The status column across all rows *is* the production dashboard: `grep -c

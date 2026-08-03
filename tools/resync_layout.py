@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""Re-point existing board scenes at the shotlist's frame ranges.
+"""Re-point existing layout scenes at the shotlist's frame ranges.
 
-make_boards.py only ever ADDS scenes for new shotlist rows — an existing scene
-is skipped wholesale, so re-timing a shot in docs/shotlist.csv leaves its board
-sitting on the old range. This closes that gap.
+make_layout.py only ever ADDS scenes for new shotlist rows — an existing
+scene is skipped wholesale, so re-timing a shot in docs/shotlist.csv leaves
+its layout scene sitting on the old range. This closes that gap.
 
-docs/shotlist.csv is the source of truth. For every board scene that already
-exists, frame_start/frame_end are reset to its row. Frame ranges ONLY: no scene
-is created or removed, no Grease Pencil data is touched, no guide is moved.
+docs/shotlist.csv is the source of truth. For every layout scene that already
+exists, frame_start/frame_end are reset to its row. Frame ranges ONLY: no
+scene is created or removed, no Grease Pencil data is touched, no camera or
+blocking instance is moved.
 Scenes with no matching shotlist row are reported and left alone.
 
 Idempotent: a second run reports nothing to do.
 
-Run (Blender must be closed — this writes boards/boards.blend):
+Run (Blender must be closed — this writes layout/layout.blend):
   "$BLENDER" --background --factory-startup --python-exit-code 1 \
-      --python tools/resync_boards.py [-- --dry-run]
+      --python tools/resync_layout.py [-- --dry-run]
 """
 import sys
 from pathlib import Path
@@ -30,10 +31,10 @@ def main():
     dry_run = "--dry-run" in argv
 
     root = shotlib.project_root()
-    out = root / "boards" / "boards.blend"
+    out = root / "layout" / "layout.blend"
     if not out.exists():
         sys.exit(f"error: {out.relative_to(root)} does not exist; "
-                 "run tools/make_boards.py first")
+                 "run tools/make_layout.py first")
 
     shots = {s.code: s for s in
              shotlib.read_shotlist(root / "docs" / "shotlist.csv")}
@@ -58,7 +59,7 @@ def main():
         print(f"  note: scene {name!r} has no shotlist row; left alone")
 
     if not changed:
-        print("boards.blend frame ranges already match the shotlist")
+        print("layout.blend frame ranges already match the shotlist")
         return
     if dry_run:
         print(f"--dry-run: {len(changed)} scene(s) would be resynced")

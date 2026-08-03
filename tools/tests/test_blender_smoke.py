@@ -17,7 +17,7 @@ class BlenderSmokeTest(unittest.TestCase):
         except FileNotFoundError:
             self.skipTest("Blender not found; set $BLENDER")
 
-    def test_guide_and_boards_checks(self):
+    def test_guide_and_layout_checks(self):
         r = subprocess.run(
             [self.blender, "--background", "--factory-startup",
              "--python-exit-code", "1", "--python", str(CHECK)],

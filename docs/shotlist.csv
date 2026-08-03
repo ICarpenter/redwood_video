@@ -1,40 +1,49 @@
 sq,sh,description,start_frame,end_frame,duration,assets,status
 010,010,sunrise wide over the rural house,1,163,163,,scripted
-010,020,package sticks the landing on the porch,164,286,123,,scripted
-010,030,boy at the screen door clocks the package,287,409,123,,scripted
-010,040,boy drags the box up the drive into the garage,410,490,81,boy;box,scripted
-010,045,reverse through garage from back yard - unbox and pocket the sticker,491,572,82,boy;box,scripted
-010,050,devious grin CU,573,654,82,,scripted
-010,060,printer boots and warms up,655,776,122,,scripted
-020,010,gun prints like soft-serve - bell ding,777,940,164,,scripted
-020,020,sticker slapped on gun - drawing beads,941,1103,163,,scripted
-020,030,mom villain shadow - freeze,1104,1226,123,,scripted
-020,040,finger wag - barrel droops - santa setup,1227,1389,163,,scripted
-020,050,printer prints human-sized action figure,1390,1511,122,,scripted
-020,060,figures dragged backyard-ward,1512,1593,82,,scripted
-030,010,firing squad reveal - wave flag blindfold,1594,1675,82,,scripted
-030,020,boy squares up and cocks it,1676,1757,82,,scripted
-030,030,OBLITERATION - xylophone head pops,1758,1920,163,,scripted
-040,010,carnage - head balloons and bursts,1921,2043,123,,scripted
-040,020,mom admires from kitchen window,2044,2165,122,,scripted
-040,030,sheriff egg salad bliss - knee driving,2166,2329,164,,scripted
-040,040,tire blown - sandwich saved - ditch crash,2330,2492,163,,scripted
-040,050,hubcap rolls in - no-look skeet,2493,2574,82,,scripted
-040,060,window exit - crack debut - Danny head,2575,2737,163,,scripted
-050,010,sepia war flashback - salty mug,2738,2819,82,,scripted
-050,020,army crawl - butterfly lands,2820,2900,81,,scripted
-050,030,window POV - mom sees creeper,2901,2982,82,,scripted
-050,040,live-laugh-love arsenal - teeth rack,2983,3064,82,,scripted
-060,010,THREE-WAY FIREFIGHT setpiece,3065,3391,327,,scripted
-060,020,BBQ hiss - shared oh-no freeze,3392,3472,81,,scripted
-060,030,MUSHROOM CLOUD - everyone blasted,3473,3554,82,,scripted
-070,010,aerial hover over charred yard,3555,3677,123,,scripted
-070,020,dazed trio - smoldering hair - noodle gun,3678,3799,122,,scripted
-070,030,recognition - mangled hat apology,3800,3963,164,,scripted
-070,040,sweet tea truce - hand swat,3964,4085,122,,scripted
-070,050,santa head rotates - tips over dead,4086,4208,123,,scripted
-080,010,mom final boss - dual wield,4209,4289,81,,scripted
-080,020,the look,4290,4330,41,,scripted
-080,030,mom unloads - they bolt,4331,4412,82,,scripted
-080,040,FINAL SPRINT under fire - smash to black,4413,4534,122,,scripted
+010,020,package sticks the landing on the porch,164,245,82,,scripted
+010,030,boy at the screen door clocks the package,246,368,123,,scripted
+010,040,boy drags the box up the drive into the garage,369,449,81,boy;box,scripted
+010,045,reverse through garage from back yard - unbox and pocket the sticker,450,531,82,boy;box,scripted
+010,050,devious grin CU,532,613,82,,scripted
+010,060,printer boots and warms up,614,735,122,,scripted
+020,010,gun prints like soft-serve - bell ding,736,899,164,,scripted
+020,020,sticker slapped on gun - drawing beads,900,1062,163,,scripted
+020,030,mom villain shadow - freeze,1063,1185,123,,scripted
+020,040,finger wag - barrel droops - do not shoot the santa,1186,1307,122,,scripted
+020,044,santa CU - duct tape repairs and mismatched paint - THE SETUP,1308,1348,41,santa,scripted
+020,046,kid reaction - eyes flick to the santa,1349,1389,41,boy,scripted
+020,050,printer prints human-sized action figure,1390,1471,82,,scripted
+020,060,figures dragged backyard-ward,1472,1552,81,,scripted
+030,010,firing squad reveal - wave flag blindfold,1553,1634,82,,scripted
+030,020,boy squares up and cocks it,1635,1716,82,,scripted
+030,030,OBLITERATION - xylophone head pops,1717,1878,162,,scripted
+040,010,carnage - head balloons and bursts,1879,1920,42,,scripted
+040,020,mom admires from kitchen window,1921,2002,82,,scripted
+040,030,cruiser ambles down the rural road,2003,2043,41,,scripted
+040,035,interior - knee driving with the egg salad sandwich,2044,2124,81,sheriff;cruiser,scripted
+040,040,PANG - stray ricochet blows the back tire,2125,2165,41,,scripted
+040,042,interior - he saves the sandwich first,2166,2206,41,sheriff;cruiser,scripted
+040,044,ditch crash - hubcap flies - stops past the house,2207,2247,41,cruiser,scripted
+040,050,hubcap rolls in - no-look skeet,2248,2329,82,,scripted
+040,060,window exit - crack debut,2330,2369,40,sheriff;cruiser,scripted
+040,062,sheriff head pops up from the trench,2370,2410,41,sheriff;cruiser,scripted
+040,064,reverse - danny head lands and bounces,2411,2451,41,sheriff,scripted
+040,066,shudder - back arch - Danny - fast zoom in,2452,2614,163,sheriff,scripted
+050,010,sepia war flashback - salty mug,2615,2777,163,,scripted
+050,020,army crawl - butterfly lands,2778,2858,81,,scripted
+050,030,window POV - mom sees creeper,2859,2911,53,mom;sheriff,scripted
+050,035,reverse - mom reaction at the window,2912,2940,29,mom,scripted
+050,040,gun cabinet - draw - spin - rack,2941,3023,83,mom;rosco;gun_cabinet,scripted
+060,010,THREE-WAY FIREFIGHT setpiece,3024,3350,327,,scripted
+060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,,scripted
+060,030,MUSHROOM CLOUD - everyone blasted,3432,3513,82,,scripted
+070,010,aerial hover over charred yard,3514,3636,123,,scripted
+070,020,dazed trio - smoldering hair - noodle gun,3637,3758,122,,scripted
+070,030,recognition - mangled hat apology,3759,3922,164,,scripted
+070,040,sweet tea truce - hand swat,3923,4044,122,,scripted
+070,050,santa head rotates - tips over dead,4045,4166,122,,scripted
+080,010,mom final boss - dual wield,4167,4247,81,,scripted
+080,020,the look,4248,4288,41,,scripted
+080,030,mom unloads - they bolt,4289,4370,82,,scripted
+080,040,FINAL SPRINT under fire - smash to black,4371,4534,164,,scripted
 090,010,title card takes one last bullet hole,4535,4780,246,,scripted
