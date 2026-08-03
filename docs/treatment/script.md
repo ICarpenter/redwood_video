@@ -111,7 +111,9 @@ plays through the chorus hit rather than waiting for it.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 74–82 | 3024–3350 | 13.6s | **THREE-WAY FIREFIGHT.** Sheriff rounds the corner firing wildly; shots from two, then three directions. Texture: lawn flamingos beheaded one per beat; a gnome takes cover behind the birdbath; the laundry line gets ventilated — when her floral Sunday dress takes hits, Mom's aim shifts with PERSONAL offense. ♪ gunfire phrases with the guitar. |
+| 010 | 74–77 | 3024–3146 | 5.1s | **THREE-WAY FIREFIGHT.** The boy breaks across the yard under fire and dives; the sheriff tracks him the whole way, firing. ♪ gunfire phrases with the guitar. |
+| 012 | 77–79 | 3147–3227 | 3.4s | The instant the boy hits the dirt — REAR on Mom, planted on the back stoop, blasting away at the sheriff. She has been the third gun all along. |
+| 014 | 79–82 | 3228–3350 | 5.1s | Back on the sheriff, camera looking WEST past him toward the house. He is still firing north at the boy when he registers the second muzzle flash coming out of his flank — and swings the gun onto the house. The swing rakes straight across the propane BBQ. |
 | 020 | 82–84 | 3351–3431 | 3.4s | The spray rakes the propane BBQ. Hiss. **All three freeze — one shared "oh no" look across the yard.** |
 | 030 | 84–86 | 3432–3513 | 3.4s | **MUSHROOM CLOUD** — for exactly one frame it resolves into a bald eagle. Everyone blasted off their feet, slow-mo clay pinwheel. ♪ detonation on the solo's final accent. |
 
