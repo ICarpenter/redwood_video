@@ -10,7 +10,7 @@ An animated music video for **`guns`** (`audio/track/guns.wav` — 4:15,
 **claymation** look: bright colors, white-trash Americana, Spike & Mike
 energy. A heartland kid 3D-prints a machine gun, and by sundown has
 dragged his mom and the county sheriff into a three-way backyard war.
-39 shots. Solo production.
+40 shots. Solo production.
 
 Read next, in order: `treatment/story.md` (what happens),
 `treatment/script.md` (shot by shot, frame-locked), `treatment/site.md`
@@ -232,7 +232,7 @@ discovery from the repo root fails with "Start directory is not importable".
 | `guide_assets.py` (default) | wipes and rebuilds cast+props; guarded, needs `--force` |
 | `blockout_property.py` | wipes and rebuilds property.blend; guarded, needs `--force`. Also destroys the asset mark — re-run `--mark-property` after. (property.blend has no `blocking` collection any more — per-shot blocking now lives in `layout.blend`.) |
 | `migrate_layout.py` | **HAZARD — do not run.** It is a spent one-shot script with **no re-run guard**. Its per-object loop deletes every object carrying an `instance_collection`, which today means *all* staged world-space blocking across all 39 scenes, in every shot. Only its docstring's "Run ONCE" stands between it and destroying every bit of blocking staged since the migration it performed. It has already been run once, against the pre-migration file, and that is the only time it should ever run. |
-| `conform_edit.py` | **destroys** `edit/edit.blend`; guarded, needs `--force` |
+| `conform_edit.py` | **safe by default** — updates `edit/edit.blend` in place, preserving UI, markers and hand-cut strips. `--force` is the destructive full rebuild (replaces the edit AND the file's workspaces/screens) |
 
 **Close Blender before running any of these.** They write `.blend` files
 headlessly; an open session's later save will clobber the result.

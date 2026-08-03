@@ -331,9 +331,32 @@ run it again** — see the "which tools destroy work" table in `handoff.md`.
 
 ```sh
 "$BLENDER" --background --factory-startup --python-exit-code 1 \
-    --python tools/conform_edit.py            # first build
-# add `-- --force` to rebuild (DESTROYS manual edit work — it's a full regen)
+    --python tools/conform_edit.py            # update in place (safe)
+# `-- --dry-run` reports what would change without saving
+# `-- --force`   full rebuild (DESTROYS manual edit work AND the file's UI)
 ```
+
+**The default run updates in place and is safe to repeat.** It opens the
+existing `edit.blend` and reconciles the shot strips against the shotlist:
+retimes strips whose frames moved, replaces those whose tier changed
+(slug→layout→render, including a `vNNN` bump), adds missing ones, and drops
+strips for shots that left the shotlist. A retime is a couple of property
+writes, not a rebuild.
+
+Everything else is left alone — the file's UI, the sound strip, and anything
+hand-cut that does not carry a shot code, on any channel. Shot strips are
+matched by **name**, across all channels: a strip Blender bumped off channel 2
+to dodge an overlap is still recognised as the tool's, which is what stops a
+duplicate appearing on the next run. (That bump only happens if two shotlist
+rows overlap, and it is reported as a warning.)
+
+**Markers are only ever added, never moved.** The hand-placed markers in
+`edit.blend` are the measured truth about the recording — `sections.csv` is
+downstream of them. If a marker disagrees with the CSV it is reported and left
+where it is, so you can decide whether to pull the new position back into
+`sections.csv`.
+
+Use `--force` only for the first build or a deliberate reset.
 
 Creates `edit/edit.blend`: the track as the spine on channel 1 (the scene's
 frame range is derived from the actual audio length), and one strip per
@@ -353,6 +376,18 @@ scene has already been exported to a shot file (`scene["exported"]`), a note
 is printed: its blocking may now be stale relative to the exported file. If
 `docs/sections.csv` exists, each song section also becomes a timeline marker
 (intro, verse_1, chorus_1, …), so every scrub is oriented by song structure.
+
+**The regen replaces the file's UI too.** It is saved out of a
+`--factory-startup` session, so workspaces and screens are overwritten along
+with the strips — and factory startup has no **Video Editing** workspace
+(that one is normally added by hand from the workspace `+` menu). Every
+regen therefore used to drop it, and it had to be re-added by hand. It is now
+appended back from Blender's stock `Video_Editing` app template, so the
+workspace is always present. Two limits worth knowing: the file still
+**opens on Layout** — `window.workspace` cannot be set under `--background`
+(it is silently ignored), so the VSE tab needs one click — and only the
+*stock* workspace comes back, so panel sizes and editor tweaks inside it do
+not survive a regen.
 
 Two things to know: it's a **from-scratch regen**, so once you start hand-
 cutting (cutaways on higher channels, trims, transitions) stop conforming and

@@ -79,6 +79,22 @@ def blocking_instances(scene) -> list:
     return [o for o in coll.objects if o.instance_collection is not None]
 
 
+def blocking_objects(scene) -> list:
+    """Everything staged in this shot's blocking collection.
+
+    Broader than blocking_instances on purpose. Not all blocking is a guide:
+    hand-authored meshes get animated in there too (the hubcap in
+    sq040_sh050, Danny's head in sq040_sh064). Judging readiness by
+    instance-empties alone silently left such a shot as a slug in the edit
+    even though it was fully blocked and animated.
+    """
+    coll = blocking_collection(scene)
+    if coll is None:
+        return []
+    return [o for o in coll.objects if o.type != "EMPTY"
+            or o.instance_collection is not None]
+
+
 def shot_ready(scene) -> bool:
     """True if this shot has something worth cutting into the edit.
 
@@ -86,7 +102,7 @@ def shot_ready(scene) -> bool:
     blocking major story beats is a stage the edit should be watchable at,
     same as slugs and renders.
     """
-    return has_strokes(scene) or bool(blocking_instances(scene))
+    return has_strokes(scene) or bool(blocking_objects(scene))
 
 
 def apply_hide_blocking(scene) -> bool:
