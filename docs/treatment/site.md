@@ -24,16 +24,31 @@ western sunset" — it's the two of them fleeing down the road at last light
 while the sun sinks over the wrecked backyard behind them. Any shot that
 contradicts this arc needs a reason.
 
-*(Blend axes, for the technical record: road along −Y, backyard along +Y,
-house at origin, +Z up. The greybox sun is keyed to the morning look —
-raking in low from the road side; the firefight relights to the dusk key.)*
+### Axes — the one table to check before saying "north"
+
+The sun above fixes it: the road is east, the backyard is west. Everything
+else follows, and **the compass does not line up with the blend axes the way
+you would guess.** Read this row before writing a direction into a shot note.
+
+| Blend axis | Compass | What is there |
+|---|---|---|
+| **−Y** | **EAST** | the ROAD. Sunrise. The film opens here. |
+| **+Y** | **WEST** | the BACKYARD. Sunset. The film ends here. |
+| **+X** | **NORTH** | the SIDE CORRIDOR — truck, clothesline, the sheriff's crawl. |
+| **−X** | **SOUTH** | the GARAGE, attached to the house. |
+| **+Z** | up | — |
+
+So the house **faces east** (front porch onto the road), the kitchen is its
+**north-west** corner, and the window Mom watches the corridor through is the
+**north** one. The greybox sun is keyed to the morning look — raking in low
+from the road side; the firefight relights to the dusk key.
 
 ## The three spaces
 
-**ROAD (south, y ≈ −23…−17).** Dirt, running east–west. The sheriff
-ambles in from the east; a drainage **ditch** runs the length of the north
-shoulder (y ≈ −17…−14) — that's what he spins into. A **culvert** carries
-the driveway across it, and the mailbox marks the crossing.
+**ROAD (east, y ≈ −23…−17).** Dirt, running north–south. The sheriff ambles
+in along it; a drainage **ditch** runs the length of the west shoulder
+(y ≈ −17…−14) — that's what he spins into. A **culvert** carries the
+driveway across it, and the mailbox marks the crossing.
 
 **HOUSE + GARAGE (centre).** House 12×9 m, gable roof, front porch facing
 the road (Mom fires from here in the final shot). The garage is attached on
@@ -44,7 +59,7 @@ inside, and carries the machine gun and the action figures out the *back*
 into the backyard. The audience reads the whole supply chain in one
 building: delivery → print → killing field.
 
-**BACKYARD (y ≈ +5…+27).** Contained by a back fence and treeline so it
+**BACKYARD (west, y ≈ +5…+27).** Contained by a back fence and treeline so it
 reads as a yard, not prairie. Right at the **garage's rear door**, where
 the boy first carries his junk out, sit the **BBQ and the vintage Santa**,
 clustered tight against the back of the house. The staging does triple
@@ -54,9 +69,9 @@ and one propane blast catches the whole cast *and* topples the Santa in a
 single beat. The boy's firing position is centre; the firing squad lines up
 across the far end.
 
-## The east side corridor — the layout's load-bearing idea
+## The north side corridor — the layout's load-bearing idea
 
-The garage sits on the **west**, leaving the **east side of the house as a
+The garage sits on the **south**, leaving the **north side of the house as a
 corridor** running from the backyard down to the road. It's not empty — the
 old truck and the clothesline dress it — but it stays a clear *path*, and
 it does double duty:
@@ -73,12 +88,13 @@ it does double duty:
 3. **The crawl route.** Ditch → up the corridor → past the truck, under the
    clothesline → into the backyard. One continuous path.
 
-The **clothesline runs north–south along the corridor** (her floral dress
+The **clothesline runs east–west along the corridor** (her floral dress
 hangs here, ventilated in the firefight), which puts it straight in the
-sightline of the **kitchen's east window**. The kitchen sits at the
-north-east corner with windows on two walls — north into the backyard (she
-watches the massacre) and east down the corridor (she spots the sheriff
-creeping, past her own laundry). One room, both story beats, no contrivance.
+sightline of the **kitchen's north window**. The kitchen sits at the
+north-west corner with windows on two walls — west into the backyard (she
+watches the massacre) and north down the corridor (she spots the sheriff
+creeping, past her own laundry, and later fires on him through it). One
+room, every story beat, no contrivance.
 
 ## Key positions (metres)
 
@@ -87,22 +103,22 @@ creeping, past her own laundry). One room, both story beats, no contrivance.
 | House | x −7…5, y −4…5 | walls 3.2, ridge 5.2 |
 | Garage | x −13…−7, y −3…3 | **passthrough** — front door (road, y −3) + rear door (backyard, y +3) |
 | Front porch | x −5…1, y −6.4…−4 | Mom's firing position, final shot |
-| Kitchen windows | back wall x 1.4…4.2 · corridor wall y 1.6…4.2 | the two sightlines |
+| Kitchen windows | **west** wall x 1.4…4.2 · **north** wall y 1.6…4.2 | the two sightlines; both open double casements |
 | Road centre | y ≈ −20 | the escape route |
 | Ditch / crash | y −17…−14, crash ≈ x +10 | trench with culvert at driveway |
 | Boy's position | (−2, 8.5) | fires toward the firing squad |
 | Firing squad | y = 20, x −6…+6 | five figures |
-| Old truck | x 11…14, y −3.1…1.5 | corridor near the road; ricochet bounce + the sheriff's cover |
+| Old truck | x 11…14, y −3.1…1.5 | corridor near the road; ricochet bounce + the sheriff's cover, and what Mom shoots at through the north window |
 | BBQ + propane | x −6.7…−4.9, y 5.4…6.8 | beside the back stoop — the detonation |
 | Santa | (−9.25, 5.05) | at the back stoop, inside the blast zone |
-| Clothesline | x 8.6, y 5.8…14.8 | east side, runs N–S; in the kitchen east-window sightline |
+| Clothesline | x 8.6, y 5.8…14.8 | north side, runs E–W; in the kitchen north-window sightline |
 | Back fence | y = 27 | treeline beyond |
 
 ## Status
 
 Greybox massing, throwaway. Not yet designed: architectural character
 (porch clutter, siding, roof pitch, junk), terrain undulation, the clay
-look, interiors (only the kitchen window matters so far). Preview cameras
+look, interiors (the house is a shell: kitchen open across the whole west half, white walls, back door onto the stoop). Preview cameras
 `cam_site`, `cam_intro`, `cam_backyard`, `cam_kitchen`, `cam_road`,
 `cam_sidecorridor` live in the file, outside the linkable `property`
 collection.

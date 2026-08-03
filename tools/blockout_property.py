@@ -9,9 +9,18 @@ instances, in world space, into its own `<code>_blocking` collection (via
 tools/stage_shots.py or the Redwood Guides add-on) — so they reference their
 source files directly and never travel with the linkable `property` set.
 
-Site convention (documented in docs/treatment/site.md):
-  +X east / -X west, +Y north = BACKYARD, -Y south = ROAD, +Z up.
-  House faces south. Sun rises east (opening) and sets west (final sprint).
+Site convention (docs/treatment/site.md has the canonical table). The
+compass does NOT line up with the axes the way you would guess -- it is
+fixed by the sun, which is the film's clock:
+
+  -Y = EAST  = the ROAD      (sunrise; the film opens here)
+  +Y = WEST  = the BACKYARD  (sunset; the film ends here)
+  +X = NORTH = the SIDE CORRIDOR (truck, clothesline, the sheriff's crawl)
+  -X = SOUTH = the GARAGE
+  +Z = up
+
+So the house FACES EAST, the kitchen is its NORTH-WEST corner, and the
+kitchen's NORTH window is the one looking down the corridor at the truck.
 
 Everything lives in one root collection named `property` so shots can link
 it; preview cameras stay outside that collection.
@@ -53,8 +62,11 @@ PALETTE = {
     "laundry":   (0.90, 0.89, 0.86),
     # painted window casing/sash trim
     "trim":      (0.93, 0.92, 0.88),
-    # inside the shell. Never lit, so open windows read as holes, not decals.
-    "interior":  (0.05, 0.05, 0.06),
+    # painted interior: walls, window reveals, the kitchen partition. Light,
+    # not dark — a camera INSIDE the house (sq050_sh040 shoots the gun cabinet
+    # from across the kitchen) is looking at these surfaces, and a near-black
+    # interior renders the whole frame black.
+    "interior":  (0.90, 0.89, 0.85),
 }
 
 # Per-material alpha. Anything absent is fully opaque.
@@ -64,7 +76,7 @@ ALPHA = {
 
 # --- house shell ---------------------------------------------------------
 # The house used to be a solid block, so a "window" could only ever be a
-# decal on the outside. It is now a shell: real openings, a dark interior
+# decal on the outside. It is now a shell: real openings, a painted interior
 # behind them, and casements that actually swing.
 HOUSE = (-7.0, 5.0, -4.0, 5.0, 0.0, 3.2)     # x0 x1 y0 y1 z0 z1
 WALL_T = 0.25
@@ -74,19 +86,23 @@ SASH_T = 0.06                                 # casement thickness
 # name, face, a0, a1, sill, head, open_degrees
 #   face is the OUTWARD normal; a0..a1 runs along that wall
 #   (x for the ±Y walls, y for the ±X walls)
+# Names are COMPASS names; the `face` column is the blend axis it sits on.
 WINDOWS = [
-    # the two kitchen windows at the NE corner — open double casements
-    ("kitchen_north", "+Y",  1.40,  4.20, 1.20, 2.40, 62.0),
-    ("kitchen_east",  "+X",  1.60,  4.20, 1.20, 2.40, 62.0),
-    # front, facing the road: either side of the door
-    ("front_west",    "-Y", -6.00, -4.20, 1.20, 2.40,  0.0),
-    ("front_east",    "-Y",  1.99,  3.79, 1.20, 2.40,  0.0),
-    # side corridor
-    ("east_south",    "+X", -2.80, -1.40, 1.20, 2.40,  0.0),
-    # backyard, west of the stoop
-    ("north_west",    "+Y", -6.40, -5.20, 1.50, 2.40,  0.0),
-    # west gable, north of where the garage attaches (garage spans y -3..3)
-    ("west_north",    "-X",  3.40,  4.60, 1.20, 2.40,  0.0),
+    # the two kitchen windows, NW corner of the house — open double casements.
+    # `kitchen_north` is the one down the corridor at the truck: Mom watches
+    # the sheriff creep past the laundry through it, and later shoots at him
+    # through it. `kitchen_west` looks over the backyard at the massacre.
+    ("kitchen_west",  "+Y",  1.40,  4.20, 1.20, 2.40, 62.0),
+    ("kitchen_north", "+X",  1.60,  4.20, 1.20, 2.40, 62.0),
+    # front of the house, facing the road: either side of the door
+    ("front_south",   "-Y", -6.00, -4.20, 1.20, 2.40,  0.0),
+    ("front_north",   "-Y",  1.99,  3.79, 1.20, 2.40,  0.0),
+    # further down the corridor, toward the road end
+    ("north_east",    "+X", -2.80, -1.40, 1.20, 2.40,  0.0),
+    # backyard wall, south of the stoop
+    ("west_south",    "+Y", -6.40, -5.20, 1.50, 2.40,  0.0),
+    # south gable, west of where the garage attaches (garage spans y -3..3)
+    ("south_west",    "-X",  3.40,  4.60, 1.20, 2.40,  0.0),
 ]
 
 collection = None
@@ -431,15 +447,15 @@ def build(out_path, force):
     box("ground_roadside", -45, 45, -32, -17, -0.1, 0.0, "grass")
     box("road", -45, 45, -23, -17, 0.0, 0.03, "dirt")
     box("ditch_floor", -45, 45, -17, -14, -0.85, -0.80, "dirt")
-    box("ditch_wall_s", -45, 45, -17.05, -17.0, -0.85, 0.0, "dirt")
-    box("ditch_wall_n", -45, 45, -14.0, -13.95, -0.85, 0.0, "dirt")
+    box("ditch_wall_e", -45, 45, -17.05, -17.0, -0.85, 0.0, "dirt")
+    box("ditch_wall_w", -45, 45, -14.0, -13.95, -0.85, 0.0, "dirt")
     # culvert: the driveway crosses the ditch
     box("culvert", -12.5, -7.5, -17, -14, -0.1, 0.05, "gravel")
     box("driveway", -12.5, -7.5, -14, -3, 0.0, 0.03, "gravel")
     cyl("mailbox_post", -6.5, -15.5, 0.6, 0.07, 1.2, "porch")
     box("mailbox", -6.85, -6.15, -15.75, -15.25, 1.2, 1.55, "bbq")
 
-    # --- house (faces south) + attached garage on the WEST ------------------
+    # --- house (faces EAST, onto the road) + garage attached on the SOUTH ---
     hx0, hx1, hy0, hy1, hz0, hz1 = HOUSE
     house = box("house", hx0, hx1, hy0, hy1, hz0, hz1, "house")
     # hollow it out, leaving floor and ceiling — windows can then be real
@@ -463,12 +479,22 @@ def build(out_path, force):
             (-7.6, -7.6 + TRIM, dy - 0.06, dy + 0.06, 0.1, 2.4),
         ], "trim")
 
-    # kitchen partition at the NE corner: without it you see straight through
-    # the two open casements and out the far side of the house
-    box("wall_kitchen_w", 0.90, 1.15, 0.90, hy1 - WALL_T, 0.0, hz1 - WALL_T,
-        "interior")
-    box("wall_kitchen_s", 0.90, hx1 - WALL_T, 0.90, 1.15, 0.0, hz1 - WALL_T,
-        "interior")
+    # The kitchen is the whole REAR (west) half of the house, open all the way
+    # across to the back door — one partition across the middle, nothing
+    # boxing off a corner. An earlier version walled off just the NW corner,
+    # which put a wall directly in front of the sq050_sh040 camera and
+    # rendered the entire shot black.
+    box("wall_kitchen_east", hx0 + WALL_T, hx1 - WALL_T, 0.0, 0.25, 0.0,
+        hz1 - WALL_T, "interior")
+
+    # back door onto the stoop (stoop spans x -4..-1 at y 5..6.2)
+    cut(house, "back_door", *wall_spec("+Y", -3.40, -2.20, -WALL_T - 0.05,
+                                       0.05, 0.45, 2.55), material="interior")
+    multi_box("back_door_casing", [
+        wall_spec("+Y", -3.40 - TRIM, -2.20 + TRIM, 0.0, 0.05, 2.55, 2.55 + TRIM),
+        wall_spec("+Y", -3.40 - TRIM, -3.40, 0.0, 0.05, 0.45, 2.55),
+        wall_spec("+Y", -2.20, -2.20 + TRIM, 0.0, 0.05, 0.45, 2.55),
+    ], "trim")
 
     # front porch + steps (Mom fires from here in the final shot)
     box("porch_deck", -5, 1, -6.4, -4, 0.0, 0.5, "porch")
@@ -480,7 +506,7 @@ def build(out_path, force):
     # back stoop
     box("back_stoop", -4, -1, 5, 6.2, 0.0, 0.45, "porch")
 
-    # --- windows: kitchen at the NE corner sees BOTH backyard and side ------
+    # --- windows: the kitchen's two see the backyard AND down the corridor --
     # The two kitchen windows are open double casements; the rest are fixed.
     # Cuts run against the house shell, so this must follow the hollow above.
     for nm, face, a0, a1, sill, head, swing in WINDOWS:
@@ -492,9 +518,10 @@ def build(out_path, force):
     # space, via tools/stage_shots.py or the Redwood Guides add-on) — this
     # script builds only the static set below.
 
-    # old truck on blocks — moved into the east side corridor near the road
-    # end: the ricochet surface that kicks the boy's stray shot to the
-    # sheriff's tire, and an obstacle the crawling sheriff has to get past
+    # old truck on blocks, in the NORTH side corridor near the road end: the
+    # ricochet surface that kicks the boy's stray shot to the sheriff's tire,
+    # the cover the crawling sheriff ducks behind, and what Mom's rounds
+    # hammer when she opens up through the kitchen's north window
     box("truck_body", 11.0, 14.0, -3.1, 1.5, 0.5, 1.8, "truck")
     box("truck_cab", 11.0, 14.0, -3.1, -1.4, 1.8, 2.4, "truck")
 
@@ -503,9 +530,9 @@ def build(out_path, force):
     box("bbq", -6.7, -4.9, 5.4, 6.8, 0.0, 1.1, "bbq")
     cyl("propane_tank", -4.5, 6.15, 0.45, 0.28, 0.9, "bbq")
 
-    # clothesline — east side, running north-south along the corridor; her
+    # clothesline — north side, running east-west along the corridor; her
     # floral dress hangs here (ventilated in the firefight) and the kitchen's
-    # east window looks straight down it
+    # north window looks straight down it
     for i, cy in enumerate((5.78, 14.78)):
         cyl(f"line_post_{i}", 8.6, cy, 1.1, 0.09, 2.2, "porch")
     box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "laundry")
@@ -535,10 +562,10 @@ def build(out_path, force):
 
     # --- labels (site plan only; hidden before perspective renders) ---------
     for text, x, y in (
-        ("ROAD (the escape)", 0, -20), ("DITCH / CRASH", 10, -15.5),
+        ("ROAD - EAST (the escape)", 0, -20), ("DITCH / CRASH", 10, -15.5),
         ("DRIVEWAY", -10, -10), ("GARAGE", -10, 0), ("HOUSE", -1, 0),
         ("PORCH", -2, -7.4), ("KITCHEN WINDOWS", 12.5, 4.5),
-        ("SIDE CORRIDOR", 12.8, -7), ("BACKYARD", 2.5, 16),
+        ("SIDE CORRIDOR - NORTH", 12.8, -7), ("BACKYARD - WEST", 2.5, 16),
         ("FIRING SQUAD", 0, 21.6), ("TRUCK", 12.8, 3.2), ("BBQ", -6.0, 8.6),
         ("SANTA", -11.2, 4.6), ("CLOTHESLINE", 11.0, 10.5), ("BOY", 0.6, 8.5),
     ):

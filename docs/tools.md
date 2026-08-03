@@ -411,11 +411,20 @@ is hand-maintained once layout edits begin. Use `--out=` to build a throwaway
 copy and look at it before committing to a regeneration.
 
 The house is a **shell**, not a solid block: hollowed, with real openings cut
-through the walls and a dark interior behind them, so a window can be an
-actual hole. Seven windows on the schedule in `WINDOWS`; the two kitchen ones
-at the NE corner are open double casements, hinged on the outer jambs. A
-kitchen partition blocks the sight-line that would otherwise run straight
-through both open windows and out the far side of the house.
+through the walls and a painted interior behind them, so a window can be an
+actual hole. Seven windows on the schedule in `WINDOWS`, named by COMPASS
+(see the axis table in `docs/treatment/site.md` — **the compass does not line
+up with the blend axes by eye**: −Y is east, +Y is west, +X is north). The two
+kitchen windows are open double casements hinged on the outer jambs:
+`kitchen_north` looks down the side corridor at the truck (Mom watches the
+sheriff creep, and later fires on him, through it) and `kitchen_west` looks
+over the backyard.
+
+The kitchen is the **whole rear/west half** of the house, open across to the
+back door — one partition across the middle. Walling off just the corner put
+a wall directly in front of the `sq050_sh040` camera and rendered that shot
+black, and the interior is painted light for the same reason: cameras go
+*inside* this house.
 
 Three things worth knowing:
 
