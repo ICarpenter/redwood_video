@@ -181,6 +181,14 @@ def build(out_path, force):
     # --- ground, road, ditch, driveway -------------------------------------
     # the yard and the roadside are separate slabs so the ditch between them
     # is an actual open trench the cruiser can nose into
+    # Ground out to the visual horizon. The detailed ground stops at ~45 m, so
+    # past that the world HDRI's dark lower hemisphere showed as a black band
+    # against the sky — invisible at eye level, but it dominated the craned
+    # wide in sq060_sh030. 900 m sits inside every layout camera's 1000 m
+    # clip_end, which puts its edge ~1.3 deg below the horizon from the
+    # highest camera in the film: close enough that land meets sky.
+    # Top is 2 cm BELOW the detailed ground so the two never z-fight.
+    box("ground_far", -900, 900, -900, 900, -0.16, -0.02, "grass")
     box("ground_yard", -45, 45, -14, 45, -0.1, 0.0, "grass")
     box("ground_roadside", -45, 45, -32, -17, -0.1, 0.0, "grass")
     box("road", -45, 45, -23, -17, 0.0, 0.03, "dirt")
