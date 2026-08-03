@@ -397,6 +397,119 @@ transform: shot renders already have AgX baked in, and applying AgX again in
 the edit visibly washes out every strip (verified: double-transformed frames
 measure 25 dB PSNR against source vs. 102 dB when passed through untouched).
 
+### `tools/fire_rig.py` — make a linked gun fireable
+
+```sh
+# add the rig to machine_gun / rosco / big_pistol inside props.blend
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/fire_rig.py -- --install
+
+# override one gun instance in a shot and key a looping burst on it
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/fire_rig.py -- --arm=sq060_sh010:machine_gun.011 \
+    [--period=18] [--start=F] [--end=F] [--dry-run] [--force]
+```
+
+Guns are linked assets, and **a Collection custom property cannot be
+animated** — Collections have no `animation_data`, and a driver reading one
+does not survive linking (both measured). So each gun collection carries a
+control object instead:
+
+```
+<p>_ctrl   ["fire"] 0..1     <- the one thing a shot keyframes
+  <p>_rig  driven: kick + muzzle rise
+    geometry, <p>_flash (scale driven)
+```
+
+`--arm` library-overrides one instance, because an override is the only way a
+shot reaches inside a linked collection. The override **deletes the instance
+empty**, so `--arm` snapshots the empty's parent, transform and constraints
+first and transplants them onto `<p>_ctrl`.
+
+Two traps, both hit for real:
+
+- The override's objects land in the overridden gun collection, **not** in
+  `<scene>_blocking`. A blocking script that clears `<scene>_blocking` and
+  re-adds a gun therefore leaves **two** guns in the shot — one armed and
+  static, one animated and dead. Check for a stray gun instance after
+  re-running any blocking script over an armed shot.
+- Idempotency is keyed on the instance still existing, never on "is there
+  already a `<p>_ctrl` in this scene" — the latter is true as soon as *any*
+  gun of that type is armed, and silently refuses the second gun.
+
+### `tools/squib.py` — geo-nodes damage squibs
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/squib.py -- --install [--force]
+"$BLENDER" --background --python-exit-code 1 --python tools/squib.py -- \
+    --apply=<scene>:<object> [--surface=dirt] [--start=F] [--count=N] \
+    [--target=x,y,z] [--direction=x,y,z] [--life=N]
+```
+
+Builds `assets/fx/squibs.blend` holding two node groups and seven materials.
+Surfaces: `dirt grass plastic wood stucco metal`.
+
+- **`squib_burst`** — scatters impacts over a model (`Count` density,
+  `Stagger` spread in time) or fires one at a `Target` point along a
+  `Direction`. Driven by Scene Time off a single `Start Frame`, so the
+  modifier plays wherever it is dropped, with no keys of its own.
+- **`squib_impacts`** — the same burst, but driven by **baked hit points**:
+  every vertex is a real raycast hit carrying `hit_frame` (float) and
+  `hit_normal` (vector) named attributes. One modifier covers a whole burst
+  landing at different times on the same object. This is what `gunfire.py`
+  writes.
+
+Each impact throws `Debris Count` chunks that flare and die on a
+`min(t*8,1)*(1-t)` envelope, and grows a dark hole that reaches full size at
+t=0.25 and **stays** — the damage is permanent, the debris is not.
+
+`--target`/`--direction` are given in **world** space on the CLI and converted
+to the object's local space, because the sockets are object-local; passing
+world values put impacts off the model and decals edge-on.
+
+### `tools/gunfire.py` — connect the guns to the squibs
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/gunfire.py -- --bake=<scene>:<gun_ctrl> \
+    [--surface=dirt] [--delay=3] [--life=12] [--range=120] \
+    [--impulse] [--dry-run] [--force]
+```
+
+The whole chain in one command: read every frame the gun's `["fire"]` control
+goes off, cast a ray out of the muzzle, find what it hit, and bake an impact
+there that lands `--delay` frames later. Impacts are grouped per target and
+written as one points object per target, parented to it, carrying
+`hit_frame`/`hit_normal` and a `squib_impacts` modifier.
+
+**`--dry-run` first, always.** It prints each shot, what it hit and where,
+which doubles as an aim audit of the blocking — it is how the two
+180°-backwards guns in the solo were found.
+
+Facts worth keeping:
+
+- `scene.ray_cast` **does** see collection-instance geometry, but returns the
+  source object *inside* the linked collection (e.g. `af_torso`), not the
+  instance. The instancer is recovered by matching the returned instance
+  matrix.
+- Guns fire along **local +X** (all three take a positive `muzzle_x`). Aiming
+  a `-Y`-authored guide at a target uses `heading(from, to)`; a gun needs
+  `heading(from, to) - 90`. Using `+ 90` aims it exactly backwards.
+- Baked, not live: a live geometry-nodes raycast would have to live on the
+  *gun*, so its holes would travel with the gun instead of sticking to the
+  wall.
+- The points are written in the **target's local space**, so the parent
+  inverse stays identity. Setting `matrix_parent_inverse` as well applies the
+  inverse twice and parks every impact near the world origin.
+- `--impulse` **records** force, it does not simulate it: per-hit frames,
+  world points and directions are stored as custom properties for a
+  hand-animated reaction (or a later sim) to read. A rigid-body sim needs
+  collision bodies the linked property does not have — a simulated hubcap in
+  `sq040_sh044` fell straight through the ground to z = −2.8.
+- Defaults are tuned for a close shot. At 20 m a 0.06 m chunk is invisible;
+  raise `Debris Scale`/`Hole Size` on the modifier for wide coverage.
+
 ### `tools/encode_delivery.sh` — final masters
 
 ```sh
