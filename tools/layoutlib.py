@@ -87,12 +87,24 @@ def blocking_objects(scene) -> list:
     sq040_sh050, Danny's head in sq040_sh064). Judging readiness by
     instance-empties alone silently left such a shot as a slug in the edit
     even though it was fully blocked and animated.
+
+    Set dressing does not count. The clothesline is staged into every scene
+    (it left the linked property so the blast could knock it down), and
+    counting it made all 50 shots look blocked -- which would have cut the
+    ten unblocked ones into the edit as empty yards instead of slugs.
     """
     coll = blocking_collection(scene)
     if coll is None:
         return []
-    return [o for o in coll.objects if o.type != "EMPTY"
-            or o.instance_collection is not None]
+    out = []
+    for o in coll.objects:
+        if o.type == "EMPTY" and o.instance_collection is None:
+            continue
+        ic = o.instance_collection
+        if ic is not None and ic.name in guides.SCENERY:
+            continue
+        out.append(o)
+    return out
 
 
 def shot_ready(scene) -> bool:

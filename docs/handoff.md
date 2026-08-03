@@ -19,28 +19,49 @@ machinery), `layout.md` (the layout & drawing workflow).
 
 ## Where we are
 
+Written 2026-07-20, status updated 2026-08-03.
+
 | Phase | Status |
 |-------|--------|
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
-| 3. Layout / animatic | **in progress** — infrastructure done; 1 shot drawn, 4 blocked out in world space |
-| 4. Asset production | started — property blockout + 13 scale guides + garage passthrough |
+| 3. Layout / animatic | **in progress — 40 of 50 shots blocked, through the end of the solo (frame 3513)** |
+| 4. Asset production | greybox — property shell, 19 guides, 2 mini-sets, squib FX |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
 
-The film is **watchable right now**: `edit/edit.blend` holds the track,
-9 section markers, 5 layout strips and 34 slugs. It upgrades in place as
-blocking, drawings, and renders land.
+The film is watchable now: `edit/edit.blend` cuts the track, 9 section
+markers, 40 live layout strips and 10 slugs. Nothing is rendered yet, so
+every strip is a **linked scene strip** — the edit previews `layout.blend`
+directly, and you must **reload libraries** after a headless run to see
+changes.
 
-Layout state today:
+### What is left
 
-| Shot | State |
-|------|-------|
-| sq010_sh010 | drawn (119 strokes) — camera solved statically from the old fixed-camera framing |
-| sq010_sh020 | blocked out (camera + box — the package has landed, the truck's already gone) |
-| sq010_sh030 | blocked out (camera + boy + box, at the screen door) |
-| sq010_sh040 | blocked out (camera + boy + box, dragging up the driveway) |
-| sq010_sh045 | blocked out (camera + boy + box, reverse through the garage passthrough) |
-| the other 34 | empty layout scenes — slug tier in the edit |
+Ten shots, frames 3514–4780 — everything after the mushroom cloud:
+
+| Shots | Frames | What |
+|---|---|---|
+| `sq070_sh010…sh050` | 3514–4166 | aftermath: aerial over the charred yard, dazed trio, recognition, sweet-tea truce, Santa tips over |
+| `sq080_sh010…sh040` | 4167–4534 | Mom final boss, the look, she unloads, final sprint under fire |
+| `sq090_sh010` | 4535–4780 | title card takes one last bullet hole |
+
+They are empty layout scenes sitting at slug tier. `sq070` opens on the
+state `sq060_sh030` ends in: clothesline down, three people flat on the
+grass, mushroom cloud over the BBQ, and the sheriff finally able to see he
+has been trading fire with a kid and his mother.
+
+### The gunfire chain, if you have not met it
+
+Four tools, in this order. Each is documented in `tools.md`.
+
+    fire_rig.py --arm   →  a gun that can fire      (["fire"] on a control)
+    aim_gun.py          →  where it points per shot (TRACK_TO on an empty)
+    gunfire.py --bake   →  raycast → damage         (squibs where rounds land)
+    squib.py --apply    →  a hand-placed impact     (no shooter needed)
+
+`gunfire.py --dry-run` prints every shot and what it hit, and doubles as an
+aim audit of the blocking — it is how most of the staging errors in the solo
+were caught.
 
 ## Nine conventions that will bite you if you forget them
 

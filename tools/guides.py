@@ -97,6 +97,12 @@ SETS: list[GuideSpec] = [
     SET_GUIDE,
     GuideSpec("trench", TRENCH_FILE, "set", 2.4),
 ]
+# Set dressing: staged in every shot's blocking collection so it appears
+# wherever the camera can see it, but it is scenery, not a story beat. A shot
+# that contains ONLY these is still an empty shot, and must stay a slug in the
+# edit rather than cutting to an empty yard.
+SCENERY: frozenset[str] = frozenset({"clothesline"})
+
 DROPPABLE: list[GuideSpec] = GUIDES + SETS
 
 
