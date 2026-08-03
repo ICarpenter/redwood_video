@@ -106,6 +106,27 @@ STAGING = {
             ("box", guides.PROPS_FILE, (-10.0, -1.0, 0.0), 0),
         ],
     },
+    # "santa CU - THE SETUP" — hard cut off mom's warning onto the thing she
+    # just told him not to shoot. The santa's world position is NOT a framing
+    # choice: (-7.839, 2.198, 0.1) rotZ -90 is where it already stands in
+    # sq010_sh040, sq010_sh045 and sq020_sh030, so it is copied verbatim
+    # (invariant 3 — blocking is world space). Only the camera differs.
+    #
+    # Framing: it faces -X (authored -Y, rotZ -90), so the duct-tape patch on
+    # its front and its face are only visible from the west. This seed put the
+    # camera 3.42 m out, ~15 deg off its facing axis, for a clean isolated CU.
+    #
+    # SUPERSEDED BY HAND, 2026-08-02: the shot was reframed to pull the boy
+    # into the foreground so the Santa reads as sitting in his line of fire,
+    # and mom/machine_gun/boy were added to the blocking. This entry is only
+    # the seed — the camera has moved, so stage_shots leaves it alone, and the
+    # numbers below no longer describe what the shot looks like.
+    "sq020_sh044": {
+        "camera": ((-11.14, 1.27, 1.45), (-7.84, 2.15, 1.35), 55),
+        "blocking": [
+            ("santa", guides.PROPS_FILE, (-7.839, 2.198, 0.1), -90),
+        ],
+    },
 }
 
 
