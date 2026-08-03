@@ -41,6 +41,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
 
 LEAD = 4          # frames before the shot that the aim key is set
+SNAP = 3          # how far an --at may sit from a real fire frame
 LAG = 16          # trail mode: how far behind the runner the rounds land
 SPREAD = 0.8      # trail mode: side-to-side wander of the walking spray
 GROUND_Z = 0.02   # trail mode: aim just above the turf, not into it
@@ -154,10 +155,18 @@ def run(scene_name, ctrl_name, mode, targets, follow_name, lag, spread,
         points = trail_points(scene, follow, frames, lag, spread, ground_z)
 
     for f, xyz in overrides.items():
-        if f in frames:
-            points[frames.index(f)] = Vector(xyz)
+        # Snap to the nearest fire frame within SNAP. Re-keying a burst shifts
+        # every fire frame by a frame or two, so hand-written --at values go
+        # stale constantly -- and silently, because a rejected override just
+        # falls back to the default target. That is how a burst aimed at a
+        # wall ended up putting four rounds through Mom's torso.
+        near = min(frames, key=lambda g: abs(g - f))
+        if abs(near - f) <= SNAP:
+            if near != f:
+                print(f"  note: --at={f} snapped to fire frame {near}")
+            points[frames.index(near)] = Vector(xyz)
         else:
-            print(f"  warning: --at={f} is not a fire frame; ignored "
+            print(f"  warning: --at={f} is not near any fire frame; IGNORED "
                   f"(fires at {frames})")
 
     for f, p in zip(frames, points):

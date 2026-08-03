@@ -530,12 +530,13 @@ def build(out_path, force):
     box("bbq", -6.7, -4.9, 5.4, 6.8, 0.0, 1.1, "bbq")
     cyl("propane_tank", -4.5, 6.15, 0.45, 0.28, 0.9, "bbq")
 
-    # clothesline — north side, running east-west along the corridor; her
-    # floral dress hangs here (ventilated in the firefight) and the kitchen's
-    # north window looks straight down it
-    for i, cy in enumerate((5.78, 14.78)):
-        cyl(f"line_post_{i}", 8.6, cy, 1.1, 0.09, 2.2, "porch")
-    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "laundry")
+    # The clothesline is NOT here any more. It runs along the north corridor
+    # (her floral dress hangs here, ventilated in the firefight, and the
+    # kitchen's north window looks straight down it) but the mushroom cloud
+    # has to knock it over, and this collection is linked at identity in every
+    # layout scene and never moves. Anything destroyed on camera has to be a
+    # prop the shot instances and blocks in world space, so it now lives in
+    # props.blend as the `clothesline` guide, instanced at (8.6, 10.28, 0).
 
     # --- yard boundary: fence + treeline contain the backyard ---------------
     for i in range(15):

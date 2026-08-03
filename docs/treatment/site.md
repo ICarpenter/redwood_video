@@ -76,6 +76,12 @@ corridor** running from the backyard down to the road. It's not empty — the
 old truck and the clothesline dress it — but it stays a clear *path*, and
 it does double duty:
 
+The sheet is also what the sheriff cannot see past. Running west up the
+corridor he keeps the hanging laundry between himself and the boy, and the
+truck between himself and Mom — he spends the firefight shooting at a house
+he cannot see into. The blast drops the line, and *that* is when he finds out
+he has been trading fire with a kid and his mother.
+
 1. **The ricochet bounce.** A stray round off the boy's gun kicks off the
    **old truck**, parked in the corridor near its road end, and zings out
    to blow the sheriff's tire. The truck is the surface that makes the gag
@@ -111,7 +117,7 @@ room, every story beat, no contrivance.
 | Old truck | x 11…14, y −3.1…1.5 | corridor near the road; ricochet bounce + the sheriff's cover, and what Mom shoots at through the north window |
 | BBQ + propane | x −6.7…−4.9, y 5.4…6.8 | beside the back stoop — the detonation |
 | Santa | (−9.25, 5.05) | at the back stoop, inside the blast zone |
-| Clothesline | x 8.6, y 5.8…14.8 | north side, runs E–W; in the kitchen north-window sightline |
+| Clothesline | x 8.6, y 5.8…14.8 | north side, runs E–W; in the kitchen north-window sightline. **A prop, not part of the set** — the blast knocks it down, and the linked property never moves. Instanced at (8.6, 10.28, 0). |
 | Back fence | y = 27 | treeline beyond |
 
 ## Status

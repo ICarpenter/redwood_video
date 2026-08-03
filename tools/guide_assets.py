@@ -356,6 +356,21 @@ def build_big_pistol(c):
     fire_rig(c, "bp", muzzle_x=0.37, muzzle_z=0.34, flash_r=0.07, flash_len=0.15)
 
 
+def build_clothesline(c):
+    """Posts + hanging sheet, authored about the line's own base centre.
+
+    Lived in the property set until the mushroom cloud needed to knock it
+    down. The property is linked at identity in every layout scene and never
+    moves (see CLAUDE.md), so anything that has to be destroyed on camera
+    cannot live inside it — it has to be a prop the shot instances and blocks
+    in world space like any other. Instanced at (8.6, 10.28, 0) it reproduces
+    exactly where it stood in the set, and rotating that instance topples it.
+    """
+    for i, y in ((0, -4.50), (1, 4.50)):
+        cyl(c, f"cl_post_{i}", 0.0, y, 1.10, 0.09, 2.20, "tin")
+    box(c, "cl_laundry", 0.0, 0.02, 1.80, 0.20, 7.20, 0.60, "white")
+
+
 def build_santa(c):
     box(c, "sa_body", 0, 0, 0.60, 0.60, 0.42, 1.20, "santa")
     box(c, "sa_belt", 0, -0.01, 0.72, 0.62, 0.44, 0.12, "dark")
@@ -562,6 +577,7 @@ BUILDERS = {
     "egg_salad_sando": build_egg_salad_sando,
     "gun_cabinet": build_gun_cabinet,
     "mushroom_cloud": build_mushroom_cloud,
+    "clothesline": build_clothesline,
 }
 
 
