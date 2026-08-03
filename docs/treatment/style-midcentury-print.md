@@ -10,6 +10,9 @@ side. If it wins or places, merge it into `style.md` then.
 Refs: `refs/styles/` (Palm Springs / desert-modern poster art — two gouache
 prints, three flat-vector prints). Tools evaluated: Ucupaint (free, layered
 texture painting), Deep Paint Pro (~$40, gouache/pastel brushes + presets).
+Technique ref: `~/blender/add-ons/cody-gindy-kettle-patreon-02.blend`
+(painted-normals demo, examined 2026-08-03 — paid content, kept outside
+the repo).
 
 ## Relationship to style.md
 
@@ -46,22 +49,48 @@ progressively ruined by it.
 
 ## The shading machine
 
-One master node group worn by everything, plus one shared overlay:
+The unifying technique — proven by the Gindy kettle file — is
+**hand-painted normal dabs**: brush strokes painted into the normal
+channel, each dab one flat color = one flat facet catching light as a
+single plane. The surface *looks* hand-laid gouache but shades
+physically, so the grain reacts to every light change — the look holds
+AND the world stays lit. Adapted for this film as **tangent-space tilt
+dabs** on a quantized palette (Gindy paints absolute object-space
+normals; tangent tilts need no per-asset bake and deform correctly on
+characters).
 
-- **`MCM_Toon`** — flat albedo in, poster bands out. Diffuse →
-  Shader-to-RGB → snapped 2–3 step ramp used as a *mask* that selects
-  between lit color (the albedo) and shade color (albedo × a **global
-  shadow tint**). Poster shadows shift hue, not just value; one film-wide
-  control decides whether shadows lean umber or teal.
-- **Terminators are hard but not razor** — a few pixels of softness so
-  edges read as brush-laid and don't shimmer in motion.
-- **`MCM_Grain`** — triplanar world-space noise nudging each band ±4% in
-  value/saturation, one global scale, so pigment "settles" identically on
-  every object and sticks to surfaces (no swimming).
+- **`MCM_Toon`** — flat painted albedo in, poster shading out. The tilt
+  map perturbs the normal; diffuse is then either quantized to 2–3
+  poster bands (Shader-to-RGB) *or* left soft and physical — **A/B at
+  the test frame**: with dabs carrying the painterly read, banding may
+  be redundant. Either way the terminator breaks along stroke shapes,
+  never a smooth CG gradient, and shadow color runs through the
+  **global shadow tint** (poster shadows shift hue, not just value).
+- **The tilt palette** (replaces the old procedural `MCM_Grain` noise —
+  dabs killed it). A swatch = direction × lean, encoded as a
+  tangent-space normal color; flat blue = no tilt. Crucially the two
+  palettes are **independent axes**: a dab-kit entry is an
+  (albedo × tilt) *pair*, and one surface uses several tilts of the same
+  albedo — neighboring dabs disagreeing slightly about direction is the
+  entire gouache effect.
+  - **12 directions, universal film-wide** — one hand paints the movie.
+    No per-asset bakes; the same swatches serve every object.
+  - **Magnitude tiers are the material axis:** whisper (~3°), soft
+    (~7°), medium (~14°), strong (~25°). Family legality: stucco /
+    siding / cream surfaces = whisper+soft; terrain / road =
+    soft+medium; grass & foliage = medium+strong with vertical-biased
+    directions and elongated dabs; diecast = whisper, with strong
+    reserved for crease accents; characters = whisper+soft only.
+  - **Albedo drift:** each palette swatch carries 2–3 legal drift
+    variants (warm / cool / dusk) for dab-level color variation.
+  - **Distance scaling:** tilt magnitude steps down with the depth
+    bands — far layers get whisper-or-nothing. Painterliness is a
+    foreground privilege, exactly like the refs' flat backgrounds.
 - **Albedo law:** albedo may contain placed color variation (Ucupaint
   layers: a warm patch on a wall, a darker pass at a roofline, painted
-  occlusion accents under eaves) but **never directional shading**. Light
-  direction belongs to the render, always.
+  occlusion accents under eaves) but **never directional shading** —
+  light direction belongs to the render — and never faked relief:
+  surface facets belong to the tilt map alone.
 - **Matte is the world's law.** Specular is zero film-wide. The only gloss
   in the entire film belongs to wet-paint FX.
 - **Glass is a graphic fill** — windows and truck glass render as flat
@@ -127,6 +156,9 @@ as the world, 2-band, mottled, matte:
   off-register: the tee is a print within the print.
 - Character DNA still comes from `refs/boy/`, `refs/mom/`, `refs/cop/` —
   wardrobe and grooming silhouettes, translated to flat shapes.
+- **Dab tiers: whisper + soft only.** Tangent-space tilts deform
+  correctly with the rig, so the grain survives animation; the gentle
+  tiers keep flesh calm while the world around it gets brushier.
 
 ## Motion
 
@@ -153,7 +185,9 @@ film: saturated, deeper-hued, with slow drips.
   that never fully dried.
 - **Gunfire:** muzzle flashes are flat comic starburst cards stamped on
   2s. Impacts splatter wet paint onto surfaces (dynamic paint / decal
-  splats).
+  splats). Implementation pattern proven in the kettle file's flames:
+  painted cards + a geo-nodes flipbook (Scene Time drives a random card
+  pick per frame) — the same rig serves flashes and starbursts.
 - **The head-pop xylophone run:** figures burst into splats with starburst
   stamps — the county-fair shooting-gallery idea from `style.md`'s back
   pocket merges in for free.
@@ -179,11 +213,38 @@ out-prints the world around it.
 
 ## Production notes (Blender / EEVEE)
 
-- **EEVEE-only.** Shader-to-RGB is an EEVEE feature; this candidate cannot
-  render in Cycles. Costs nothing — the pipeline is EEVEE.
+- **EEVEE remains the pipeline.** The banded variant needs Shader-to-RGB
+  (EEVEE-only); the soft-physical variant is engine-agnostic. Nothing
+  here wants Cycles.
 - **The style bans most render cost by law:** no raytraced reflections, no
   AO pass, no bloom, no cloth sim, no hair systems, no specular outside
   wet paint. Frames render extremely fast.
+- **The dab kit (Ucupaint):** one layer per (albedo × tilt) pair in use —
+  Color channel override = the swatch, Normal channel override = the
+  tilt color, and the *painted element is the layer's alpha*. One
+  stroke writes both channels with different colors: Substance
+  Painter's multi-channel brush, rebuilt out of palette law. The kit
+  ships as a template and is appended per asset.
+- **Generated, not hand-managed:** a `tools/` script emits the palette
+  artifacts — picker-sheet PNG, named kit layers, the per-family
+  legality table. Retune the tiers → rerun → nothing repainted (old
+  swatches stay valid; new directions interleave).
+- **Escalation path if the kit chafes:** (1) two-pass painting — normals
+  then color; the kettle file's color maps are nearly flat, so pass two
+  is cheap; (2) the layer-pair kit; (3) a small "commit dab" operator
+  (paint a scratch image; stamp alpha×colorA into albedo and
+  alpha×colorB into the tilt map; clear). Build (3) only if (1)/(2)
+  prove annoying in real painting.
+- **Object-space variant in the back pocket** (Gindy's original: bake
+  object-space normals, overpaint sampling from the bake — full
+  resculpting-by-paint): rigid hero props only, unique UVs required,
+  never on deforming meshes.
+- **Noir-window trick** (stolen from the kettle file): painted
+  window-light texture + a light-path shadow-ray gag casts painted
+  mullion shadows — a direct fit for the garage interior.
+- **Value-check toggle:** a compositor HSV with saturation dropped to 0
+  for black-and-white value studies — the kettle file shipped saved in
+  that state; keep it as a one-click check while lighting.
 - **Blockout economics:** flat shading *wants* simplified geometry, and
   the pipeline already has blockout-grade geometry everywhere. The
   distance from the current animatic to final frames is shorter under this
@@ -199,7 +260,8 @@ out-prints the world around it.
 
 - Outlines / linework of any kind (Freestyle, Line Art, grease pencil)
 - Raytraced reflections/refractions, render AO, bloom/glow
-- Smooth CG gradients inside a shape (the band system is the gradient)
+- Smooth CG gradients inside a shape (shading variation comes from light
+  + tilt dabs, never from painted or procedural gradients)
 - Photographic textures anywhere
 - Camera projections
 - Soft-body droop/melt comedy on objects (molten *aftermath* is lawful
@@ -209,6 +271,9 @@ out-prints the world around it.
 
 ## Maybes (decide late, by test render)
 
+- **Poster banding vs soft physical diffuse** — with tilt dabs carrying
+  the painterly read, 2–3 band quantization may be redundant. A/B the
+  test frame both ways; the kettle file argues soft-physical is enough.
 - **Motion blur** — prints don't blur, but the solo's fast action may want
   it. Test with and without.
 - **DOF** — same: poster flatness argues no, cinematic camera may argue
