@@ -8,9 +8,9 @@ import guides
 
 class RegistryTest(unittest.TestCase):
     def test_counts(self):
-        self.assertEqual(len(guides.GUIDES), 13)
-        self.assertEqual(len(guides.guides_for_file(guides.CAST_FILE)), 3)
-        self.assertEqual(len(guides.guides_for_file(guides.PROPS_FILE)), 10)
+        self.assertEqual(len(guides.GUIDES), 16)
+        self.assertEqual(len(guides.guides_for_file(guides.CAST_FILE)), 4)
+        self.assertEqual(len(guides.guides_for_file(guides.PROPS_FILE)), 12)
 
     def test_names_unique(self):
         names = [g.name for g in guides.GUIDES]
@@ -34,7 +34,7 @@ class RegistryTest(unittest.TestCase):
         self.assertAlmostEqual(box.height, 1.2)
 
     def test_droppable_includes_property_set(self):
-        self.assertEqual(len(guides.DROPPABLE), 14)
+        self.assertEqual(len(guides.DROPPABLE), 18)
         self.assertIn("property", [g.name for g in guides.DROPPABLE])
         prop = guides.guide_by_name("property")
         self.assertIsNotNone(prop)
@@ -78,3 +78,28 @@ class CatsFileTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSets(unittest.TestCase):
+    def test_sets_are_droppable_but_not_guides(self):
+        names = [s.name for s in guides.SETS]
+        self.assertEqual(names, ["property", "trench"])
+        for s in guides.SETS:
+            self.assertNotIn(s.name, [g.name for g in guides.GUIDES])
+            self.assertIn(s.name, [d.name for d in guides.DROPPABLE])
+            self.assertEqual(s.catalog, "set")
+
+    def test_trench_resolves_to_its_own_file(self):
+        t = guides.guide_by_name("trench")
+        self.assertIsNotNone(t)
+        self.assertEqual(t.file, guides.TRENCH_FILE)
+        self.assertTrue(t.file.startswith("assets/envs/"))
+
+    def test_sheriff_war_is_a_cast_guide(self):
+        w = guides.guide_by_name("sheriff_war")
+        self.assertIsNotNone(w)
+        self.assertEqual(w.file, guides.CAST_FILE)
+        self.assertEqual(w.catalog, "cast")
+        # same nominal height as the sheriff: it is the same man
+        sh = guides.guide_by_name("sheriff")
+        self.assertEqual(w.height, sh.height)

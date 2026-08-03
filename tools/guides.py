@@ -31,6 +31,7 @@ def blocking_collection_name(scene_name: str) -> str:
 CAST_FILE = "assets/chars/cast.blend"
 PROPS_FILE = "assets/props/props.blend"
 PROPERTY_FILE = "assets/envs/property/property.blend"
+TRENCH_FILE = "assets/envs/trench/trench.blend"
 
 # Hard-coded catalog UUIDs → regenerating the cats file never churns it.
 # key -> (uuid, catalog path, simple name)
@@ -63,18 +64,37 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("santa", PROPS_FILE, "props", 1.8),
     GuideSpec("box", PROPS_FILE, "props", 1.2),
     GuideSpec("scale_stick", PROPS_FILE, "props", 2.0),
+    GuideSpec("egg_salad_sando", PROPS_FILE, "props", 0.07),
+    GuideSpec("gun_cabinet", PROPS_FILE, "props", 1.95),
+    # Flashback variant of the sheriff: same body, M1 helmet instead of the
+    # stetson. A separate collection rather than a reposed instance — guides
+    # are rigid, so a variant is the documented way to get a distinct look
+    # (see docs/layout.md).
+    GuideSpec("sheriff_war", CAST_FILE, "cast", 1.8),
 ]
 
 # The whole property SET is linkable too, but it is NOT built by guide_assets
 # (marked in place via --mark-property) and never dimension-checked. Its
 # height is nominal (house ridge). Kept out of GUIDES so the build/check
-# paths stay "cast + props only". DROPPABLE is the 13 guides plus the
+# paths stay "cast + props only". DROPPABLE is the 14 guides plus the
 # property set, used by guide_by_name and shotlist asset validation — NOT by
 # the add-on's Add Guide dropdown, which offers GUIDES only: the property is
 # linked at identity in every layout scene already and must never be
 # instanced again (see docs/layout.md).
 SET_GUIDE = GuideSpec("property", PROPERTY_FILE, "set", 5.2)
-DROPPABLE: list[GuideSpec] = GUIDES + [SET_GUIDE]
+
+# Mini sets: single-asset files under assets/envs/<name>/<name>.blend, each
+# exposing ONE root collection named after itself. Unlike `property` these ARE
+# meant to be instanced — a mini set is pulled into the one shot that needs it
+# and placed away from the property, which stays linked at identity underneath.
+# Like `property` they are NOT dimension-checked: a trench's lowest point is
+# its floor at z<0, which would fail the feet-at-zero rule every character
+# guide has to satisfy.
+SETS: list[GuideSpec] = [
+    SET_GUIDE,
+    GuideSpec("trench", TRENCH_FILE, "set", 2.4),
+]
+DROPPABLE: list[GuideSpec] = GUIDES + SETS
 
 
 def guides_for_file(file: str) -> list[GuideSpec]:

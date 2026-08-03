@@ -47,6 +47,14 @@ PALETTE = {
     "truck":     (0.45, 0.28, 0.20),
     "marker":    (0.85, 0.20, 0.55),
     "label":     (0.05, 0.05, 0.05),
+    # hanging sheets on the clothesline. Its own entry because it used to
+    # borrow "window", and windows are now transparent — sheets are not.
+    "laundry":   (0.90, 0.89, 0.86),
+}
+
+# Per-material alpha. Anything absent is fully opaque.
+ALPHA = {
+    "window": 0.25,
 }
 
 collection = None
@@ -60,10 +68,21 @@ def mat(name):
         m.use_nodes = True
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         col = PALETTE.get(name, (0.5, 0.5, 0.5))
+        alpha = ALPHA.get(name, 1.0)
         if bsdf:
             bsdf.inputs["Base Color"].default_value = (*col, 1.0)
             bsdf.inputs["Roughness"].default_value = 0.85
-        m.diffuse_color = (*col, 1.0)
+            bsdf.inputs["Alpha"].default_value = alpha
+        if alpha < 1.0:
+            # EEVEE Next alpha-blends via surface_render_method (5.x); older
+            # builds only have blend_method — set whichever exists. Same
+            # approach guide_assets.py uses for the cruiser's glass.
+            if hasattr(m, "surface_render_method"):
+                m.surface_render_method = "BLENDED"
+            elif hasattr(m, "blend_method"):
+                m.blend_method = "BLEND"
+            m.show_transparent_back = False
+        m.diffuse_color = (*col, alpha)
     return m
 
 
@@ -222,7 +241,7 @@ def build(out_path, force):
     # east window looks straight down it
     for i, cy in enumerate((5.78, 14.78)):
         cyl(f"line_post_{i}", 8.6, cy, 1.1, 0.09, 2.2, "porch")
-    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "window")
+    box("laundry", 8.5, 8.7, 6.7, 13.9, 1.5, 2.1, "laundry")
 
     # --- yard boundary: fence + treeline contain the backyard ---------------
     for i in range(15):
