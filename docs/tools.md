@@ -397,6 +397,41 @@ transform: shot renders already have AgX baked in, and applying AgX again in
 the edit visibly washes out every strip (verified: double-transformed frames
 measure 25 dB PSNR against source vs. 102 dB when passed through untouched).
 
+### `tools/blockout_property.py` — build the greybox set
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/blockout_property.py [-- --force] \
+    [-- --out=<path>] [-- --previews=<dir>]
+```
+
+Builds `assets/envs/property/property.blend`: house, garage, road, ditch,
+yards, fence, treeline. **Refuses to overwrite without `--force`** — the file
+is hand-maintained once layout edits begin. Use `--out=` to build a throwaway
+copy and look at it before committing to a regeneration.
+
+The house is a **shell**, not a solid block: hollowed, with real openings cut
+through the walls and a dark interior behind them, so a window can be an
+actual hole. Seven windows on the schedule in `WINDOWS`; the two kitchen ones
+at the NE corner are open double casements, hinged on the outer jambs. A
+kitchen partition blocks the sight-line that would otherwise run straight
+through both open windows and out the far side of the house.
+
+Three things worth knowing:
+
+- **`box()` used to wind its faces inside out.** Nothing noticed for a long
+  time (EEVEE shades backfaces with a flipped normal, so a greybox looks
+  identical either way), but a boolean reads an inverted solid as its own
+  complement and every cut silently did nothing while reporting FINISHED. All
+  mesh builders now recalculate normals.
+- **The far ground is a rising frame, not a slab.** A slab roofs over the
+  roadside ditch. It rises ~42 m over 4 km because the sky asset draws a hard
+  dark band *above* the geometric horizon — measured as 6 near-black rows with
+  the ground continuous right up to them, so no flat ground can ever cover it.
+- Casement sashes are placed by writing `matrix_world` directly. The closed
+  pose of the second leaf of a pair is a **reflection**, and no Euler rotation
+  produces one.
+
 ### `tools/fire_rig.py` — make a linked gun fireable
 
 ```sh
@@ -468,6 +503,43 @@ t=0.25 and **stays** — the damage is permanent, the debris is not.
 to the object's local space, because the sockets are object-local; passing
 world values put impacts off the model and decals edge-on.
 
+### `tools/aim_gun.py` — point an armed gun at something
+
+```sh
+# step across targets, one per shot
+"$BLENDER" --background --python-exit-code 1 --python tools/aim_gun.py -- \
+    --scene=sq040_sh050 --ctrl=mg_ctrl.002 --mode=targets \
+    --targets=action_figure.018,action_figure.019 [--part-z=1.2]
+
+# walk the ground behind a runner: near misses that chase them
+"$BLENDER" --background --python-exit-code 1 --python tools/aim_gun.py -- \
+    --scene=sq060_sh010 --ctrl=mg_ctrl.004 --mode=trail --follow=boy.016 \
+    [--lag=16] [--spread=0.8] [--z=0.02] [--hold=2] \
+    [--at=3085:8.6,9.0,1.85] [--dry-run]
+```
+
+`fire_rig.py` says WHEN a gun fires, this says WHERE it points, `gunfire.py`
+bakes what it hit. Aim goes through a TRACK_TO on an empty, never by keying
+the gun's rotation, so the mount and recoil animation survive and only facing
+changes. Keys land `LEAD` frames early so the gun has settled by the flash.
+`--at=FRAME:x,y,z` overrides one shot — that is how two rounds of the cop's
+spray are sent through the clothesline.
+
+Hitting what you aim at is otherwise unlikely: before this existed the boy's
+target practice missed 5 of 5 in `sq040_sh050`, threading the gaps between
+figures.
+
+Two traps, both measured:
+
+- **Aim empties are often parented** to the thing being shot at (`boy_aim`
+  hangs off `boy.016`). Writing a world point straight into `.location` put
+  the aim 8 m out and the whole spray in the wrong half of the yard, so every
+  key is solved in the parent's frame — separately per key, since the parent
+  moves between them.
+- **`--part-z` is measured in the TARGET's space**, not world Z. A figure that
+  has been knocked over still has its origin on the ground, so a world-Z
+  offset aims at empty air above it — exactly the 3 of 7 rounds that missed.
+
 ### `tools/gunfire.py` — connect the guns to the squibs
 
 ```sh
@@ -502,6 +574,23 @@ Facts worth keeping:
 - The points are written in the **target's local space**, so the parent
   inverse stays identity. Setting `matrix_parent_inverse` as well applies the
   inverse twice and parks every impact near the world origin.
+- That local conversion is done **per hit, at the hit's own frame**. One
+  shared inverse is only right for a target that never moves: with figures
+  being shot to pieces, a head hit ended up parked in the sky, holding still
+  while its figure lay on the grass below it.
+- `--surface=auto` (the default) picks the surface from the name of the source
+  object each round hit, so one burst throws grass off the lawn, splinters off
+  the fence and dust off the stucco. Impacts are grouped per (target, surface).
+- Impacts are **sized for camera distance**. The authored 6 cm chunk is tuned
+  for a close shot and vanishes in a wide — the first `sq040_sh010` bake put a
+  correct impact 13 m out and it was invisible. `--scale=F` multiplies on top.
+- Baked impacts are real geometry, so a re-bake will **shoot the old damage**
+  unless it is cleared and hidden before casting. Measured: a round landed on
+  `impacts_mg_ctrl_action_figure.024_plastic`.
+- The instancer behind a hit is found by **containment** (`source.name in
+  coll.all_objects`), not by matching the instance matrix. Matrix matching only
+  works for source objects sitting at their collection's origin: `af_head` is
+  modelled at z=1.65, so every head shot fell through to the raw linked object.
 - `--impulse` **records** force, it does not simulate it: per-hit frames,
   world points and directions are stored as custom properties for a
   hand-animated reaction (or a later sim) to read. A rigid-body sim needs

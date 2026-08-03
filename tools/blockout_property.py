@@ -24,8 +24,9 @@ import math
 import sys
 from pathlib import Path
 
+import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import shotlib
@@ -50,12 +51,43 @@ PALETTE = {
     # hanging sheets on the clothesline. Its own entry because it used to
     # borrow "window", and windows are now transparent — sheets are not.
     "laundry":   (0.90, 0.89, 0.86),
+    # painted window casing/sash trim
+    "trim":      (0.93, 0.92, 0.88),
+    # inside the shell. Never lit, so open windows read as holes, not decals.
+    "interior":  (0.05, 0.05, 0.06),
 }
 
 # Per-material alpha. Anything absent is fully opaque.
 ALPHA = {
     "window": 0.25,
 }
+
+# --- house shell ---------------------------------------------------------
+# The house used to be a solid block, so a "window" could only ever be a
+# decal on the outside. It is now a shell: real openings, a dark interior
+# behind them, and casements that actually swing.
+HOUSE = (-7.0, 5.0, -4.0, 5.0, 0.0, 3.2)     # x0 x1 y0 y1 z0 z1
+WALL_T = 0.25
+TRIM = 0.08                                   # casing width
+SASH_T = 0.06                                 # casement thickness
+
+# name, face, a0, a1, sill, head, open_degrees
+#   face is the OUTWARD normal; a0..a1 runs along that wall
+#   (x for the ±Y walls, y for the ±X walls)
+WINDOWS = [
+    # the two kitchen windows at the NE corner — open double casements
+    ("kitchen_north", "+Y",  1.40,  4.20, 1.20, 2.40, 62.0),
+    ("kitchen_east",  "+X",  1.60,  4.20, 1.20, 2.40, 62.0),
+    # front, facing the road: either side of the door
+    ("front_west",    "-Y", -6.00, -4.20, 1.20, 2.40,  0.0),
+    ("front_east",    "-Y",  1.99,  3.79, 1.20, 2.40,  0.0),
+    # side corridor
+    ("east_south",    "+X", -2.80, -1.40, 1.20, 2.40,  0.0),
+    # backyard, west of the stoop
+    ("north_west",    "+Y", -6.40, -5.20, 1.50, 2.40,  0.0),
+    # west gable, north of where the garage attaches (garage spans y -3..3)
+    ("west_north",    "-X",  3.40,  4.60, 1.20, 2.40,  0.0),
+]
 
 collection = None
 labels_coll = None
@@ -100,7 +132,204 @@ def box(name, x0, x1, y0, y1, z0, z1, material):
          (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]
     me.from_pydata(v, [], f)
     me.update()
+    fix_normals(me)
     me.materials.append(mat(material))
+    return link(bpy.data.objects.new(name, me))
+
+
+def fix_normals(me):
+    """Make face normals point outward.
+
+    The hand-written box winding here is inside-out. Nothing noticed for a
+    long time — EEVEE shades backfaces with a flipped normal, so a greybox
+    looks identical either way — but a boolean reads an inverted solid as its
+    own complement, and every cut silently does nothing. Measured: the house
+    hollow reported FINISHED and left 8 verts as 8 verts.
+    """
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+    return me
+
+
+def _box_data(x0, x1, y0, y1, z0, z1, base=0):
+    v = [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
+         (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]
+    f = [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1),
+         (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]
+    return v, [tuple(i + base for i in face) for face in f]
+
+
+def multi_box(name, specs, material, link_it=True):
+    """One mesh from several boxes — a casing or a sash ring stays one object."""
+    verts, faces = [], []
+    for spec in specs:
+        v, f = _box_data(*spec, base=len(verts))
+        verts += v
+        faces += f
+    me = bpy.data.meshes.new(name)
+    me.from_pydata(verts, [], faces)
+    me.update()
+    fix_normals(me)
+    me.materials.append(mat(material))
+    ob = bpy.data.objects.new(name, me)
+    return link(ob) if link_it else ob
+
+
+def cut(target, name, x0, x1, y0, y1, z0, z1, material="house"):
+    """Boolean-difference a box out of `target` and apply it.
+
+    material_mode TRANSFER so the new interior faces carry the CUTTER's
+    material — that is what makes a reveal or a hollow read as dark inside
+    instead of as more clapboard.
+    """
+    cutter = box(f"_cut_{name}", x0, x1, y0, y1, z0, z1, material)
+    m = target.modifiers.new(f"cut_{name}", "BOOLEAN")
+    m.operation = "DIFFERENCE"
+    m.object = cutter
+    m.solver = "EXACT"
+    if hasattr(m, "material_mode"):
+        m.material_mode = "TRANSFER"
+    # A cutter created this tick is not in the depsgraph yet, and applying
+    # against it is a silent no-op that still reports FINISHED. Measured: the
+    # very first cut of the run (the house hollow) left 8 verts as 8 verts.
+    bpy.context.view_layer.update()
+    bpy.context.view_layer.objects.active = target
+    bpy.ops.object.modifier_apply(modifier=m.name)
+    bpy.data.objects.remove(cutter, do_unlink=True)
+    return target
+
+
+def _wall(face):
+    """(wall plane coord, outward sign, axis) for a named house face."""
+    x0, x1, y0, y1, _z0, _z1 = HOUSE
+    return {"+Y": (y1, 1.0, "X"), "-Y": (y0, -1.0, "X"),
+            "+X": (x1, 1.0, "Y"), "-X": (x0, -1.0, "Y")}[face]
+
+
+def wall_spec(face, a0, a1, n0, n1, z0, z1):
+    """Box spec placed against a wall.
+
+    `a` runs along the wall, `n` runs along the OUTWARD normal measured from
+    the wall's outer face — so n<0 is into the reveal, n>0 is proud of it.
+    """
+    w, s, axis = _wall(face)
+    p, q = sorted((w + s * n0, w + s * n1))
+    return (a0, a1, p, q, z0, z1) if axis == "X" else (p, q, a0, a1, z0, z1)
+
+
+def _sash_matrix(hinge, u, n, swing_deg):
+    """Place a sash built in local space (x = hinge->free edge, y = outward).
+
+    Written straight into matrix_world rather than as loc/rot/scale: the
+    closed-state basis for the second leaf of a pair is a REFLECTION, and no
+    Euler rotation produces one. Blender decomposes the negative determinant
+    into a -1 scale itself.
+
+    Opening swings the free edge along the outward normal, so the sign of the
+    swing depends on the handedness of (u, n): +theta when n == Z x u.
+    """
+    sign = 1.0 if (Vector((0, 0, 1)).cross(u) - n).length < 1e-6 else -1.0
+    t = math.radians(swing_deg) * sign
+    c, s = math.cos(t), math.sin(t)
+    rz = Matrix(((c, -s, 0.0), (s, c, 0.0), (0.0, 0.0, 1.0)))
+    uu, nn = rz @ u, rz @ n
+    return Matrix(((uu.x, nn.x, 0.0, hinge.x),
+                   (uu.y, nn.y, 0.0, hinge.y),
+                   (uu.z, nn.z, 1.0, hinge.z),
+                   (0.0, 0.0, 0.0, 1.0)))
+
+
+def build_window(name, face, a0, a1, z0, z1, open_deg):
+    """A real opening through the shell, cased, with glass or open casements.
+
+    Closed windows get a fixed pane behind a centre mullion. The two kitchen
+    windows get a pair of casements hinged on the outer jambs and swung out,
+    which only reads because the opening is a genuine hole with a dark
+    interior behind it.
+    """
+    w, s, axis = _wall(face)
+    # the hole: through the full wall, over-long on the normal so the cut
+    # never leaves a coplanar sliver on either face
+    cut(bpy.data.objects["house"], name,
+        *wall_spec(face, a0, a1, -WALL_T - 0.05, 0.05, z0, z1),
+        material="interior")
+
+    # casing: four boxes around the opening, standing proud of the cladding
+    multi_box(f"win_{name}_casing", [
+        wall_spec(face, a0 - TRIM, a1 + TRIM, 0.0, 0.05, z1, z1 + TRIM),
+        wall_spec(face, a0 - TRIM, a1 + TRIM, 0.0, 0.05, z0 - TRIM, z0),
+        wall_spec(face, a0 - TRIM, a0, 0.0, 0.05, z0, z1),
+        wall_spec(face, a1, a1 + TRIM, 0.0, 0.05, z0, z1),
+    ], "trim")
+    # sill, projecting far enough to catch light
+    multi_box(f"win_{name}_sill", [
+        wall_spec(face, a0 - TRIM - 0.04, a1 + TRIM + 0.04,
+                  -WALL_T, 0.14, z0 - TRIM - 0.05, z0 - TRIM),
+    ], "trim")
+
+    if open_deg <= 0.0:
+        # fixed sash: mullion + one pane, set back into the reveal
+        mid = (a0 + a1) / 2
+        multi_box(f"win_{name}_mullion", [
+            wall_spec(face, mid - 0.03, mid + 0.03, -0.16, -0.07, z0, z1),
+        ], "trim")
+        multi_box(f"win_{name}_glass", [
+            wall_spec(face, a0, a1, -0.14, -0.11, z0, z1),
+        ], "window")
+        return
+
+    # open double casement: two leaves hinged on the outer jambs
+    half = (a1 - a0) / 2
+    height = z1 - z0
+    n = Vector((0.0, s, 0.0)) if axis == "X" else Vector((s, 0.0, 0.0))
+    for leaf, (a_hinge, along) in enumerate(((a0, 1.0), (a1, -1.0))):
+        u = (Vector((along, 0.0, 0.0)) if axis == "X"
+             else Vector((0.0, along, 0.0)))
+        hinge = (Vector((a_hinge, w, z0)) if axis == "X"
+                 else Vector((w, a_hinge, z0)))
+        m = _sash_matrix(hinge, u, n, open_deg)
+        # local: x hinge->free edge, y outward (thickness), z up
+        rail = 0.07
+        stile = multi_box(f"win_{name}_sash{leaf}", [
+            (0.0, half, 0.0, SASH_T, 0.0, rail),
+            (0.0, half, 0.0, SASH_T, height - rail, height),
+            (0.0, rail, 0.0, SASH_T, 0.0, height),
+            (half - rail, half, 0.0, SASH_T, 0.0, height),
+        ], "trim")
+        pane = multi_box(f"win_{name}_sash{leaf}_glass", [
+            (rail, half - rail, 0.015, 0.045, rail, height - rail),
+        ], "window")
+        for ob in (stile, pane):
+            ob.matrix_world = m
+
+
+def far_ground(name, dx0, dx1, dy0, dy1, reach, rise):
+    """Ring of ground from the detailed set out to the horizon, rising slightly.
+
+    A FRAME, not a slab: a slab roofs over the roadside ditch (an open trench
+    at y -17..-14 dropping to z -0.85) that the cruiser noses into.
+
+    It RISES because the sky itself draws a hard dark band just above the
+    horizon — measured: 6 near-black rows (lum 0.001) sitting above the
+    geometric horizon in a 648px frame, with the ground continuous right up to
+    it. No amount of flat ground reaches above horizontal, so flat ground can
+    never cover it. Lifting the far rim puts the land's silhouette ~0.6 deg
+    up, which hides the band from every camera in the film including the
+    craned wide at z=20, and at that slope reads as distant country.
+    """
+    inner = [(dx0, dy0, 0.0), (dx1, dy0, 0.0), (dx1, dy1, 0.0), (dx0, dy1, 0.0)]
+    outer = [(-reach, -reach, rise), (reach, -reach, rise),
+             (reach, reach, rise), (-reach, reach, rise)]
+    me = bpy.data.meshes.new(name)
+    me.from_pydata(inner + outer, [],
+                   [(i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i) for i in range(4)])
+    me.update()
+    fix_normals(me)
+    me.materials.append(mat("grass"))
     return link(bpy.data.objects.new(name, me))
 
 
@@ -113,6 +342,7 @@ def gable_roof(name, x0, x1, y0, y1, z_eave, z_ridge):
     f = [(0, 1, 5, 4), (2, 3, 4, 5), (0, 4, 3), (1, 2, 5)]
     me.from_pydata(v, [], f)
     me.update()
+    fix_normals(me)
     me.materials.append(mat("roof"))
     return link(bpy.data.objects.new(name, me))
 
@@ -183,12 +413,20 @@ def build(out_path, force):
     # is an actual open trench the cruiser can nose into
     # Ground out to the visual horizon. The detailed ground stops at ~45 m, so
     # past that the world HDRI's dark lower hemisphere showed as a black band
-    # against the sky — invisible at eye level, but it dominated the craned
-    # wide in sq060_sh030. 900 m sits inside every layout camera's 1000 m
-    # clip_end, which puts its edge ~1.3 deg below the horizon from the
-    # highest camera in the film: close enough that land meets sky.
-    # Top is 2 cm BELOW the detailed ground so the two never z-fight.
-    box("ground_far", -900, 900, -900, 900, -0.16, -0.02, "grass")
+    # against the sky.
+    #
+    # Reaches 4 km, not 900 m. The far edge sits atan(eye / reach) below the
+    # true horizon, so at 900 m an eye-level camera still left a 0.08 deg
+    # black line all the way across frame — thin, but a hard dark edge against
+    # bright sky reads as a seam. 4 km makes it 0.02 deg and it disappears,
+    # and still sits inside make_layout's 5000 m camera clip_end.
+    #
+    # Built as a FRAME around the detailed ground, not a slab across it: a
+    # slab roofs over the roadside ditch (an open trench from y -17..-14 down
+    # to z -0.85), which is a set piece the cruiser noses into. Because the
+    # frame never overlaps the detailed ground there is nothing to z-fight,
+    # so its top sits flush at z=0 and the seam has no step either.
+    far_ground("ground_far", -45.0, 45.0, -32.0, 45.0, reach=4000.0, rise=42.0)
     box("ground_yard", -45, 45, -14, 45, -0.1, 0.0, "grass")
     box("ground_roadside", -45, 45, -32, -17, -0.1, 0.0, "grass")
     box("road", -45, 45, -23, -17, 0.0, 0.03, "dirt")
@@ -202,15 +440,35 @@ def build(out_path, force):
     box("mailbox", -6.85, -6.15, -15.75, -15.25, 1.2, 1.55, "bbq")
 
     # --- house (faces south) + attached garage on the WEST ------------------
-    box("house", -7, 5, -4, 5, 0.0, 3.2, "house")
+    hx0, hx1, hy0, hy1, hz0, hz1 = HOUSE
+    house = box("house", hx0, hx1, hy0, hy1, hz0, hz1, "house")
+    # hollow it out, leaving floor and ceiling — windows can then be real
+    # openings with something dark behind them instead of decals on a solid
+    cut(house, "hollow", hx0 + WALL_T, hx1 - WALL_T, hy0 + WALL_T,
+        hy1 - WALL_T, hz0 + WALL_T, hz1 - WALL_T, material="interior")
     gable_roof("house_roof", -7.6, 5.6, -4.6, 5.6, 3.2, 5.2)
-    box("garage", -13, -7, -3, 3, 0.0, 2.9, "house")
+
+    garage = box("garage", -13, -7, -3, 3, 0.0, 2.9, "house")
     gable_roof("garage_roof", -13.5, -6.9, -3.5, 3.5, 2.9, 4.1)
     # PASSTHROUGH: front door faces the road/delivery, rear door opens onto
     # the backyard — the boy hauls the printer in the front and carries the
-    # printed junk out the back to the killing field
-    box("garage_door_front", -12.4, -7.6, -3.05, -2.95, 0.1, 2.4, "porch")
-    box("garage_door_rear", -12.4, -7.6, 2.95, 3.05, 0.1, 2.4, "porch")
+    # printed junk out the back to the killing field. An actual tunnel, not
+    # two door-shaped slabs on a solid block.
+    cut(garage, "passthrough", -12.4, -7.6, -3.6, 3.6, 0.1, 2.4,
+        material="interior")
+    for nm, dy in (("garage_door_front", -3.0), ("garage_door_rear", 3.0)):
+        multi_box(nm, [
+            (-12.4 - TRIM, -7.6 + TRIM, dy - 0.06, dy + 0.06, 2.4, 2.4 + TRIM),
+            (-12.4 - TRIM, -12.4, dy - 0.06, dy + 0.06, 0.1, 2.4),
+            (-7.6, -7.6 + TRIM, dy - 0.06, dy + 0.06, 0.1, 2.4),
+        ], "trim")
+
+    # kitchen partition at the NE corner: without it you see straight through
+    # the two open casements and out the far side of the house
+    box("wall_kitchen_w", 0.90, 1.15, 0.90, hy1 - WALL_T, 0.0, hz1 - WALL_T,
+        "interior")
+    box("wall_kitchen_s", 0.90, hx1 - WALL_T, 0.90, 1.15, 0.0, hz1 - WALL_T,
+        "interior")
 
     # front porch + steps (Mom fires from here in the final shot)
     box("porch_deck", -5, 1, -6.4, -4, 0.0, 0.5, "porch")
@@ -223,9 +481,10 @@ def build(out_path, force):
     box("back_stoop", -4, -1, 5, 6.2, 0.0, 0.45, "porch")
 
     # --- windows: kitchen at the NE corner sees BOTH backyard and side ------
-    box("win_kitchen_north", 1.4, 4.2, 4.95, 5.05, 1.2, 2.4, "window")
-    box("win_kitchen_east", 4.95, 5.05, 1.6, 4.2, 1.2, 2.4, "window")
-    box("win_front", -6.0, -4.2, -4.05, -3.95, 1.2, 2.4, "window")
+    # The two kitchen windows are open double casements; the rest are fixed.
+    # Cuts run against the house shell, so this must follow the hollow above.
+    for nm, face, a0, a1, sill, head, swing in WINDOWS:
+        build_window(nm, face, a0, a1, sill, head, swing)
 
     # --- backyard set pieces ------------------------------------------------
     # NOTE: the firing squad, the boy, the Santa, the vehicles and the guns are
