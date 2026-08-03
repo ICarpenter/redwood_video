@@ -488,7 +488,8 @@ Two traps, both hit for real:
     --python tools/squib.py -- --install [--force]
 "$BLENDER" --background --python-exit-code 1 --python tools/squib.py -- \
     --apply=<scene>:<object> [--surface=dirt] [--start=F] [--count=N] \
-    [--target=x,y,z] [--direction=x,y,z] [--life=N]
+    [--targeted --target=x,y,z --direction=x,y,z] \
+    [--stagger=N] [--chunks=N] [--debris=F] [--hole=F] [--spread=F] [--life=N]
 ```
 
 Builds `assets/fx/squibs.blend` holding two node groups and seven materials.
@@ -504,9 +505,19 @@ Surfaces: `dirt grass plastic wood stucco metal`.
   landing at different times on the same object. This is what `gunfire.py`
   writes.
 
-Each impact throws `Debris Count` chunks that flare and die on a
+Each impact throws `Debris Count` chunks (`--chunks`) that flare and die on a
 `min(t*8,1)*(1-t)` envelope, and grows a dark hole that reaches full size at
 t=0.25 and **stays** — the damage is permanent, the debris is not.
+
+Two flags matter more than they look for a single, deliberate hit:
+
+- **`--stagger=0`.** `Stagger` scatters impacts forward in time, which is what
+  makes a burst feel like a burst — but it applies to one targeted impact too,
+  so the default silently delays the hit by up to 10 frames and it lands
+  nowhere near the beat you asked for.
+- **`--debris`.** The authored 6 cm chunk does not read past a few metres.
+  `gunfire.py` scales this by camera distance automatically; `--apply` does
+  not, so set it yourself for anything that is not a close-up.
 
 `--target`/`--direction` are given in **world** space on the CLI and converted
 to the object's local space, because the sockets are object-local; passing

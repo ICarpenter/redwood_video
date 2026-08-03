@@ -93,6 +93,7 @@ def build_group():
     sock("Start Frame", "NodeSocketFloat", 1.0)
     sock("Stagger", "NodeSocketFloat", 10.0, 0.0, 500.0)
     sock("Life", "NodeSocketFloat", 12.0, 1.0, 500.0)
+    sock("Debris Count", "NodeSocketInt", 6, 1, 64)
     sock("Debris Scale", "NodeSocketFloat", 0.06, 0.0, 10.0)
     sock("Spread", "NodeSocketFloat", 0.5, 0.0, 50.0)
     sock("Hole Size", "NodeSocketFloat", 0.09, 0.0, 10.0)
@@ -186,9 +187,19 @@ def build_group():
     chunk.inputs["Radius"].default_value = 1.0
     chunk.inputs["Subdivisions"].default_value = 1
 
+    # One chunk per impact is nothing to look at -- a single targeted hit
+    # threw exactly one pebble. Duplicate each impact point first so every
+    # round throws a handful. Only the DEBRIS branch is duplicated; the hole
+    # branch still takes geo_sw directly, so one impact still means one hole.
+    dup = n.new("GeometryNodeDuplicateElements")
+    dup.location = (-300, 300)
+    dup.domain = "POINT"
+    L(geo_sw.outputs[0], dup.inputs["Geometry"])
+    L(I("Debris Count"), dup.inputs["Amount"])
+
     debris = n.new("GeometryNodeInstanceOnPoints")
     debris.location = (-80, 300)
-    L(geo_sw.outputs[0], debris.inputs["Points"])
+    L(dup.outputs["Geometry"], debris.inputs["Points"])
     L(chunk.outputs["Mesh"], debris.inputs["Instance"])
     L(align.outputs[0], debris.inputs["Rotation"])
 
@@ -232,6 +243,11 @@ def build_group():
     jitter.inputs[0].default_value = (-1.0, -1.0, -0.2)
     jitter.inputs[1].default_value = (1.0, 1.0, 1.0)
     L(I("Seed"), jitter.inputs["Seed"])
+    # explicit per-instance ID, so the duplicates of one impact fly different
+    # ways instead of moving as a clump
+    jidx = n.new("GeometryNodeInputIndex")
+    jidx.location = (-1060, -1000)
+    L(jidx.outputs[0], jitter.inputs["ID"])
     mixdir = n.new("ShaderNodeVectorMath")
     mixdir.operation = "ADD"
     mixdir.location = (-660, -900)
@@ -526,7 +542,8 @@ def _sockets(group):
 
 
 def apply(scene_name, ob_name, surface, start, count, targeted, target,
-          direction, spread, hole, dry_run):
+          direction, spread, hole, debris, life, stagger, chunks,
+          dry_run):
     root = shotlib.project_root()
     lay = root / "layout" / "layout.blend"
     bpy.ops.wm.open_mainfile(filepath=str(lay))
@@ -564,9 +581,20 @@ def apply(scene_name, ob_name, surface, start, count, targeted, target,
     mod[ids["Surface"]] = idx
     mod[ids["Start Frame"]] = float(start)
     mod[ids["Count"]] = float(count)
+    # Stagger spreads impacts randomly forward in time, which is what makes a
+    # burst feel like a burst -- but it applies to a single targeted hit too,
+    # so leaving it at the default delays one impact by up to 10 frames and
+    # the hit lands nowhere near its Start Frame. Pass --stagger=0 for a hit
+    # that has to happen ON a beat.
+    mod[ids["Stagger"]] = float(stagger)
     mod[ids["Targeted"]] = bool(targeted)
     mod[ids["Spread"]] = float(spread)
     mod[ids["Hole Size"]] = float(hole)
+    # Debris Scale is worth reaching for on any shot that is not a close-up:
+    # the authored 6 cm chunk simply does not read past a few metres.
+    mod[ids["Debris Scale"]] = float(debris)
+    mod[ids["Debris Count"]] = int(chunks)
+    mod[ids["Life"]] = float(life)
     if target is not None:
         # --target is given in WORLD space because that is how a hit is
         # described, but the socket is object-LOCAL: geometry nodes run in
@@ -597,6 +625,7 @@ def main():
     targeted = "--targeted" in argv
     spec = target = direction = None
     surface, start, count, spread, hole = "dirt", 1, 8, 0.5, 0.09
+    debris, life, stagger, chunks = 0.06, 12.0, 10.0, 6
     for a in argv:
         if a.startswith("--apply="):
             spec = a.split("=", 1)[1]
@@ -610,6 +639,14 @@ def main():
             spread = float(a.split("=", 1)[1])
         elif a.startswith("--hole="):
             hole = float(a.split("=", 1)[1])
+        elif a.startswith("--debris="):
+            debris = float(a.split("=", 1)[1])
+        elif a.startswith("--life="):
+            life = float(a.split("=", 1)[1])
+        elif a.startswith("--stagger="):
+            stagger = float(a.split("=", 1)[1])
+        elif a.startswith("--chunks="):
+            chunks = int(a.split("=", 1)[1])
         elif a.startswith("--target="):
             target = tuple(float(v) for v in a.split("=", 1)[1].split(","))
         elif a.startswith("--direction="):
@@ -625,12 +662,14 @@ def main():
             sys.exit("error: --apply=<scene>:<object>")
         sc, ob = spec.split(":", 1)
         apply(sc, ob, surface, start, count, targeted, target, direction,
-              spread, hole, dry_run)
+              spread, hole, debris, life, stagger, chunks, dry_run)
         return
     sys.exit("usage: --install [--force] | --apply=<scene>:<object> "
              "[--surface=dirt|grass|plastic|wood|stucco|metal] [--start=N] "
              "[--count=N] [--targeted --target=x,y,z --direction=x,y,z] "
-             "[--spread=N] [--hole=N]   (target/direction are WORLD space)")
+             "[--spread=N] [--hole=N] [--debris=N] [--life=N] "
+             "[--stagger=N] [--chunks=N]   "
+             "(target/direction are WORLD space)")
 
 
 if __name__ == "__main__":
