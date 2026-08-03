@@ -142,6 +142,105 @@ def ball(coll, name, cx, cy, cz, radius, color):
     return ob
 
 
+# --- fire rig ------------------------------------------------------------
+# One keyable control per gun. The control MUST be an object, not the
+# collection: collections have no animation_data (keyframe_insert raises
+# "not animatable") and a driver reading a collection property does not
+# survive being linked. An object's custom property is keyable and
+# object-to-object drivers remap correctly through a library override, which
+# is how a shot reaches inside a linked asset at all.
+#
+# Layout, three deep so nothing self-references:
+#   <p>_ctrl   holds ["fire"] 0..1        <- the only thing a shot touches
+#     <p>_rig  driven by fire: kick+rise  <- all geometry parented here
+#       geometry, <p>_flash (scale driven by fire)
+#
+# Idle is fire=0, which is bit-identical to the gun before the rig existed.
+
+FIRE_KICK = 0.055     # metres the gun slides back at fire=1
+FIRE_RISE = 0.16      # radians of muzzle climb at fire=1
+
+
+def _flash_mat():
+    m = bpy.data.materials.get("guide_flash")
+    if m is None:
+        m = bpy.data.materials.new("guide_flash")
+        m.use_nodes = True
+        bsdf = m.node_tree.nodes.get("Principled BSDF")
+        if bsdf:
+            bsdf.inputs["Base Color"].default_value = (1.0, 0.82, 0.32, 1.0)
+            if "Emission Color" in bsdf.inputs:
+                bsdf.inputs["Emission Color"].default_value = (1.0, 0.78, 0.25, 1.0)
+            if "Emission Strength" in bsdf.inputs:
+                bsdf.inputs["Emission Strength"].default_value = 3.0
+        m.diffuse_color = (1.0, 0.82, 0.32, 1.0)
+    return m
+
+
+def _drive(ob, path, index, ctrl, expr):
+    fc = ob.driver_add(path, index)
+    d = fc.driver
+    d.type = "SCRIPTED"
+    v = d.variables.new()
+    v.name = "fire"
+    v.type = "SINGLE_PROP"
+    v.targets[0].id_type = "OBJECT"
+    v.targets[0].id = ctrl
+    v.targets[0].data_path = '["fire"]'
+    d.expression = expr
+    return fc
+
+
+def fire_rig(coll, prefix, muzzle_x, muzzle_z, flash_r=0.10, flash_len=0.22):
+    """Add the fire control + muzzle flash to an already-built gun collection.
+
+    Idempotent: returns False and changes nothing if the rig is already there,
+    so it is safe to run over a hand-maintained props.blend.
+    """
+    ctrl_name = f"{prefix}_ctrl"
+    if any(o.name == ctrl_name for o in coll.objects):
+        return False
+
+    geometry = list(coll.objects)
+
+    ctrl = bpy.data.objects.new(ctrl_name, None)
+    ctrl.empty_display_type = "SINGLE_ARROW"
+    ctrl.empty_display_size = 0.25
+    coll.objects.link(ctrl)
+    ctrl["fire"] = 0.0
+    ctrl.id_properties_ui("fire").update(
+        min=0.0, max=1.0, description="0 idle, 1 firing — keyframe this")
+
+    rig = bpy.data.objects.new(f"{prefix}_rig", None)
+    rig.empty_display_type = "PLAIN_AXES"
+    rig.empty_display_size = 0.15
+    coll.objects.link(rig)
+    rig.parent = ctrl
+
+    for ob in geometry:
+        ob.parent = rig
+
+    bpy.ops.mesh.primitive_cone_add(radius1=flash_r, radius2=0.0,
+                                    depth=flash_len,
+                                    location=(muzzle_x + flash_len / 2, 0, muzzle_z),
+                                    rotation=(0, math.radians(90), 0),
+                                    vertices=8)
+    flash = bpy.context.active_object
+    flash.name = f"{prefix}_flash"
+    flash.data.materials.append(_flash_mat())
+    _move_to(flash, coll)
+    flash.parent = rig
+    flash.scale = (0.0, 0.0, 0.0)
+
+    # recoil: the whole gun slides back and the muzzle climbs
+    _drive(rig, "location", 0, ctrl, f"-{FIRE_KICK} * fire")
+    _drive(rig, "rotation_euler", 1, ctrl, f"-{FIRE_RISE} * fire")
+    # flash pops open
+    for axis in range(3):
+        _drive(flash, "scale", axis, ctrl, "fire")
+    return True
+
+
 # --- builders (initial geometry; refine against --previews) --------------
 # Each takes the target collection; builds facing -Y, feet at Z=0, centred X=0.
 
@@ -188,6 +287,7 @@ def build_machine_gun(c):
     box(c, "mg_mag", -0.03, 0, 0.06, 0.10, 0.08, 0.16, "metal")
     box(c, "mg_stock", -0.45, 0, 0.15, 0.30, 0.10, 0.16, "wood")
     box(c, "mg_grip", -0.15, 0, 0.05, 0.08, 0.08, 0.12, "wood")
+    fire_rig(c, "mg", muzzle_x=0.705, muzzle_z=0.20)
 
 
 def build_printer(c):
@@ -246,12 +346,14 @@ def build_cruiser(c):
 def build_rosco(c):
     box(c, "ro_slide", 0.0, 0, 0.15, 0.22, 0.05, 0.06, "metal")
     box(c, "ro_grip", -0.07, 0, 0.065, 0.06, 0.05, 0.13, "dark")
+    fire_rig(c, "ro", muzzle_x=0.12, muzzle_z=0.15, flash_r=0.05, flash_len=0.11)
 
 
 def build_big_pistol(c):
     box(c, "bp_slide", 0.0, 0, 0.34, 0.52, 0.10, 0.12, "metal")
     cyl(c, "bp_barrel", 0.30, 0, 0.34, 0.05, 0.14, "metal", axis="X")
     box(c, "bp_grip", -0.16, 0, 0.15, 0.12, 0.10, 0.30, "dark")
+    fire_rig(c, "bp", muzzle_x=0.37, muzzle_z=0.34, flash_r=0.07, flash_len=0.15)
 
 
 def build_santa(c):
@@ -308,6 +410,41 @@ def build_gun_cabinet(c):
     box(c, "gc_rail", 0, 0.04, 1.86, 0.82, 0.06, 0.05, "dark")
     box(c, "gc_glass", 0, -0.20, 1.18, 0.78, 0.03, 1.44, "glass")
     box(c, "gc_handle", 0.31, -0.23, 1.12, 0.04, 0.05, 0.24, "metal")
+
+
+def build_mushroom_cloud(c):
+    """Blast column + cap for sq060_sh030, authored at FULL size.
+
+    Sized to the property so it reads at the right scale: the house ridge is
+    5.2 m, so a 14 m column with a 9 m cap towers unmistakably over it. Grown
+    in-shot by scaling the INSTANCE from 0 to 1 — a per-instance transform, so
+    unlike the guns this needs no library override to animate.
+
+    Origin is the detonation point at z=0, so the instance is dropped straight
+    onto whatever exploded.
+    """
+    # stem, widening as it rises
+    for i, (z, r) in enumerate(((0.9, 1.5), (2.4, 1.35), (4.0, 1.2),
+                                (5.7, 1.15), (7.3, 1.3))):
+        cyl(c, f"mc_stem_{i}", 0, 0, z, r, 1.8, "white", axis="Z")
+    # the cap: overlapping balls make a lumpy silhouette, not a smooth dome
+    ball(c, "mc_cap", 0, 0, 9.8, 4.2, "white")
+    for i in range(7):
+        a = math.radians(i * 51.4)
+        ball(c, f"mc_cap_lobe_{i}", 4.0 * math.cos(a), 4.0 * math.sin(a),
+             9.3 + 0.5 * (i % 3), 2.3, "white")
+    # the skirt rolling back under the cap
+    for i in range(6):
+        a = math.radians(20 + i * 60)
+        ball(c, f"mc_skirt_{i}", 3.4 * math.cos(a), 3.4 * math.sin(a),
+             7.4, 1.5, "white")
+    # ground-level dust ring
+    for i in range(8):
+        a = math.radians(i * 45)
+        ball(c, f"mc_dust_{i}", 4.6 * math.cos(a), 4.6 * math.sin(a),
+             1.5, 1.5, "white")
+    # flash core at the base, hot for the first frames
+    ball(c, "mc_core", 0, 0, 1.6, 1.6, "ref")
 
 
 def build_sheriff_war(c):
@@ -424,6 +561,7 @@ BUILDERS = {
     "santa": build_santa, "box": build_box, "scale_stick": build_scale_stick,
     "egg_salad_sando": build_egg_salad_sando,
     "gun_cabinet": build_gun_cabinet,
+    "mushroom_cloud": build_mushroom_cloud,
 }
 
 
