@@ -121,11 +121,11 @@ plays through the chorus hit rather than waiting for it.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 86–89 | 3514–3636 | 5.1s | Aerial hover: the partially charred backyard, smoke drifting. Quiet under the verse. |
-| 020 | 89–92 | 3637–3758 | 5.1s | The three of them flat on their backs, dazed, coughing clay puffs. Boy casually pats out his smoldering hair. ♪ "the kid are lying in a slump." (Noodle-gun gag CUT 2026-08-02 — diecast can't droop under `style.md`'s physics law.) |
-| 030 | 92–96 | 3759–3922 | 6.8s | Aftermath thaw: recognition between Mom and the sheriff; he holds up his mangled hat in apology; she snorts a laugh despite herself. |
-| 040 | 96–99 | 3923–4044 | 5.1s | Truce: the sweet-tea pitcher is the only pristine object in the wreckage. She pours three glasses. Boy reaches — hand swatted. Still in trouble. |
-| 050 | 99–102 | 4045–4166 | 5.1s | Behind them: the charred Santa's head rotates slowly toward camera… then it tips over dead. **THE PAYOFF.** |
+| 010 | 86–89 | 3514–3636 | 5.1s | AERIAL hover over the charred backyard — the blast column still collapsing over the BBQ crater the boy flat on his back out on the grass. **Mom bursts out the back door and sprints the length of the yard to her son.** Quiet under the verse. (The sheriff is 10.8 m north of the boy and cannot be held in this frame as well as the back door — he is sq070_sh020's shot.) |
+| 020 | 89–92 | 3637–3758 | 5.1s | OVER THE SHERIFF'S SHOULDER. He props himself up on the grass and — a twitch of recognition — finally sees who he has been trading fire with. A boy. And his mother. This was never a war. ♪ "the kid are lying in a slump." (Noodle-gun gag CUT 2026-08-02 — diecast can't droop under `style.md`'s physics law.) |
+| 030 | 92–96 | 3759–3922 | 6.8s | REVERSE onto him past Mom and the boy. He gets up walks over and tips his mangled hat in apology — and Mom starts to laugh in spite of herself. All good fun after all. |
+| 040 | 96–99 | 3923–4044 | 5.1s | Tight on the sweet-tea pitcher — the only pristine object in the wreckage — then PUSH OUT to reveal a table set up in the charred yard facing the garage: the sheriff sitting screen-left Mom centre-left handing him a glass the boy on the right. |
+| 050 | 99–102 | 4045–4166 | 5.1s | REVERSE out of the garage: the charred Santa fills the foreground the tea tableau small beyond him. He slumps over — and his head pops off and rolls out across the grass toward them. **THE PAYOFF.** |
 
 ## sq080 — CHORUS 3 · bars 102–111 · frames 4167–4534 · 15.3s — THE ENDING
 

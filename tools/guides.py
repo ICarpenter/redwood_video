@@ -69,11 +69,25 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("mushroom_cloud", PROPS_FILE, "props", 14.0),
     GuideSpec("clothesline", PROPS_FILE, "props", 2.2),
     GuideSpec("hubcap", PROPS_FILE, "props", 0.32),
+    # sq070's aftermath: the sweet-tea truce, staged in the charred yard.
+    GuideSpec("patio_table", PROPS_FILE, "props", 0.75),
+    GuideSpec("folding_chair", PROPS_FILE, "props", 0.88),
+    GuideSpec("tea_pitcher", PROPS_FILE, "props", 0.30),
+    GuideSpec("tea_glass", PROPS_FILE, "props", 0.15),
+    # The payoff. `santa_torso` and `santa_head` are the decapitated pair: the
+    # intact `santa` is swapped for them on the frame the head pops off, so the
+    # slump can be keyed identically on both and the cut is invisible.
+    GuideSpec("santa_torso", PROPS_FILE, "props", 1.30),
+    GuideSpec("santa_head", PROPS_FILE, "props", 0.60),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look
     # (see docs/layout.md).
     GuideSpec("sheriff_war", CAST_FILE, "cast", 1.8),
+    # Seated variant for the sq070 truce table — guides are rigid, so a pose
+    # this different is a variant collection, not a bent instance. Same body
+    # masses as build_sheriff so he reads as the same man off his feet.
+    GuideSpec("sheriff_seated", CAST_FILE, "cast", 1.45),
 ]
 
 # The whole property SET is linkable too, but it is NOT built by guide_assets

@@ -59,6 +59,8 @@ PALETTE = {
     "wood":     (0.50, 0.35, 0.20),
     "bread":    (0.87, 0.78, 0.60),
     "egg":      (0.90, 0.74, 0.25),
+    "tea":      (0.62, 0.40, 0.14),
+    "char":     (0.16, 0.14, 0.13),
     # war flashback
     "helmet":   (0.22, 0.26, 0.19),
     "sandbag":  (0.62, 0.55, 0.38),
@@ -394,6 +396,77 @@ def build_santa(c):
     box(c, "sa_tape", 0, -0.22, 0.90, 0.20, 0.02, 0.34, "white")
 
 
+def build_santa_torso(c):
+    """The santa with its head off — the second half of sq070_sh050's payoff.
+
+    Body masses are build_santa's verbatim (minus head, hat and hat tip) so the
+    frame the intact `santa` is swapped for `santa_torso` + `santa_head` reads
+    as a head coming off, not as a different santa. The charred neck stump is
+    the only addition: it is what sells the head as *detached* rather than
+    merely hidden behind the body.
+    """
+    box(c, "st_body", 0, 0, 0.60, 0.60, 0.42, 1.20, "santa")
+    box(c, "st_belt", 0, -0.01, 0.72, 0.62, 0.44, 0.12, "dark")
+    box(c, "st_tape", 0, -0.22, 0.90, 0.20, 0.02, 0.34, "white")
+    cyl(c, "st_neck", 0, 0, 1.24, 0.08, 0.14, "char", axis="Z")
+
+
+def build_santa_head(c):
+    """The head, off. build_santa's head cluster dropped 1.20 m to the ground.
+
+    Origin sits at the ground contact point, not the ball centre, because every
+    guide is authored feet-at-zero — which is the right pivot anyway: a hatted
+    head does not roll, it TUMBLES end over end about whatever is touching the
+    grass, and keying rotation about this origin gives exactly that.
+    """
+    ball(c, "sh_ball", 0, 0, 0.22, 0.22, "skin")
+    ball(c, "sh_hat", 0, 0, 0.42, 0.15, "santa")
+    ball(c, "sh_hat_tip", 0.05, 0, 0.56, 0.05, "white")
+
+
+def build_patio_table(c):
+    """Folding table for the sweet-tea truce. Top at 0.74 to match a real one."""
+    box(c, "pt_top", 0, 0, 0.72, 1.60, 0.80, 0.04, "white")
+    for i, (x, y) in enumerate([(-0.72, -0.32), (0.72, -0.32),
+                                (-0.72, 0.32), (0.72, 0.32)]):
+        box(c, f"pt_leg_{i}", x, y, 0.35, 0.06, 0.06, 0.70, "metal")
+    box(c, "pt_brace", 0, 0, 0.20, 1.50, 0.05, 0.04, "metal")
+
+
+def build_folding_chair(c):
+    """Folding chair, seat at 0.46 — the height build_sheriff_seated sits on.
+
+    Authored facing -Y like every guide, which for a chair means the BACK is at
+    +Y: the sitter faces -Y too, so chair and occupant share one rotZ.
+    """
+    box(c, "fc_seat", 0, 0, 0.44, 0.44, 0.44, 0.04, "metal")
+    for i, (x, y) in enumerate([(-0.19, -0.19), (0.19, -0.19),
+                                (-0.19, 0.19), (0.19, 0.19)]):
+        box(c, f"fc_leg_{i}", x, y, 0.21, 0.04, 0.04, 0.42, "dark")
+    box(c, "fc_back_l", -0.20, 0.20, 0.65, 0.04, 0.04, 0.46, "dark")
+    box(c, "fc_back_r", 0.20, 0.20, 0.65, 0.04, 0.04, 0.46, "dark")
+    box(c, "fc_back", 0, 0.20, 0.67, 0.44, 0.04, 0.42, "metal")
+
+
+def build_tea_pitcher(c):
+    """The sweet tea — the only pristine object in the wreckage.
+
+    Reuses the `glass` material (alpha + BLENDED, as the cruiser's windows and
+    the gun cabinet's door do) so the tea reads THROUGH the pitcher wall rather
+    than the wall reading as a solid cylinder. sq070_sh040 opens tight on this.
+    """
+    cyl(c, "tp_body", 0, 0, 0.13, 0.09, 0.26, "glass", axis="Z")
+    cyl(c, "tp_tea", 0, 0, 0.105, 0.082, 0.21, "tea", axis="Z")
+    box(c, "tp_handle", 0.105, 0, 0.16, 0.03, 0.05, 0.14, "glass")
+    box(c, "tp_spout", -0.10, 0, 0.25, 0.06, 0.06, 0.04, "glass")
+    ball(c, "tp_lemon", 0.0, -0.06, 0.25, 0.03, "egg")
+
+
+def build_tea_glass(c):
+    cyl(c, "tg_body", 0, 0, 0.07, 0.04, 0.14, "glass", axis="Z")
+    cyl(c, "tg_tea", 0, 0, 0.05, 0.035, 0.10, "tea", axis="Z")
+
+
 def build_box(c):
     # The printer's shipping carton: the boy drags it in sq010_sh040 and tears
     # it open in sh045. Flaps and a tape stripe give the silhouette a definite
@@ -500,6 +573,31 @@ def build_sheriff_war(c):
     box(c, "sw_chinstrap", 0, -0.15, 1.50, 0.24, 0.03, 0.03, "dark")
 
 
+def build_sheriff_seated(c):
+    """The sheriff sitting down — sq070_sh040's truce table.
+
+    Guides are rigid, so "sitting" is a variant collection rather than a bent
+    instance (docs/layout.md). Body masses come from build_sheriff unchanged —
+    same belly, same torso box, same stetson — folded at the hip and knee onto
+    a 0.46 seat, because the whole point of the shot is that this is the same
+    man who was shooting at them ninety seconds ago.
+
+    Authored facing -Y like every guide, so he shares one rotZ with the chair.
+    """
+    box(c, "ss_shin_l", -0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
+    box(c, "ss_shin_r", 0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
+    box(c, "ss_thigh_l", -0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
+    box(c, "ss_thigh_r", 0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
+    box(c, "ss_hips", 0, 0.02, 0.55, 0.46, 0.34, 0.18, "sheriff")
+    ball(c, "ss_belly", 0, -0.10, 0.84, 0.26, "sheriff")
+    box(c, "ss_torso", 0, 0, 0.92, 0.46, 0.26, 0.34, "sheriff")
+    box(c, "ss_arm_l", -0.30, -0.06, 0.86, 0.11, 0.11, 0.40, "sheriff")
+    box(c, "ss_arm_r", 0.30, -0.06, 0.86, 0.11, 0.11, 0.40, "sheriff")
+    ball(c, "ss_head", 0, 0, 1.22, 0.16, "skin")
+    cyl(c, "ss_hat_brim", 0, 0, 1.34, 0.28, 0.03, "hat", axis="Z")
+    cyl(c, "ss_hat_crown", 0, 0, 1.41, 0.15, 0.14, "hat", axis="Z")
+
+
 def build_trench(c):
     """Vietnam trench mini-set for the sq050 war flashback.
 
@@ -593,6 +691,13 @@ BUILDERS = {
     "mushroom_cloud": build_mushroom_cloud,
     "clothesline": build_clothesline,
     "hubcap": build_hubcap,
+    "sheriff_seated": build_sheriff_seated,
+    "patio_table": build_patio_table,
+    "folding_chair": build_folding_chair,
+    "tea_pitcher": build_tea_pitcher,
+    "tea_glass": build_tea_glass,
+    "santa_torso": build_santa_torso,
+    "santa_head": build_santa_head,
 }
 
 

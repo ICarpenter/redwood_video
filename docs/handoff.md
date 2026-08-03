@@ -25,30 +25,47 @@ Written 2026-07-20, status updated 2026-08-03.
 |-------|--------|
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
-| 3. Layout / animatic | **in progress — 40 of 50 shots blocked, through the end of the solo (frame 3513)** |
-| 4. Asset production | greybox — property shell, 19 guides, 2 mini-sets, squib FX |
+| 3. Layout / animatic | **in progress — 45 of 50 shots blocked, through the end of verse 3 (frame 4166)** |
+| 4. Asset production | greybox — property shell, 26 guides, 2 mini-sets, squib FX |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
 
 The film is watchable now: `edit/edit.blend` cuts the track, 9 section
-markers, 40 live layout strips and 10 slugs. Nothing is rendered yet, so
+markers, 45 live layout strips and 5 slugs. Nothing is rendered yet, so
 every strip is a **linked scene strip** — the edit previews `layout.blend`
 directly, and you must **reload libraries** after a headless run to see
 changes.
 
 ### What is left
 
-Ten shots, frames 3514–4780 — everything after the mushroom cloud:
+Five shots, frames 4167–4780 — the ending:
 
 | Shots | Frames | What |
 |---|---|---|
-| `sq070_sh010…sh050` | 3514–4166 | aftermath: aerial over the charred yard, dazed trio, recognition, sweet-tea truce, Santa tips over |
 | `sq080_sh010…sh040` | 4167–4534 | Mom final boss, the look, she unloads, final sprint under fire |
 | `sq090_sh010` | 4535–4780 | title card takes one last bullet hole |
 
-They are empty layout scenes sitting at slug tier. `sq070` opens on the
-state `sq060_sh030` ends in: clothesline down, three people flat on the
-grass, mushroom cloud over the BBQ, and the sheriff finally able to see he
-has been trading fire with a kid and his mother.
+They are empty layout scenes sitting at slug tier.
+
+`sq070` (the aftermath) was blocked and animated 2026-08-03 and now cuts as
+layout. Its continuity basis is `sq060_sh030`'s LAST frame, read out of the
+file rather than assumed: boy `(3.757, 16.753)` rotX −92 and sheriff
+`(14.515, 15.726)` rotX −92, both flat on their backs; Mom still in the
+kitchen at `(3.990, 3.195, 0.25)`; clothesline down at `(9.060, 10.280)`
+rotY 88; the blast column still at scale 1.05 over the BBQ. `sq080` opens on
+where `sq070_sh050` leaves them — the sweet-tea table on the grass off the
+garage's rear door, Mom standing, the sheriff sitting, the boy on his feet,
+and a charred Santa head in the grass at their feet.
+
+Two things that shape any reframe of `sq070`:
+
+- **The sheriff is 10.8 m north of the boy.** No single frame holds him, the
+  boy and the back door at a readable size — that is why the aerial drops him
+  and `sh020` is a long-lens OTS rather than a two-shot.
+- **The Santa stands INSIDE the garage tunnel**, 0.24 m off its north wall at
+  `(-7.839, 2.198)` — its world position since `sq010`, so invariant 3 keeps it
+  there. `sh050` therefore shoots out through the rear passthrough, and the
+  tea table's position is dictated by that sight-line, not by taste: pushed any
+  further north the tunnel wall eats the tableau.
 
 ### The gunfire chain, if you have not met it
 

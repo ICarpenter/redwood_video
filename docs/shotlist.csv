@@ -39,11 +39,11 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 060,014,cop reaction - clocks fire from the house - swings west,3228,3350,123,sheriff;machine_gun,scripted
 060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,,scripted
 060,030,MUSHROOM CLOUD - everyone blasted,3432,3513,82,,scripted
-070,010,aerial hover over charred yard,3514,3636,123,,scripted
-070,020,dazed trio - smoldering hair - noodle gun,3637,3758,122,,scripted
-070,030,recognition - mangled hat apology,3759,3922,164,,scripted
-070,040,sweet tea truce - hand swat,3923,4044,122,,scripted
-070,050,santa head rotates - tips over dead,4045,4166,122,,scripted
+070,010,aerial hover - mom sprints out to her son,3514,3636,123,boy;sheriff;mom;clothesline;mushroom_cloud,scripted
+070,020,over the sheriff's shoulder - twitch of recognition,3637,3758,122,sheriff;boy;mom;clothesline,scripted
+070,030,reverse - hat tip and mom starts to laugh,3759,3922,164,sheriff;boy;mom;clothesline,scripted
+070,040,pitcher push-out reveals the sweet tea truce,3923,4044,122,patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;clothesline,scripted
+070,050,santa slumps - head pops off and rolls,4045,4166,122,santa;santa_torso;santa_head;patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;clothesline,scripted
 080,010,mom final boss - dual wield,4167,4247,81,,scripted
 080,020,the look,4248,4288,41,,scripted
 080,030,mom unloads - they bolt,4289,4370,82,,scripted
