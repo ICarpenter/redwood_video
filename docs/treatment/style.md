@@ -1,8 +1,36 @@
-# guns — visual style bible: Bigature Claymation
+# guns — visual style candidates
 
-Decided 2026-08-02 with Ian, from the two candidate directions plus new
-options generated against `refs/`. Script: `script.md` · Palette:
-`../../refs/palette.scss` · Tone: **slightly unsettling, subtle patina only.**
+**Status: OPEN — no style has been chosen.** Bigature Claymation is the most
+developed candidate (workshopped 2026-08-02 from `refs/`), not the decision.
+Script: `script.md` · Palette: `../../refs/palette.scss`
+
+**How the decision gets made** — per the repo rule, by rendering and looking,
+not by arguing: stage **one loaded test frame** (sq020-sh020 is ideal — boy,
+printed gun with sticker, garage interior, Santa at the threshold: four
+material families in one frame) and render it under each contending
+treatment with its final light rig. Compare side by side.
+
+## Shared givens (hold for any candidate)
+
+These came from the refs and the script, not from any one style:
+
+- **Tone:** slightly unsettling, **subtle patina only** — secondhand wear,
+  never horror moves.
+- **Palette:** the `refs/palette.scss` gradient (pale sky `#bcd2ee` →
+  periwinkle `#9b7ede` → plum `#832161` → bordeaux `#52050a`) as the film's
+  sky/grade arc, with **turquoise `#76e7cd` reserved as the accent** (the
+  truck, the sweet tea).
+- **Big-sky feel:** expansive, dramatic clouds throughout
+  (`refs/sky_clouds/` is the vocabulary).
+- **Clay carnage:** the script commits to it regardless of style ("clay
+  everywhere," molten Play-Doh, clay divots, clay title card) — every
+  candidate must give the destruction a clay read.
+- Script consequence already applied and standing regardless of choice: the
+  sheriff's noodle-gun beat (sq070-sh020) is cut.
+
+---
+
+# Candidate A — Bigature Claymation (developed)
 
 ## Thesis
 
@@ -10,8 +38,7 @@ The camera believes it is shooting live action — real lenses, smooth motion,
 naturalistic sun, no miniature tricks. Everything in frame is honestly
 handmade, at full scale, under a big painted theatre sky. The people are
 polished living mannequins: clean, calm, a little too perfect. The unsettling
-note comes entirely from that restraint plus patina on the world around them
-— never from horror moves.
+note comes entirely from that restraint plus patina on the world around them.
 
 ## The five castes
 
@@ -98,13 +125,9 @@ mushroom cloud.
 
 ## Sky & light
 
-- The sky is a **painterly theatre-set backdrop**: big-sky feel throughout,
-  expansive dramatic clouds (`refs/sky_clouds/` is the cloud vocabulary —
-  Southwest monsoon build-ups, sunrise fire).
-- The `refs/palette.scss` gradient is the sky's arc across the film:
-  pale sky `#bcd2ee` → periwinkle `#9b7ede` → plum `#832161` →
-  bordeaux `#52050a`. **Turquoise `#76e7cd` is reserved as the accent** —
-  the truck, the sweet tea.
+- The sky is a **painterly theatre-set backdrop**: the shared big-sky
+  clouds, brush-painted, running the shared palette gradient across the
+  film.
 - One warm "stage sun" key matching the backdrop's hour. Naturalistic
   direction and softness; no product-table lighting.
 
@@ -126,13 +149,10 @@ The script already calls it "the only pristine object in the wreckage"
 - Diecast dents, chips, and *bends* — it never droops.
 - Molded hollow goods crack, pop, and shatter — they never squash.
 - Earthy surfaces crater and crumble.
-- Consequence already applied: the sheriff's "gun wilted into a drooping
-  noodle" beat (sq070-sh020) is **cut** — diecast cannot noodle. The shot
-  keeps the boy patting out his smoldering hair.
 
-## Banned list
+## Banned list (within this candidate)
 
-Rejected on purpose; do not reintroduce:
+Rejected on purpose during development; if A wins, do not reintroduce:
 
 - Tilt-shift / miniature-faking DOF
 - Stepped or on-2s "stop-motion" animation
@@ -152,13 +172,50 @@ Rejected on purpose; do not reintroduce:
 - The painterly sky lives on world-space backdrop geometry (dome/cyc), so
   free camera moves keep working — no camera projections anywhere in this
   style, which keeps the camera-driven layout pipeline unconstrained.
-- Grade target: the palette gradient plus warm sun; keep turquoise scarce so
-  the truck and pitcher pop.
 
-## Verification
+---
 
-Per the repo rule — verify by rendering a frame and looking at it. Before
-mass-producing assets: stage **one loaded test frame** (sq020-sh020 is ideal
-— boy, printed gun with sticker, garage interior, Santa at the threshold:
-four castes in one frame) and render it under the final light rig. The style
-bible is only proven when that frame looks right.
+# Candidate B — Toy Box Americana (sketch)
+
+The whole world is a secondhand vintage toy. People are rotocast vinyl with
+sculpted hair and swivel-joint articulation, each as if from a different toy
+line (boy — flocked-hair kid figure; Mom — doll line; sheriff — 70s Mego
+cop); the house is playset plastic with decal windows; vehicles are diecast
+with real paint chips; the Santa is literally the blow-mold ref. Clay is
+reserved for the printer's output and all destruction (satisfying the shared
+clay-carnage given). Limited articulation is the *animation language* —
+swivel-wrist aim sweeps, stiff gopher-pops — an animation economy for a solo
+pipeline. Shot like an 80s toy commercial: macro lens, tabletop sweep.
+Patina does the unsettling: yellowed vinyl, sticker residue, one eye printed
+off-register. The "NOT A TOY" runner becomes the style's thesis statement.
+
+- **Pros:** strongest alignment with what `refs/` actually contains; the
+  cheapest great-looking materials in CG (plastics) — EEVEE-native; rigging
+  and animation economy.
+- **Cons/risks:** lives or dies on lighting — reads as "default render of a
+  toy" if the macro-tabletop light isn't nailed.
+
+# Candidate C — Painted Americana 3D-for-2D (sketch)
+
+Projection-painted fills on simple 3D plus geometry-node / grease-pencil
+strokes — but aimed at **mid-century American illustration** (Little Golden
+Books, UPA, Charley Harper, roadside postcards) rather than Moebius. The
+most art-directable frames of the three.
+
+- **Pros:** every frame can be a picture-book plate; flattens render cost.
+- **Cons/risks:** heaviest per-shot 2D labor for one person across 40 shots;
+  and camera projections structurally fight this repo's core rule — the
+  camera is the only framing authority, and projections punish exactly the
+  free moves the layout pipeline is built around. Mitigation is painting
+  onto simple 3D and reserving true projections for statics, but that's a
+  constraint tax on every shot.
+
+# Back pocket (modifiers, not styles)
+
+- **VHS broadcast finish:** 4:3 moments, chroma bleed, tracking wobble on
+  the flashback, timestamp on "toy commercial" beats. Stackable on any
+  winner; decide late.
+- **County-fair shooting gallery:** the destructible figures as flat
+  painted-tin targets that spin/flip when hit — usable as the printed-figure
+  subsystem inside any candidate (the chorus head-pop xylophone run reads
+  perfectly as a target row).
