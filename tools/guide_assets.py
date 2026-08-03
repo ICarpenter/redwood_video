@@ -356,6 +356,20 @@ def build_big_pistol(c):
     fire_rig(c, "bp", muzzle_x=0.37, muzzle_z=0.34, flash_r=0.07, flash_len=0.15)
 
 
+def build_hubcap(c):
+    """One wheel cover, feet at z=0 like every other guide.
+
+    The cruiser does not carry these itself. They are staged per shot and
+    parented to the car, because sq040_sh044 needs ONE of them to leave —
+    and a linked collection instance is all-or-nothing, so a cap that has to
+    come off cannot be part of the car's own geometry.
+
+    Thin axis is Y, matching the cruiser's wheels (cyl axis="Y").
+    """
+    cyl(c, "hc_disc", 0.0, 0.0, 0.16, 0.16, 0.04, "metal", axis="Y")
+    cyl(c, "hc_hub", 0.0, 0.0, 0.16, 0.05, 0.06, "dark", axis="Y")
+
+
 def build_clothesline(c):
     """Posts + hanging sheet, authored about the line's own base centre.
 
@@ -578,6 +592,7 @@ BUILDERS = {
     "gun_cabinet": build_gun_cabinet,
     "mushroom_cloud": build_mushroom_cloud,
     "clothesline": build_clothesline,
+    "hubcap": build_hubcap,
 }
 
 

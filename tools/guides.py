@@ -68,6 +68,7 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("gun_cabinet", PROPS_FILE, "props", 1.95),
     GuideSpec("mushroom_cloud", PROPS_FILE, "props", 14.0),
     GuideSpec("clothesline", PROPS_FILE, "props", 2.2),
+    GuideSpec("hubcap", PROPS_FILE, "props", 0.32),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look
