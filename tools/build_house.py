@@ -94,6 +94,17 @@ def staging_meshes():
     return [ob for ob in stage().all_objects if ob.type == "MESH"]
 
 
+def built_meshes():
+    """Swap-agnostic version of staging_meshes(): pre-swap, the build lives
+    in house_v2; post-swap, swap() has moved it all into property (Task 10).
+    Falls back to filtering property by KEEPERS once house_v2 is empty."""
+    objs = staging_meshes()
+    if objs:
+        return objs
+    prop = bpy.data.collections["property"]
+    return [ob for ob in prop.objects if ob.type == "MESH" and ob.name not in KEEPERS]
+
+
 def _box_data(x0, x1, y0, y1, z0, z1, base=0):
     v = [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
          (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]
@@ -272,7 +283,7 @@ def build_house_roof():
 
 def check_roof():
     out = []
-    beams = [ob for ob in staging_meshes() if ob.name.startswith("beam_")]
+    beams = [ob for ob in built_meshes() if ob.name.startswith("beam_")]
     if len(beams) != 10:
         out.append(f"{len(beams)} beams, want 10")
     roof = _ob("house_roof")
@@ -670,7 +681,7 @@ def check_foundation():
         out.append(f"pre-swap property has {len(prop.objects)}, want 94")
     if any(n.startswith("_gb_") for n in names):
         out.append("greybox objects leaked into property")
-    for ob in staging_meshes():
+    for ob in built_meshes():
         for slot in ob.data.materials:
             if not slot.name.startswith("MAT_"):
                 out.append(f"{ob.name}: non-zone material {slot.name}")
@@ -695,7 +706,7 @@ def unwrap_stage(scale=1.0 / 12.0):
 
 
 def check_uvs():
-    return [f"{ob.name} has no UVs" for ob in staging_meshes()
+    return [f"{ob.name} has no UVs" for ob in built_meshes()
             if not ob.data.uv_layers]
 
 
@@ -712,12 +723,125 @@ def render_previews(outdir: Path):
         print("rendered", cam.name)
 
 
+# --- Task 10: swap the staged build into property, greybox parked --------
+
+GREYBOX_SWAP = [
+    "house", "house_roof", "garage", "garage_roof", "garage_door_front",
+    "garage_door_rear", "porch_deck", "porch_post_0", "porch_post_1",
+    "porch_roof", "front_door", "back_door_casing", "back_stoop",
+    "wall_kitchen_east",
+    "win_front_north_casing", "win_front_north_glass",
+    "win_front_north_mullion", "win_front_north_sill",
+    "win_front_south_casing", "win_front_south_glass",
+    "win_front_south_mullion", "win_front_south_sill",
+    "win_kitchen_north_casing", "win_kitchen_north_sash0",
+    "win_kitchen_north_sash0_glass", "win_kitchen_north_sash1",
+    "win_kitchen_north_sash1_glass", "win_kitchen_north_sill",
+    "win_kitchen_west_casing", "win_kitchen_west_sash0",
+    "win_kitchen_west_sash0_glass", "win_kitchen_west_sash1",
+    "win_kitchen_west_sash1_glass", "win_kitchen_west_sill",
+    "win_north_east_casing", "win_north_east_glass",
+    "win_north_east_mullion", "win_north_east_sill",
+    "win_south_west_casing", "win_south_west_glass",
+    "win_south_west_mullion", "win_south_west_sill",
+    "win_west_south_casing", "win_west_south_glass",
+    "win_west_south_mullion", "win_west_south_sill",
+]
+# the seven staged _v2 objects take the plain name once _gb_* frees it
+RENAME_AT_SWAP = {
+    "house_roof_v2": "house_roof",
+    "garage_roof_v2": "garage_roof",
+    "front_door_v2": "front_door",
+    "porch_deck_v2": "porch_deck",
+    "porch_post_0_v2": "porch_post_0",
+    "porch_post_1_v2": "porch_post_1",
+    "back_stoop_v2": "back_stoop",
+}
+
+
+def swap():
+    prop = bpy.data.collections["property"]
+    if bpy.data.collections.get(GREYBOX_COLL):
+        sys.exit("already swapped — use --revert first to re-run")
+    gb = bpy.data.collections.new(GREYBOX_COLL)
+    bpy.context.scene.collection.children.link(gb)
+    for nm in GREYBOX_SWAP:
+        ob = bpy.data.objects.get(nm)
+        if ob is None:
+            sys.exit(f"greybox object missing: {nm} — wrong file state?")
+        prop.objects.unlink(ob)
+        gb.objects.link(ob)
+        ob.name = f"_gb_{nm}"
+    gb.hide_render = True
+    gb.hide_viewport = True
+    for ob in list(stage().objects):
+        stage().objects.unlink(ob)
+        prop.objects.link(ob)
+        ob.name = RENAME_AT_SWAP.get(ob.name, ob.name)
+    # Name normalization: Blender auto-suffixes a new object (".NNN") when
+    # its plain name collides with an existing datablock. That happened at
+    # original build time for every staged object sharing a name with a
+    # greybox object beyond the 7 in RENAME_AT_SWAP (e.g. the window
+    # glass/sash/sill parts) — the _gb_ renames above just freed those
+    # plain names. Reclaim them now that the slot is open.
+    for ob in list(prop.objects):
+        base, dot, suffix = ob.name.rpartition(".")
+        if dot and len(suffix) == 3 and suffix.isdigit() \
+                and bpy.data.objects.get(base) is None:
+            ob.name = base
+    print(f"swapped: property now {len(prop.objects)} objects "
+          f"(48 keepers + new build), greybox parked in {GREYBOX_COLL}")
+
+
+def revert():
+    # NOTE: revert does not attempt to strip cosmetic ".00N" suffixes — the
+    # plain name a staged object reclaimed in swap()'s normalization pass
+    # is also the name its greybox counterpart wants back, so one of the
+    # two ends up auto-suffixed again here. That's fine: the next swap()'s
+    # normalization pass re-cleans property, and object names are never
+    # read by rendering or by the collection link (CLAUDE.md — the property
+    # collection is linked at identity), so a leftover suffix is cosmetic.
+    prop = bpy.data.collections["property"]
+    gb = bpy.data.collections.get(GREYBOX_COLL)
+    if gb is None:
+        sys.exit("nothing to revert")
+    back_to_v2 = {v: k for k, v in RENAME_AT_SWAP.items()}
+    for ob in [o for o in prop.objects if o.name not in KEEPERS]:
+        prop.objects.unlink(ob)
+        stage().objects.link(ob)
+        ob.name = back_to_v2.get(ob.name, ob.name)
+    for ob in list(gb.objects):
+        gb.objects.unlink(ob)
+        prop.objects.link(ob)
+        ob.name = ob.name.removeprefix("_gb_")
+    bpy.data.collections.remove(gb)
+    print("reverted: greybox restored into property")
+
+
+KEEPERS = {
+    "ground_far", "ground_yard", "ground_roadside", "road", "ditch_floor",
+    "ditch_wall_e", "ditch_wall_w", "culvert", "driveway", "mailbox",
+    "mailbox_post", "bbq", "propane_tank", "truck_body", "truck_cab",
+    "fence_rail_hi", "fence_rail_lo",
+    *[f"fence_post_{i}" for i in range(15)],
+    *[f"trunk_{i}" for i in range(8)],
+    *[f"canopy_{i}" for i in range(8)],
+}
+assert len(KEEPERS) == 48
+
+
 if __name__ == "__main__":
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     if "--rebuild" in argv:
         build()
         bpy.ops.wm.save_mainfile()
         print("staging rebuilt + saved")
+    if "--swap" in argv:
+        swap()
+        bpy.ops.wm.save_mainfile()
+    if "--revert" in argv:
+        revert()
+        bpy.ops.wm.save_mainfile()
     if "--check" in argv:
         run_checks()
     for arg in argv:
