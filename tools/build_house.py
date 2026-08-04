@@ -17,6 +17,14 @@ Flags:
   --check           run cumulative invariant asserts, then exit non-zero on fail
   --previews=<dir>  render every cam_model_* camera to <dir>/<name>.png
   --swap / --revert (Task 10) move staging into `property` / undo it
+
+UVs (unwrap_stage): deterministic, manual per-loop world-space box projection
+(no bpy.ops.uv.*, so it's context-free in --background), axis-aligned by
+construction at 1 UV tile = 12 m (spec "UV & painting prep"). Two limits are
+accepted at this staging stage: opposite-facing faces get mirrored dab
+direction, and world-space projection means paint continues across objects —
+both fine for zone-flat starter materials; hero-asset UV touch-up happens at
+look-dev with the style locked.
 """
 import math
 import sys
@@ -616,7 +624,7 @@ def build():
     build_garage()
     build_porch_and_roofscape()
     build_kitchen()
-    # Task 8 appends its build call here.
+    unwrap_stage()
 
 
 def run_checks():
@@ -664,6 +672,28 @@ def check_foundation():
 
 
 CHECKS.append(check_foundation)
+
+
+def unwrap_stage(scale=1.0 / 12.0):
+    for ob in staging_meshes():
+        me = ob.data
+        uv = me.uv_layers[0] if me.uv_layers else me.uv_layers.new(name="UVMap")
+        mw = ob.matrix_world
+        for poly in me.polygons:
+            n = (mw.to_3x3() @ poly.normal)
+            ax = max(range(3), key=lambda i: abs(n[i]))
+            for li in poly.loop_indices:
+                co = mw @ me.vertices[me.loops[li].vertex_index].co
+                u, v = ((co.y, co.z), (co.x, co.z), (co.x, co.y))[ax]
+                uv.data[li].uv = (u * scale, v * scale)
+
+
+def check_uvs():
+    return [f"{ob.name} has no UVs" for ob in staging_meshes()
+            if not ob.data.uv_layers]
+
+
+CHECKS.append(check_uvs)
 
 
 def render_previews(outdir: Path):
