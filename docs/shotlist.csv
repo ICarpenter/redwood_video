@@ -39,7 +39,7 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 060,014,cop reaction - clocks fire from the house - swings west,3228,3350,123,sheriff;machine_gun;mom;rosco,scripted
 060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,,scripted
 060,030,MUSHROOM CLOUD - everyone blasted,3432,3513,82,,scripted
-070,010,aerial hover - mom sprints out to her son,3514,3636,123,boy;sheriff;mom;clothesline,scripted
+070,010,aerial hover - mom out the window to her son,3514,3636,123,boy;sheriff;mom;clothesline,scripted
 070,020,over the sheriff's shoulder - twitch of recognition,3637,3758,122,sheriff;boy;mom;clothesline,scripted
 070,030,reverse - hat tip and mom starts to laugh,3759,3922,164,sheriff;boy;mom;clothesline,scripted
 070,040,pitcher push-out reveals the sweet tea truce,3923,4044,122,patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
