@@ -35,6 +35,10 @@ It **renegotiates two shared givens** from `style.md`:
 All other givens hold: slightly unsettling tone, subtle patina only
 (translated below), big-sky feel (as poster clouds).
 
+It also **contributes one given up** to film canon (developed
+2026-08-03): the 1993 setting — recorded in `style.md`'s shared givens
+so it holds under any candidate.
+
 ## Thesis
 
 The film is a mid-century American print come to life — flat matte gouache
@@ -46,6 +50,57 @@ printer creates, and every act of violence, is **wet paint** in a dry
 printed world — pigment the print never authorized. Creation and
 destruction are the same substance, and the pristine print gets
 progressively ruined by it.
+
+## The setting — 1993, film canon
+
+The film is set in the early 90s, when mid-century modern is thirty
+years out of style. The house is a 1962 Palm Springs fantasy — flat
+roof, deep fascia, post-and-beam, walls of glass
+(`refs/styles/il_fullxfull.5572769945_bsf5.webp` is the house's
+self-image) — inherited, not chosen. Three decades of necessity have
+layered 80s/90s possessions over the bones: thrift-store hodgepodge,
+hand-me-downs, anachronism through necessity.
+
+The print expresses it deadpan: the whole film is drawn as the poster of
+the house's self-image, and 1993 just sits in it, rendered serenely.
+**The medium never acknowledges the anachronism** — a 1962 poster artist
+forced to draw a boombox draws it with the same loving flatness as the
+butterfly roof. This hands the shared "slightly unsettling" given a
+second engine: every frame is slightly wrong-in-time.
+
+The setting itself is film canon — it holds under any style candidate
+and is recorded in `style.md`'s shared givens. This doc legislates only
+how the print expresses it.
+
+## The two strata — content law
+
+Every object in the lived-in world belongs to one of two strata:
+
+- **The 1962 stratum** — architecture and built-ins: flat roof, deep
+  fascia and overhangs, glass walls, breeze-block screen, terrazzo, the
+  pink kitchen (`refs/house/`). Plus the mint C10 — a period-coherent
+  relic. This stratum wears the core MCM palette.
+- **The 1980s–90s stratum** — everything the family added out of
+  necessity: the hand-me-down plaid recliner, particle-board shelving,
+  the 27-inch CRT, boombox, VCR, cordless phone, the boy's printer, all
+  wardrobe, the sheriff's Crown Vic. This stratum may draw on the 1993
+  annex swatches (below); core MCM swatches remain legal on it.
+
+**The hodgepodge law: every lived-in frame carries at least one
+post-1980 object.** The architecture is never dressed pure — the film
+never shows the clean 1962 poster, only 1993 wearing it.
+
+**Dilapidation is content, not medium.** The print stays flat and clean
+while *depicting* wear: a fascia board replaced with bare plywood, dead
+patches in the lawn, aluminum foil sunshading one clerestory, a swamp
+cooler squatting on the flat roof, the duct-taped blow-mold Santa
+(already canon). Era makes no difference to print wear — the patina law
+stays uniform; a thrifted 1985 recliner fades and misregisters exactly
+like a 1962 breeze block.
+
+Maybe (a story/set call, not a style call): a drained, cracked pool —
+the most on-theme failed-fantasy set piece available if a beat ever
+wants one.
 
 ## The shading machine
 
@@ -130,6 +185,30 @@ starting swatches — the test frame tunes them.
   shadows. Cast shadows are crisp graphic shapes, tinted by the global
   shadow control.
 
+### The 1993 annex
+
+Four swatches for the 1980s–90s stratum, mixed dusty so they sit quietly
+inside the gouache world:
+
+| swatch | hex | role |
+|---|---|---|
+| charcoal-plastic | `#42403b` | electronics, tires, the CRT, cop-car trim — warm charcoal, never pure black |
+| faded-denim | `#7d94a8` | the boy's baggies; denim anywhere |
+| mall-mauve | `#a98794` | Mom's wardrobe, the afghan, the couch |
+| seafoam-grey | `#9db8ac` | 90s kitchenware, a windbreaker |
+
+Annex law:
+
+- Legal **only on post-1980 objects**; never on sky, terrain, or
+  architecture.
+- Never the majority of a frame — core MCM swatches keep majority rule
+  everywhere.
+- Each annex swatch carries drift variants and obeys the dab-tier family
+  legality exactly like a core swatch.
+- **The mint law survives the annex** the same way it survives the teal
+  world: seafoam-grey is grayed nearly to neutral, faded-denim is grayed
+  blue; mint stays pale *and* saturated. No collision.
+
 ## Sky
 
 A painted backdrop dome, so free camera moves keep working: flat poster
@@ -150,10 +229,24 @@ as the world, 2-band, mottled, matte:
   dot** — period-correct Golden Books misregistration, and the project's
   off-register signature surviving on flesh. Otherwise people are always
   cleanly registered.
-- **Hair is a solid graphic mass** — bowl cut is one shape, curlers are
-  graphic cylinders, the mustache is a single form.
+- **Hair is a solid graphic mass** — bowl cut is one shape, Mom's
+  hairspray helmet is one huge sculpted mass, the mustache is a single
+  form.
 - **Wardrobe is flat fills.** The boy's band-tee graphic gets to be
   off-register: the tee is a print within the print.
+- **The decade rides the silhouette** (setting canon, expressed flat):
+  - **Mom — 1988 mall-glam armor, all film:** the hairspray helmet,
+    shoulder-padded blouse in mall-mauve, pleated high-waist pants.
+    Supersedes the earlier curler/housecoat look; `refs/mom/` remains
+    the face/energy DNA, and the oven mitts survive as kitchen props.
+    The silhouette is pre-armored for the final-boss turn — no costume
+    change needed.
+  - **Boy:** bowl cut over a faded-denim baggy silhouette, cuffs
+    pooling over the sneakers, band tee as above.
+  - **Sheriff:** the man reads timeless county lawman; his anachronism
+    is the car (see strata law) — a boxy 80s LTD Crown Victoria, a
+    decade out of date even in 1993, cream body with the rust pop the
+    palette already assigns (`refs/cop_car/`).
 - Character DNA still comes from `refs/boy/`, `refs/mom/`, `refs/cop/` —
   wardrobe and grooming silhouettes, translated to flat shapes.
 - **Dab tiers: whisper + soft only.** Tangent-space tilts deform
@@ -270,6 +363,10 @@ out-prints the world around it.
   wet-paint FX; what's banned is solid objects deforming as behavior)
 - Specular outside the wet-paint FX family
 - Mint on anything but the truck and the sweet tea
+- Memphis patterns, airbrush gradients, neon hues — the 80s/90s stratum
+  is drawn in the same serene gouache as everything else; no
+  era-differentiated graphic language
+- Annex swatches on sky, terrain, or architecture
 
 ## Maybes (decide late, by test render)
 
@@ -295,6 +392,10 @@ Done:
   uniform, whisper near-flat, strong row cycling hue around the clock).
 - Kettle demo filed at `~/blender/add-ons/cody-gindy-kettle-patreon-02.blend`;
   extracted textures + color re-render examined.
+- The 1993 setting layer (2026-08-03): serene-print era clash, the
+  two-strata content law, the 4-swatch annex, Mom's mall-glam
+  replacement of the curler look, the sheriff's boxy Crown Vic. Setting
+  canon recorded in `style.md` shared givens.
 
 Next, in order (blocked on tablet):
 
