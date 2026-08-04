@@ -46,6 +46,6 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 070,050,santa slumps - head pops off and rolls,4045,4166,122,santa;santa_torso;santa_head;patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
 080,010,mom final boss - both guns off the table,4167,4247,81,mom;machine_gun;rosco;sheriff_seated;boy;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
 080,020,the look,4248,4288,41,boy;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
-080,030,mom unloads - they bolt for the garage,4289,4370,82,mom;machine_gun;rosco;boy;sheriff;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
-080,040,FINAL SPRINT under fire - the boy overtakes,4371,4534,164,boy;sheriff;mom;machine_gun;rosco,scripted
+080,030,mom unloads - they bolt west for the fence,4289,4370,82,mom;machine_gun;rosco;boy;sheriff;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,040,FINAL SPRINT west over the fence into the trees,4371,4534,164,boy;sheriff;mom;machine_gun;rosco,scripted
 090,010,title card takes one last bullet hole,4535,4780,246,title_card;bullet_hole,scripted

@@ -19,10 +19,15 @@ film's clock:
   play out at dusk. The backyard is the WEST.
 
 So the day *arcs from front-of-story to climax*: morning light on the
-delivery, dying light on the carnage. The ending isn't "sprint into a
-western sunset" — it's the two of them fleeing down the road at last light
-while the sun sinks over the wrecked backyard behind them. Any shot that
-contradicts this arc needs a reason.
+delivery, dying light on the carnage. **The ending IS a sprint into a western
+sunset** — reversed 2026-08-03, having previously said the opposite. They do
+not flee down the road: they run west out of the backyard, hop the back fence
+and go into the treeline with the sun in their faces, Mom's fire chasing them
+across the grass. Two reasons it is better than the road version: the escape
+runs continuously out of the shot before it, instead of cutting to the far
+side of the house with no route between; and the last image of the film is the
+one the whole day has been building toward. Any shot that contradicts this arc
+needs a reason.
 
 ### Axes — the one table to check before saying "north"
 

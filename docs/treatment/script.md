@@ -133,8 +133,8 @@ plays through the chorus hit rather than waiting for it.
 |----|------|--------|-----|------|
 | 010 | 102–104 | 4167–4247 | 3.4s | Mom's face goes final boss. She takes BOTH guns off the tea table — his and the boy's — and comes up dual-wielding, oven mitts still on. Push in onto her face. ♪ "Who got the bag?" |
 | 020 | 104–105 | 4248–4288 | 1.7s | Two-shot square onto the two and a half metres between them. Boy and sheriff exchange ONE look. |
-| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt for the garage passthrough — the only way out of the backyard and the door the whole arsenal came out of — his chair going over behind him clay divots exploding at their heels. ♪ the hook changes owners — SHE'S "got the guns" now. |
-| 040 | 107–111 | 4371–4534 | 6.8s | **FINAL IMAGE:** wide on the dirt road from the far shoulder panning with them — boy and sheriff sprinting north under heavy fire from the porch, and the pan carries the house and Mom on it through the middle of the shot. **Sheriff holds his pants up one-handed (runner 3/3). The boy OVERTAKES him** — the pass lands on camera at 4470. ♪ song dies dead on bar 111's hit — **SMASH TO BLACK** with it. |
+| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt WEST past the table and straight up the yard for the back fence his chair going over behind him clay divots exploding at their heels. She barely has to turn — they run right past her. ♪ the hook changes owners — SHE'S "got the guns" now. |
+| 040 | 107–111 | 4371–4534 | 6.8s | **FINAL IMAGE:** wide up the yard from just behind Mom — the two of them running away west into the sunset under heavy fire out of our own eyeline divots chasing them across the grass and rounds banging off the fence. **The boy OVERTAKES him at ~4405 and vaults the fence first at 4450; the sheriff is still short of it and gets over at 4478 one-handed (runner 3/3).** They go into the treeline and the desert and mountains beyond. ♪ song dies dead on bar 111's hit — **SMASH TO BLACK** with it. |
 
 ## sq090 — TAIL (audio only) · bars 111–~117 · frames 4535–~4780 · ~10.2s
 
