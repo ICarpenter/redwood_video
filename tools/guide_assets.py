@@ -323,26 +323,54 @@ def build_delivery_truck(c):
 
 
 def build_cruiser(c):
-    # Hollow greenhouse instead of a solid cabin block: corner pillars, a
-    # thin roof, and alpha-blended glass panes, so blocking inside the car
-    # (the sheriff at the wheel) reads through the windows. Nose is -X,
-    # matching dt_cab; driver side is -Y.
-    box(c, "cr_body", 0, 0, 0.70, 3.60, 1.70, 0.60, "cruiser")
-    box(c, "cr_roof", 0, 0, 1.42, 1.70, 1.44, 0.06, "cruiser")
+    """Sheriff's cruiser with a cabin you can actually sit in.
+
+    The first version was a 0.60 m body under a 0.39 m greenhouse — a shape,
+    not a car. sq040_sh035 and sh042 are both INTERIORS shot through that
+    glass, so it had to hold a seated man: body down to 0.68, cabin 0.68..1.52,
+    and the seats where a driver's hips go. His legs vanish into the body,
+    which is exactly what a footwell looks like from outside.
+
+    Hollow greenhouse rather than a solid cabin block so blocking inside reads
+    through the windows. Nose is -X, matching dt_cab; DRIVER SIDE IS -Y, which
+    is where the wheel and the driver's bucket both are.
+    """
+    box(c, "cr_body", 0, 0, 0.34, 3.60, 1.70, 0.68, "cruiser")
+    box(c, "cr_roof", 0, 0, 1.56, 1.90, 1.48, 0.08, "cruiser")
     for px, fx in ((-0.90, "f"), (0.90, "b")):
         for py, fy in ((-0.72, "l"), (0.72, "r")):
-            box(c, f"cr_pillar_{fx}{fy}", px, py, 1.20, 0.10, 0.10, 0.40,
+            box(c, f"cr_pillar_{fx}{fy}", px, py, 1.10, 0.10, 0.10, 0.84,
                 "cruiser")
-    box(c, "cr_glass_front", -0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
-    box(c, "cr_glass_back", 0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
-    box(c, "cr_glass_left", 0, -0.78, 1.20, 1.70, 0.04, 0.36, "glass")
-    box(c, "cr_glass_right", 0, 0.78, 1.20, 1.70, 0.04, 0.36, "glass")
-    box(c, "cr_dash", -0.70, 0, 1.06, 0.30, 1.40, 0.16, "dark")
-    cyl(c, "cr_steering", -0.50, -0.40, 1.14, 0.09, 0.03, "dark", axis="X")
+    box(c, "cr_glass_front", -0.92, 0, 1.10, 0.04, 1.40, 0.76, "glass")
+    box(c, "cr_glass_back", 0.92, 0, 1.10, 0.04, 1.40, 0.76, "glass")
+    box(c, "cr_glass_left", 0, -0.78, 1.10, 1.70, 0.04, 0.76, "glass")
+    box(c, "cr_glass_right", 0, 0.78, 1.10, 1.70, 0.04, 0.76, "glass")
+    box(c, "cr_dash", -0.70, 0, 0.80, 0.30, 1.40, 0.18, "dark")
+    cyl(c, "cr_steering", -0.50, -0.40, 0.94, 0.09, 0.03, "dark", axis="X")
+    # front buckets, rear bench, and the cage — it is a cop car
+    for sy, side in ((-0.40, "driver"), (0.40, "passenger")):
+        box(c, f"cr_seat_{side}", -0.16, sy, 0.74, 0.46, 0.44, 0.12, "dark")
+        box(c, f"cr_seatback_{side}", 0.10, sy, 1.05, 0.10, 0.44, 0.50, "dark")
+    box(c, "cr_bench", 0.70, 0, 0.74, 0.50, 1.30, 0.12, "dark")
+    box(c, "cr_benchback", 1.00, 0, 1.05, 0.14, 1.30, 0.50, "dark")
+    for i, sy in enumerate((-0.50, -0.17, 0.17, 0.50)):
+        box(c, f"cr_cage_{i}", 0.40, sy, 1.10, 0.03, 0.03, 0.60, "metal")
+    box(c, "cr_cage_rail", 0.40, 0, 1.42, 0.03, 1.30, 0.04, "metal")
     for i, (x, y) in enumerate([(-1.2, -0.85), (-1.2, 0.85),
                                 (1.2, -0.85), (1.2, 0.85)]):
         cyl(c, f"cr_wheel_{i}", x, y, 0.35, 0.35, 0.25, "tire", axis="Y")
-    box(c, "cr_lightbar", 0, 0, 1.50, 0.60, 0.40, 0.12, "lightbar")
+    box(c, "cr_lightbar", 0, 0, 1.66, 0.60, 0.40, 0.12, "lightbar")
+
+
+def build_cruiser_door(c):
+    """The driver's door, off. sq040_sh060's "the door falls off AFTER" has
+    been in the script since draft 1 with nothing in the file to play it."""
+    box(c, "cd_skin", 0, 0, 0.34, 1.10, 0.06, 0.68, "cruiser")
+    box(c, "cd_frame_top", 0, 0, 0.72, 1.10, 0.06, 0.08, "cruiser")
+    box(c, "cd_frame_l", -0.52, 0, 0.96, 0.06, 0.06, 0.56, "cruiser")
+    box(c, "cd_frame_r", 0.52, 0, 0.96, 0.06, 0.06, 0.56, "cruiser")
+    box(c, "cd_glass", 0, 0, 0.98, 1.00, 0.03, 0.50, "glass")
+    box(c, "cd_handle", 0.26, -0.05, 0.58, 0.22, 0.05, 0.05, "metal")
 
 
 def build_rosco(c):
@@ -505,8 +533,9 @@ def build_boy_run(c):
     torso and head pitched over the front foot, one arm extended a full 0.52 m
     in -Y (the facing direction) and the other cocked back.
     """
-    box(c, "br_leg_front", -0.11, -0.18, 0.36, 0.16, 0.20, 0.72, "boy")
-    box(c, "br_leg_back", 0.11, 0.20, 0.42, 0.16, 0.20, 0.55, "boy")
+    box(c, "br_hip", 0, -0.02, 0.62, 0.40, 0.30, 0.20, "boy")
+    box(c, "br_leg_front", -0.11, -0.18, 0.32, 0.16, 0.20, 0.64, "boy")
+    box(c, "br_leg_back", 0.11, 0.14, 0.40, 0.16, 0.20, 0.50, "boy")
     box(c, "br_torso", 0, -0.14, 0.88, 0.42, 0.30, 0.52, "boy")
     box(c, "br_arm_out", -0.26, -0.36, 1.00, 0.10, 0.52, 0.10, "skin")
     box(c, "br_arm_back", 0.26, 0.22, 0.92, 0.10, 0.36, 0.10, "skin")
@@ -515,8 +544,9 @@ def build_boy_run(c):
 
 def build_boy_push(c):
     """Both arms locked out at carton height, weight through a braced back leg."""
-    box(c, "bp_leg_front", -0.12, 0.02, 0.30, 0.16, 0.20, 0.60, "boy")
-    box(c, "bp_leg_back", 0.12, 0.26, 0.28, 0.16, 0.22, 0.56, "boy")
+    box(c, "bp_hip", 0, -0.06, 0.58, 0.40, 0.44, 0.20, "boy")
+    box(c, "bp_leg_front", -0.12, -0.06, 0.28, 0.16, 0.22, 0.56, "boy")
+    box(c, "bp_leg_back", 0.12, 0.16, 0.26, 0.16, 0.22, 0.52, "boy")
     box(c, "bp_torso", 0, -0.22, 0.82, 0.42, 0.34, 0.46, "boy")
     box(c, "bp_arm_l", -0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
     box(c, "bp_arm_r", 0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
@@ -541,6 +571,7 @@ def build_boy_peer(c):
 
 def build_boy_aim(c):
     """Gun shouldered: support arm out, trigger arm tucked, weight back."""
+    box(c, "ba_hip", 0, 0.02, 0.58, 0.40, 0.34, 0.18, "boy")
     box(c, "ba_leg_l", -0.13, -0.06, 0.29, 0.16, 0.20, 0.58, "boy")
     box(c, "ba_leg_r", 0.13, 0.14, 0.30, 0.16, 0.20, 0.60, "boy")
     box(c, "ba_torso", 0, -0.04, 0.84, 0.42, 0.26, 0.52, "boy")
@@ -799,6 +830,7 @@ BUILDERS = {
     "boy_run": build_boy_run, "boy_push": build_boy_push,
     "boy_peer": build_boy_peer, "boy_aim": build_boy_aim,
     "box_open": build_box_open,
+    "cruiser_door": build_cruiser_door,
 }
 
 

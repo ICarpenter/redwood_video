@@ -92,6 +92,7 @@ GUIDES: list[GuideSpec] = [
     # frame the boy tears it open. Flat, not standing: upright flaps top out
     # above his head and hide the very thing he is peering over.
     GuideSpec("box_open", PROPS_FILE, "props", 1.25),
+    GuideSpec("cruiser_door", PROPS_FILE, "props", 1.24),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look
