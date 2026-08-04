@@ -26,7 +26,7 @@ Written 2026-07-20, status updated 2026-08-03.
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
 | 3. Layout / animatic | **BLOCKED END TO END — all 50 shots, frames 1–4780. Undrawn.** |
-| 4. Asset production | greybox — property shell, 28 guides, 2 mini-sets, squib FX |
+| 4. Asset production | greybox — property shell, 34 guides, 2 mini-sets, squib FX |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
 
 The film is watchable now: `edit/edit.blend` cuts the track, 9 section
@@ -37,37 +37,66 @@ changes.
 
 ### What is left
 
-Nothing structural. Every shot is blocked and animated at guide tier and
-cuts as layout; the film plays start to finish. **What it does not have is a
-single drawn line** — 50 empty Grease Pencil papers. That is the next phase.
+Nothing structural. Every shot is blocked and animated at guide tier and cuts
+as layout; the film plays start to finish. It has not been drawn — 50 empty
+Grease Pencil papers — and it has never been watched end to end at CORRECT
+timing, because of the bug in the next section.
 
-`sq070`–`sq090` were blocked 2026-08-03. Their continuity basis is
-`sq060_sh030`'s LAST frame, read out of the file rather than assumed: boy
-`(3.757, 16.753)` rotX −92 and sheriff `(14.515, 15.726)` rotX −92, both flat
-on their backs; Mom still in the kitchen at `(3.990, 3.195, 0.25)`;
-clothesline down at `(9.060, 10.280)` rotY 88.
+Blocked 2026-08-03 in this order: `sq070`–`sq090` (the aftermath, the ending
+and the title card), then a performance pass over seven `sq010`/`sq020` shots,
+then the sheriff's introduction and crash (`sq040_sh030`–`sh066`).
 
-Four constraints that shape any reframe down there:
+---
 
-- **The sheriff is 10.8 m north of the boy.** No frame holds him, the boy and
-  the back door at a readable size, which is why `sq070_sh010`'s aerial drops
-  him and `sh020` is a long-lens OTS rather than a two-shot.
+## THE KEYFRAME RETIME BUG — read this before animating anything
+
+**`resync_layout.py` moves a scene's frame RANGE to match the shotlist. Nothing
+moves the KEYS.** So every shot animated before the 2026-08-02 retime — which
+pulled each section a bar (~41 frames) earlier — is still keyed where the old
+chart put it, and the shot plays the wrong slice of its own move.
+
+This is not cosmetic. `sq010_sh030` ran 246–368 with keys at 287–409: the first
+41 frames were a held pose and the jump, keyed at 372–379, happened four frames
+AFTER the shot ended. It had never been on screen once. Several "the animation
+is weak" notes turned out to be this and nothing else.
+
+**24 of 50 scenes were affected. 13 still are:**
+
+    sq010_sh020   sq020_sh010  sq020_sh030  sq020_sh040  sq020_sh044
+    sq020_sh050   sq030_sh030  sq040_sh010  sq040_sh020  sq040_sh050
+    sq050_sh010   sq050_sh020  sq060_sh010
+
+Worst offenders: `sq040_sh030`'s cruiser was keyed across 291 frames for a
+41-frame shot (fixed); `sq030_sh030`'s heads-popping run is compressed into
+half its shot; `sq040_sh050`'s hubcap skeet leads its shot by 358 frames.
+
+**It is NOT a blanket −41.** Actions were duplicated forward between shots as
+blocking was carried, so many carry inherited keys from earlier shots as well
+as their own — a scene can legitimately have keys 200 frames before its start
+(a settled value) while its own move is 41 frames late. Each one wants looking
+at. The audit that finds them is described in "Working notes".
+
+Suggested order, densest comedy first: `sq030_sh030` and `sq040_sh010/020/050`
+(chorus 1 and the verse-2 gags), then `sq020_*`, then `sq010_sh020`,
+`sq050_sh010/020`, `sq060_sh010`.
+
+## Constraints that shape the late sequences
+
+- **The sheriff is 10.8 m north of the boy** after the blast. No frame holds
+  him, the boy and the back door at a readable size, which is why
+  `sq070_sh010`'s aerial drops him and `sh020` is a long-lens OTS.
 - **The Santa stands INSIDE the garage tunnel**, 0.24 m off its north wall at
-  `(-7.839, 2.198)` — its world position since `sq010`, so invariant 3 keeps it
-  there. `sq070_sh050` therefore shoots out through the rear passthrough, and
-  the sweet-tea table's position is dictated by that sight-line, not by taste:
-  pushed any further north the tunnel wall eats the tableau.
+  `(-7.839, 2.198)` — its world position since `sq010`. `sq070_sh050` shoots
+  out through the rear passthrough, and the sweet-tea table's position is
+  dictated by that sight-line, not by taste.
 - **`ground_far` is not flat.** It runs z 0..42 and rises out past the road,
-  which ate the bottom third of `sq090`'s title card when the card sat on the
-  ground. The card is parked FLOATING at `(0, -60, 5)`, oversize for its frame,
-  which is how that shot gets to be "Black." without touching the world.
-- **Four shots carry armed guns** — `sq060_sh012`, `sq060_sh014`, `sq080_sh030`
-  and `sq080_sh040`. `fire_rig --arm` deleted their gun instances and replaced
-  them with `<p>_ctrl` objects inside the overridden gun collection, so any
-  blocking script that re-adds a gun to those scenes leaves TWO in the shot.
-  See the gunfire chain below.
+  which ate the bottom third of `sq090`'s title card. The card is parked
+  FLOATING at `(0, -60, 5)`.
+- **Six shots carry armed guns** — `sq060_sh012/sh014`, `sq080_sh030/sh040`,
+  plus `sq030_sh030` and `sq040_sh010/sh050`'s `mg_ctrl`s. See the two traps
+  under the gunfire chain.
 
-### The gunfire chain, if you have not met it
+## The gunfire chain, if you have not met it
 
 Four tools, in this order. Each is documented in `tools.md`.
 
@@ -78,7 +107,43 @@ Four tools, in this order. Each is documented in `tools.md`.
 
 `gunfire.py --dry-run` prints every shot and what it hit, and doubles as an
 aim audit of the blocking — it is how most of the staging errors in the solo
-were caught.
+were caught, and how Mom's rounds were found going into the sheriff's belly in
+`sq060_sh014` when he is not hit in this story.
+
+**Two traps around armed guns, both paid for:**
+
+- **Never `animation_data_clear()` a `<p>_ctrl`.** Its action is where
+  `fire_rig` keyed `["fire"]`, and wiping it silently disarms the gun — the
+  bake comes back "0 shots fired" and nothing warns you. `--arm` cannot put
+  the keys back either, because it is keyed on the gun INSTANCE that arming
+  itself deleted. Transform the control in place. To re-key a burst on an
+  already-armed control, call `fire_rig._burst_keys(ctrl, start, end, period)`
+  directly so the shape matches.
+- **A blocking script that re-adds a gun to an armed shot leaves TWO guns** —
+  one armed and static, one animated and dead. Arm AFTER blocking, and give
+  any re-runnable pass an `only=` filter so you can re-run one step without
+  touching the armed shots.
+
+## The parent-inverse trap — this one has bitten three times
+
+When Blender parents A to B it stores `matrix_parent_inverse` = B's world
+matrix at that moment, so `A.location` keeps meaning what it meant. That makes
+a child's numbers meaningless on their own: **world = parent · inverse · local,
+and nothing in the file records what pose the parent was in when it happened.**
+
+It has cost three real bugs: the boy's machine gun pointing 83 degrees off the
+Santa in `sq020_sh030`; the sheriff and his sandwich sitting at coordinates
+that only made sense against a car pose nobody had; and blocking that looked
+correct in the outliner and wrong in the render.
+
+Two ways out, both used in the file now:
+
+- **Unparent and key in world space** when the child needs to AIM at something.
+  A heading is then just `atan2(dy, dx)` — and a gun fires along local +X, so
+  that heading IS its rotZ.
+- **Re-parent with an identity inverse** when the child should ride the parent:
+  `ob.parent = p; ob.matrix_parent_inverse = Matrix.Identity(4); ob.location =
+  <plain parent-space offset>`. Then the numbers mean what they look like.
 
 ## Nine conventions that will bite you if you forget them
 
@@ -155,6 +220,34 @@ the tiers are: render → layout → slug.
 Nothing occludes a stroke, at any distance: Grease Pencil composites over
 mesh geometry in EEVEE unconditionally (see the gotchas below) — there is
 no X-ray caveat to remember any more.
+
+### Pose variants are how a rigid guide performs
+
+Guides are rigid and `guide_assets.box()` is axis-aligned, so there is no way
+to straight-arm a door, shove a carton, shoulder a rifle or sit in a car by
+transforming a standing figure. The answer — and it is the same thing
+stop-motion calls replacement animation — is a variant collection, about ten
+lines in `guide_assets.py`:
+
+    sheriff_war  sheriff_seated       boy_run  boy_push  boy_peer  boy_aim
+
+Two rules learned building them:
+
+- **Every mass must share volume with its neighbour.** `boy_run` and
+  `boy_push` shipped with the trailing leg (local +X, which facing -Y is his
+  LEFT) sharing no volume with the torso at all, so his left leg was a
+  detached block floating behind him. A hip mass bridges them now. Check the
+  numbers, not the front-orthographic preview — a detached limb is invisible
+  head-on.
+- **Swap variants with keyed `hide_viewport`/`hide_render` set to CONSTANT
+  interpolation**, both guides keyed identically through the swap frame, so the
+  cut reads as the pose changing rather than as a cut. That is how the Santa
+  loses its head, how the sheriff gets out of his chair, and how the boy
+  shoulders the gun.
+
+`--add=` refuses to touch a guide that already exists, so fixing a builder
+needs the collection removed first; there is a `rebuild_guide.py` pattern in
+"Working notes".
 
 This replaced the old fixed-camera board model: boards used to pin the
 camera at `(0, −10, 0)` and change framing by moving and rotating the
@@ -321,6 +414,19 @@ scene, check that `garage_door_rcutter` still came along.
 Both garage doors are modelled **open** — retracted horizontal panels at
 z 2.35..2.45, not slabs filling the opening.
 
+## Reverted deliberately — do not redo without asking
+
+**`sheriff_eating` and the sq040 sandwich re-cut (commit `d9e0b69`, reverted
+in `b0466ba`).** The diagnosis stands and is worth keeping: the sandwich was
+bolted at `(0, -0.30, 0.98)` and `sheriff_seated`'s belly ball — centre
+`(0, -0.10, 0.84)`, r 0.26 — reaches y -0.32 at that height, so it was 2 cm
+inside him and below his hands. A pose variant with both arms forward was
+built to fix it and the gag was re-cut around a lean-in bite.
+
+**Ian did not like the new animation and wants to fix the original.** The
+geometry finding above is still true; the performance replacement is what was
+rejected. Fix the old animation rather than re-introducing `sheriff_eating`.
+
 ## Open decisions
 
 - **Backyard scale.** Currently ~22 m deep. Generous — good for
@@ -336,21 +442,82 @@ z 2.35..2.45, not slabs filling the opening.
   flowerbed arm). The animatic arbitrates; don't cut on taste beforehand.
 - **Production design** — nothing designed yet beyond massing: siding,
   porch clutter, junk, terrain, and the clay look itself.
+- **Rigged characters — DEFERRED, decided 2026-08-03.** Rigging faces, limbs
+  and fingers before a full-animation sweep was considered and put off, for
+  three reasons: the style is not locked (a claymation look wants REPLACEMENT
+  animation — swappable heads and hands, no face rig at all; a print or gouache
+  look wants something else again); the animatic has not finished its job while
+  13 scenes still play the wrong slice of themselves; and at animatic scale the
+  boy's whole head is about thirty pixels, so fingers cannot read yet.
+  The agreed order is: finish the timing sweep and the storytelling details →
+  watch it end to end and cut → lock the style and design the characters →
+  THEN rig against locked designs and do the full sweep.
+  If one thing gets pulled forward, make it **heads that turn independently of
+  the body** — a head guide on a neck empty, no rig. That is the biggest
+  readability win going (recognition beats, eyelines, the "Danny?" shudder)
+  and it is cheap. Before faces, before fingers.
 
 ## Next actions
 
-1. **Watch it end to end** and cut for time. The blocking tier is now
-   complete, so for the first time the whole film is arbitrable: verse 2's gag
-   density, the `[IF TIME]` shots, and whether any beat is holding too long.
-2. **Draw the film.** A rough scribble pass over all 50 layout scenes first,
+1. **Sweep the 13 remaining retimed scenes.** Until that is done the film
+   cannot be honestly watched — a third of the gags are playing the wrong
+   frames. See "THE KEYFRAME RETIME BUG" above for the list and the order.
+2. **Fix `sq040_sh035`/`sh042`'s sandwich.** It sits inside the sheriff's
+   belly and below his hands (numbers in "Reverted deliberately"). The
+   geometry finding is good; the replacement performance was rejected, so
+   repair the existing animation.
+3. **Watch it end to end** and cut for time. The blocking tier is complete, so
+   for the first time the whole film is arbitrable: verse 2's gag density, the
+   `[IF TIME]` shots, and whether any beat is holding too long.
+4. **Draw the film.** A rough scribble pass over all 50 layout scenes first,
    polish later — blocking and drawing both render together, always, so there
    is nothing to re-run afterward. This is the long pole.
-3. **Firm durations after the watch**, then move statuses `scripted →
+5. **Firm durations after the watch**, then move statuses `scripted →
    boarded` (all 50 rows still say `scripted`, including the blocked ones —
    the column has never been maintained, so do it in one pass or not at all).
-4. **Design pass on the property** once the layout says what the camera
-   actually needs.
-5. Then asset production proper: clay material library, characters.
+6. **Lock the style, then design pass** on the property and the characters.
+7. **Then rig** — against locked designs — and do the full-animation sweep.
+   See "Open decisions" for why that order and not the other one.
+
+## How a blocking pass is actually done
+
+There is no committed tool for animating a shot and there should not be one —
+`stage_shots.py`'s STAGING table cannot express animation, multiple instances
+of one guide, or a variant swap, and a one-shot script in `tools/` is the
+`migrate_layout.py` hazard all over again. **`layout.blend` is the record.**
+Every sequence from `sq050` on was authored this way.
+
+The shape that worked, repeatedly:
+
+1. **Audit before touching anything.** Two read-only scripts earn their keep:
+   - *key-range audit* — for each scene, min/max keyframe across every
+     animated object vs `frame_start`/`frame_end`. This is what found the
+     retime bug. Anything with lead > 2 or tail > 2 is playing the wrong
+     slice of itself.
+   - *cast audit* — who is staged in shot N-1 and N+1 but not N. Found Mom
+     missing from `sq080_sh020` and from `sq060_sh020`, whose own script line
+     reads "All three freeze".
+2. **Read the continuity basis out of the file, never off the docs.**
+   `site.md` and the blocking disagree in at least two places (the Santa, the
+   BBQ). The blocking wins — invariant 3.
+3. **Write ONE idempotent script per pass**: clear each object's action and
+   re-key; match instances by a `rw_tag` custom property so a shot can hold
+   three tea glasses; give it an `only=<step>` filter.
+4. **Render frames and look at them.** Framing math is not framing. The aerial
+   and the OTS in `sq070` each took three passes; the arithmetic was right
+   every time and the frame was wrong anyway.
+5. **Diff every scene against the committed file** before committing, to prove
+   nothing else moved. Pull `HEAD`'s `layout.blend` straight out of
+   `.git/lfs/objects/<oid[0:2]>/<oid[2:4]>/<oid>`.
+   **Caveat, learned the hard way:** a fingerprint of static transforms plus
+   "does it have an action" CANNOT see an animation-only change, and will
+   report a clean diff for a pass that only re-keyed. Read the fcurves back
+   for those.
+
+`--add=` refuses an existing guide, so a builder fix needs the collection
+removed and rebuilt: open the asset file, remove the collection and its
+objects, re-run `guide_assets.BUILDERS[name](coll)`, re-mark the asset,
+re-run `check_structural` + `check_dimensions`, save.
 
 ## Working notes
 
