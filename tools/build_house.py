@@ -402,6 +402,65 @@ def check_windows():
 CHECKS.append(check_windows)
 
 
+def build_garage():
+    # ±Y walls carry the passthrough: jambs + header + 0.1 curb. FROZEN
+    # opening x -12.4..-7.6, z 0.1..2.4, both faces (site.md passthrough).
+    for tag, y0, y1 in (("front", -3.0, -2.75), ("rear", 2.75, 3.0)):
+        multi_box(f"garage_wall_{tag}", [
+            (-13.0, -12.4, y0, y1, 0.0, 2.9),      # west jamb
+            (-7.6, -7.0, y0, y1, 0.0, 2.9),        # east jamb
+            (-12.4, -7.6, y0, y1, 2.4, 2.9),       # header
+            (-12.4, -7.6, y0, y1, 0.0, 0.1),       # curb
+        ], "MAT_siding")
+    box("garage_wall_s", -13.0, -12.75, -2.75, 2.75, 0.0, 2.9, "MAT_siding")
+    box("garage_floor", -13.0, -7.0, -3.0, 3.0, 0.0, 0.1, "MAT_deck")
+    # _v2: greybox owns "garage_roof" until the swap (Task 1 note)
+    box("garage_roof_v2", -13.6, -7.0, -3.6, 3.6, 2.90, 3.00, "MAT_roof_gravel")
+    box("garage_ceiling", -12.75, -7.0, -2.75, 2.75, 2.88, 2.90, "MAT_interior")
+    multi_box("garage_fascia", [                    # z 2.9..3.25, 0.08 thick
+        (-13.60, -7.00, -3.60, -3.52, 2.90, 3.25),  # east (road) edge
+        (-13.60, -13.52, -3.60, 3.60, 2.90, 3.25),  # south edge
+        (-13.60, -7.00, 3.52, 3.60, 2.90, 3.25),    # west (backyard) edge
+    ], "MAT_fascia")
+    # sectional doors PARKED OPEN under the ceiling — never rigged, never
+    # closed (the script never closes them; spec, Garage). Glass-panel
+    # style per the mustard-ranch ref: rails accent, panes glass.
+    for tag, y0, y1 in (("front", -2.90, -1.10), ("rear", 1.10, 2.90)):
+        rails, panes = [], []
+        step = (y1 - y0) / 4
+        for i in range(5):
+            ry = y0 + step * i
+            rails.append((-12.35, -7.65, ry - 0.025, ry + 0.025, 2.44, 2.56))
+        for i in range(4):
+            p0 = y0 + step * i + 0.025
+            p1 = y0 + step * (i + 1) - 0.025
+            panes.append((-12.30, -7.70, p0, p1, 2.47, 2.53))
+        multi_box(f"garage_sect_{tag}_rails", rails, "MAT_door_accent")
+        multi_box(f"garage_sect_{tag}_glass", panes, "MAT_glass")
+    multi_box("garage_tracks", [
+        (-12.45, -12.38, -2.9, -1.0, 2.42, 2.46),
+        (-7.62, -7.55, -2.9, -1.0, 2.42, 2.46),
+        (-12.45, -12.38, 1.0, 2.9, 2.42, 2.46),
+        (-7.62, -7.55, 1.0, 2.9, 2.42, 2.46),
+    ], "MAT_metal_93")
+
+
+def check_garage():
+    out = []
+    for nm in ("garage_wall_front", "garage_wall_rear", "garage_roof",
+               "garage_fascia", "garage_sect_front_rails",
+               "garage_sect_rear_glass", "garage_tracks"):
+        if _ob(nm) is None:
+            out.append(f"{nm} missing")
+    roof = _ob("garage_roof")
+    if roof is not None and abs(_bounds(roof)[5] - 3.0) > 0.01:
+        out.append("garage_roof top should be 3.0")
+    return out
+
+
+CHECKS.append(check_garage)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -464,7 +523,8 @@ def build():
     build_house_shell()
     build_house_roof()
     build_house_windows()
-    # Tasks 5-8 append build calls here.
+    build_garage()
+    # Tasks 6-8 append build calls here.
 
 
 def run_checks():
