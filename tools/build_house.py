@@ -461,6 +461,57 @@ def check_garage():
 CHECKS.append(check_garage)
 
 
+def build_porch_and_roofscape():
+    # _v2 on deck/posts/stoop: greybox owns the plain names (Task 1 note)
+    box("porch_deck_v2", -5.0, 1.0, -6.4, -4.0, 0.0, 0.5, "MAT_deck")  # FROZEN
+    # one intermediate tread: grade -> 0.25 -> deck 0.5. Full run x -3..0,
+    # projecting south of the deck — sq010_sh030's one-jump steps.
+    box("porch_step", -3.0, 0.0, -7.0, -6.7, 0.0, 0.25, "MAT_deck")
+    for i, px in enumerate((-4.7, 0.7)):            # FROZEN positions
+        box(f"porch_post_{i}_v2", px - 0.06, px + 0.06, -6.24, -6.12,
+            0.5, 3.2, "MAT_frames")                 # slim steel, meets canopy
+    box("porch_mat", -2.5, -1.3, -4.9, -4.1, 0.5, 0.52, "MAT_metal_93")
+    # breeze-block screen closing the porch's south end (x = -5 plane).
+    # Real holes: outer frame + bar grid, 6 x 8 cells.
+    bars = [(-5.12, -5.00, -6.40, -4.40, 0.50, 0.56),
+            (-5.12, -5.00, -6.40, -4.40, 2.84, 2.90)]
+    for i in range(7):                               # verticals every ~0.33
+        by = -6.40 + i * (2.00 / 6)
+        bars.append((-5.12, -5.00, by - 0.02, by + 0.02, 0.50, 2.90))
+    for j in range(8):                               # horizontals every 0.30
+        bz = 0.56 + j * 0.285
+        bars.append((-5.12, -5.00, -6.40, -4.40, bz - 0.02, bz + 0.02))
+    multi_box("breeze_screen", bars, "MAT_block")
+    box("back_stoop_v2", -4.0, -1.0, 5.0, 6.2, 0.0, 0.45, "MAT_deck")  # FROZEN
+    # roofscape (spec, Roofscape): the 1993 layer
+    box("swamp_cooler_curb", -4.5, -3.5, 2.5, 3.5, 3.35, 3.45, "MAT_metal_93")
+    box("swamp_cooler", -4.45, -3.55, 2.55, 3.45, 3.45, 4.15, "MAT_metal_93")
+    box("tv_aerial_mast", 4.48, 4.52, -4.22, -4.18, 3.35, 5.15, "MAT_metal_93")
+    for i, az in enumerate((4.75, 4.95)):
+        box(f"tv_aerial_bar_{i}", 4.50 - 0.45 - i * 0.1, 4.50 + 0.45 + i * 0.1,
+            -4.21, -4.19, az - 0.015, az + 0.015, "MAT_metal_93")
+    box("downspout_n", 5.70, 5.78, 5.25, 5.33, 0.0, 3.42, "MAT_metal_93")
+    box("downspout_s", -7.78, -7.70, -4.40, -4.32, 0.0, 3.42, "MAT_metal_93")
+
+
+def check_porch():
+    out = []
+    for nm in ("porch_deck", "porch_step", "porch_post_0", "porch_post_1",
+               "breeze_screen", "back_stoop", "swamp_cooler", "tv_aerial_mast",
+               "downspout_n", "downspout_s"):
+        if _ob(nm) is None:
+            out.append(f"{nm} missing")
+    deck = _ob("porch_deck")
+    if deck is not None and any(
+            abs(a - b) > 1e-4 for a, b in
+            zip(_bounds(deck), (-5.0, 1.0, -6.4, -4.0, 0.0, 0.5))):
+        out.append("porch_deck moved off its frozen footprint")
+    return out
+
+
+CHECKS.append(check_porch)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -524,7 +575,8 @@ def build():
     build_house_roof()
     build_house_windows()
     build_garage()
-    # Tasks 6-8 append build calls here.
+    build_porch_and_roofscape()
+    # Tasks 7-8 append build calls here.
 
 
 def run_checks():
