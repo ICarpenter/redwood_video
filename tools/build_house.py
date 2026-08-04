@@ -512,6 +512,45 @@ def check_porch():
 CHECKS.append(check_porch)
 
 
+def build_kitchen():
+    # partition at y 0..0.25 with a cased 1.2 m opening centred x -0.5
+    multi_box("partition_e", [
+        (-6.75, -1.10, 0.0, 0.25, 0.0, 3.18),
+        (0.10, 4.75, 0.0, 0.25, 0.0, 3.18),
+        (-1.10, 0.10, 0.0, 0.25, 2.10, 3.18),
+    ], "MAT_interior")
+    multi_box("partition_casing", [
+        (-1.14, -1.10, -0.02, 0.27, 0.0, 2.14),
+        (0.10, 0.14, -0.02, 0.27, 0.0, 2.14),
+        (-1.14, 0.14, -0.02, 0.27, 2.10, 2.14),
+    ], "MAT_frames")
+    box("kitchen_floor", -6.75, 4.75, 0.25, 4.75, 0.25, 0.265, "MAT_terrazzo")
+    # counter L: along west wall (sink centred under kitchen_west) and
+    # around the NW corner along the north wall
+    box("kitchen_counter_w", 0.90, 4.70, 4.10, 4.75, 0.265, 0.85, "MAT_kitchen_cab")
+    box("kitchen_counter_n", 4.10, 4.75, 1.00, 4.10, 0.265, 0.85, "MAT_kitchen_cab")
+    box("kitchen_tile_top_w", 0.90, 4.70, 4.08, 4.75, 0.85, 0.90, "MAT_kitchen_tile")
+    box("kitchen_tile_top_n", 4.08, 4.75, 1.00, 4.10, 0.85, 0.90, "MAT_kitchen_tile")
+    multi_box("kitchen_tile_splash", [
+        (0.90, 4.70, 4.70, 4.745, 0.90, 1.20),      # west wall, up to sill
+        (4.70, 4.745, 1.00, 4.70, 0.90, 1.20),      # north wall
+    ], "MAT_kitchen_tile")
+    box("kitchen_sink", 2.30, 3.30, 4.25, 4.65, 0.86, 0.905, "MAT_metal_93")
+    box("kitchen_faucet", 2.76, 2.84, 4.66, 4.72, 0.90, 1.14, "MAT_metal_93")
+
+
+def check_kitchen():
+    out = []
+    for nm in ("partition_e", "kitchen_floor", "kitchen_counter_w",
+               "kitchen_counter_n", "kitchen_tile_splash", "kitchen_sink"):
+        if bpy.data.objects.get(nm) is None:
+            out.append(f"{nm} missing")
+    return out
+
+
+CHECKS.append(check_kitchen)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -576,7 +615,8 @@ def build():
     build_house_windows()
     build_garage()
     build_porch_and_roofscape()
-    # Tasks 7-8 append build calls here.
+    build_kitchen()
+    # Task 8 appends its build call here.
 
 
 def run_checks():
