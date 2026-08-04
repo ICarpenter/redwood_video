@@ -110,6 +110,17 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("boy_push", CAST_FILE, "cast", 1.25),
     GuideSpec("boy_peer", CAST_FILE, "cast", 1.47),
     GuideSpec("boy_aim", CAST_FILE, "cast", 1.37),
+    # House door/sash leaves. The property is linked at identity and cannot
+    # change state per shot (the clothesline precedent) — so the openable
+    # leaves are props, staged only in shots that need a state the baked
+    # set doesn't show: the screen door's sq010 slap, a CLOSED kitchen
+    # casement for sq050's through-the-glass beat, the back door open
+    # behind Mom on the stoop. Authored CENTRED like every guide
+    # (CENTRE_TOL forbids hinge-at-origin) — to swing one, parent the
+    # instance to an Empty at the hinge edge and rotate the Empty.
+    GuideSpec("screen_door", PROPS_FILE, "props", 2.0),
+    GuideSpec("casement_leaf", PROPS_FILE, "props", 1.2),
+    GuideSpec("back_door_leaf", PROPS_FILE, "props", 2.1),
 ]
 
 # The whole property SET is linkable too, but it is NOT built by guide_assets
@@ -137,7 +148,8 @@ SETS: list[GuideSpec] = [
 # wherever the camera can see it, but it is scenery, not a story beat. A shot
 # that contains ONLY these is still an empty shot, and must stay a slug in the
 # edit rather than cutting to an empty yard.
-SCENERY: frozenset[str] = frozenset({"clothesline"})
+SCENERY: frozenset[str] = frozenset(
+    {"clothesline", "screen_door", "casement_leaf", "back_door_leaf"})
 
 DROPPABLE: list[GuideSpec] = GUIDES + SETS
 

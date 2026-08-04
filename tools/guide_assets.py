@@ -415,6 +415,43 @@ def build_clothesline(c):
     box(c, "cl_laundry", 0.0, 0.02, 1.80, 0.20, 7.20, 0.60, "white")
 
 
+def build_screen_door(c):
+    """sq010_sh030's door-slap. Faces -Y, centred on X (CENTRE_TOL forbids
+    hinge-at-origin) — swing it by parenting the instance to an Empty at
+    the hinge edge (x -0.49 in guide space) and rotating the Empty."""
+    w, h, t = 0.98, 2.00, 0.04
+    box(c, "sd_stile_l", -(w / 2 - 0.045), 0, h / 2, 0.09, t, h, "wood")
+    box(c, "sd_stile_r", (w / 2 - 0.045), 0, h / 2, 0.09, t, h, "wood")
+    box(c, "sd_rail_top", 0, 0, h - 0.045, w - 0.18, t, 0.09, "wood")
+    box(c, "sd_rail_mid", 0, 0, 0.75, w - 0.18, t, 0.09, "wood")
+    box(c, "sd_rail_bot", 0, 0, 0.14, w - 0.18, t, 0.28, "wood")
+    box(c, "sd_mesh_hi", 0, 0, (0.795 + h - 0.09) / 2,
+        w - 0.18, 0.01, h - 0.09 - 0.795, "glass")
+    box(c, "sd_mesh_lo", 0, 0, (0.28 + 0.705) / 2,
+        w - 0.18, 0.01, 0.705 - 0.28, "glass")
+
+
+def build_casement_leaf(c):
+    """One kitchen-casement sash, matching the set's baked-open leaves
+    (win_kitchen_*_sash*: 1.4 x 1.2, stiles 0.07). Staged closed-ish over
+    the opening for sq050_sh035's through-the-glass beat."""
+    w, h, r, t = 1.40, 1.20, 0.07, 0.05
+    box(c, "cl_rail_bot", 0, 0, r / 2, w, t, r, "wood")
+    box(c, "cl_rail_top", 0, 0, h - r / 2, w, t, r, "wood")
+    box(c, "cl_stile_l", -(w - r) / 2, 0, h / 2, r, t, h, "wood")
+    box(c, "cl_stile_r", (w - r) / 2, 0, h / 2, r, t, h, "wood")
+    box(c, "cl_pane", 0, 0.005, h / 2, w - 2 * r, 0.026, h - 2 * r, "glass")
+
+
+def build_back_door_leaf(c):
+    """The half-glass back door, openable behind Mom on the stoop
+    (sq060_sh012). Set's back_door is baked closed; this leaf overlays it
+    open. 1.2 x 2.1 like the opening (z 0.45..2.55 world, feet-at-0 here)."""
+    w, h = 1.20, 2.10
+    box(c, "bd_slab", 0, 0, h / 2, w, 0.05, h, "wood")
+    box(c, "bd_pane", 0, -0.028, 1.475, w - 0.20, 0.012, 0.75, "glass")
+
+
 def build_santa(c):
     box(c, "sa_body", 0, 0, 0.60, 0.60, 0.42, 1.20, "santa")
     box(c, "sa_belt", 0, -0.01, 0.72, 0.62, 0.44, 0.12, "dark")
@@ -817,6 +854,9 @@ BUILDERS = {
     "gun_cabinet": build_gun_cabinet,
     "mushroom_cloud": build_mushroom_cloud,
     "clothesline": build_clothesline,
+    "screen_door": build_screen_door,
+    "casement_leaf": build_casement_leaf,
+    "back_door_leaf": build_back_door_leaf,
     "hubcap": build_hubcap,
     "sheriff_seated": build_sheriff_seated,
     "patio_table": build_patio_table,
