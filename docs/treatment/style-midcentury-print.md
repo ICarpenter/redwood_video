@@ -306,9 +306,17 @@ out-prints the world around it.
 
 ## Production notes (Blender / EEVEE)
 
-- **EEVEE remains the pipeline.** The banded variant needs Shader-to-RGB
-  (EEVEE-only); the soft-physical variant is engine-agnostic. Nothing
-  here wants Cycles.
+- **Engine: EEVEE assumed, not settled — decide at the test frame.**
+  The kettle demo itself renders in Cycles; the dab technique is
+  engine-agnostic (painted normals shade identically everywhere), but
+  the engines differ in shadow character and bounce fill — and physical
+  bounce may *fight* the art-directed global shadow tint. The banded
+  variant needs Shader-to-RGB (EEVEE-only); the soft-physical variant
+  runs in either engine. Render the test frame in both and look. If
+  banding wins, EEVEE is locked. Render cost is not the tiebreak:
+  Ian's PC with one or two RTX 3090s is available as a Cycles farm,
+  and the style is cheap in either engine (diffuse-only, no glass, no
+  reflections).
 - **The style bans most render cost by law:** no raytraced reflections, no
   AO pass, no bloom, no cloth sim, no hair systems, no specular outside
   wet paint. Frames render extremely fast.
@@ -405,7 +413,8 @@ Next, in order (blocked on tablet):
    stays a live variable (overrides re-color painted dabs film-wide);
    two-pass bakes it. If palette flexibility matters, build the kit.
 2. **Stage the sq020-sh020 test frame** and A/B: banding vs
-   soft-physical diffuse, motion blur, DOF — this candidate vs
+   soft-physical diffuse, EEVEE vs Cycles (soft-physical only —
+   banding can't leave EEVEE), motion blur, DOF — this candidate vs
    Bigature, side by side.
 
 Open verify items:
@@ -415,3 +424,6 @@ Open verify items:
 - Deep Paint's Blender 5.x compatibility (claims 3.6+).
 - Whether Ucupaint mask/alpha painting writes with correct values into
   Non-Color normal-channel overrides (test on the first asset).
+- The noir-window trick comes from the Cycles kettle file and leans on
+  a light-path gag — verify it (or an equivalent gobo approach) in
+  EEVEE if EEVEE wins the engine A/B.
