@@ -215,6 +215,64 @@ def check_shell():
 CHECKS.append(check_shell)
 
 
+# beam module 1.35 lands on both porch posts (x -4.7, 0.7) — spec "Massing".
+CANOPY_XS = (-4.70, -3.35, -2.00, -0.65, 0.70)
+BEAM_XS = (-6.05, *CANOPY_XS, 2.05, 3.40, 4.75)
+
+ROOF_SLABS = [  # z 3.2..3.35, tar-and-gravel. Stepped south edge: the 0.75
+    (-7.00, 5.75, -4.75, 5.75),   # main (garage abuts x=-7 across y -3..3)
+    (-7.75, -7.00, -4.75, -3.00), # south overhang, road corner
+    (-7.75, -7.00,  3.00, 5.75),  # south overhang, backyard corner
+    (-5.20, 1.20, -6.60, -4.75),  # porch canopy tongue (old porch_roof span)
+]
+
+FASCIA = [  # z 3.2..3.6 band, 0.08 thick, following the roof perimeter
+    ( 5.67,  5.75, -4.75,  5.75),   # north edge (x = 5.75 face)
+    (-7.75,  5.75,  5.67,  5.75),   # west edge
+    (-7.75, -7.67,  3.00,  5.67),   # south-back (x = -7.75 face)
+    (-7.75, -7.00,  3.00,  3.08),   # jog toward the garage joint
+    (-7.75, -7.67, -4.75, -3.00),   # south-front
+    (-7.75, -7.00, -3.08, -3.00),   # jog
+    ( 1.20,  5.75, -4.75, -4.67),   # east edge, north of the canopy
+    (-7.75, -5.20, -4.75, -4.67),   # east edge, south of the canopy
+    (-5.20, -5.12, -6.60, -4.75),   # canopy west cheek
+    (-5.20,  1.20, -6.60, -6.52),   # canopy east face (over the steps)
+    ( 1.12,  1.20, -6.60, -4.75),   # canopy east cheek
+]
+
+
+def build_house_roof():
+    # _v2 suffix: the greybox still owns the plain name (see Task 1 note)
+    multi_box("house_roof_v2", [(x0, x1, y0, y1, 3.20, 3.35)
+                             for x0, x1, y0, y1 in ROOF_SLABS], "MAT_roof_gravel")
+    multi_box("house_fascia", [(x0, x1, y0, y1, 3.20, 3.60)
+                               for x0, x1, y0, y1 in FASCIA], "MAT_fascia")
+    # light soffit board over the shot interior (kitchen) so up-angles read
+    box("house_ceiling", -6.75, 4.75, 0.25, 4.75, 3.18, 3.20, "MAT_interior")
+    for i, bx in enumerate(BEAM_XS):
+        y1 = 5.90                                   # punches west fascia 0.15
+        y0 = -6.75 if bx in CANOPY_XS else -4.90    # and east/canopy fascia
+        box(f"beam_{i}", bx - 0.05, bx + 0.05, y0, y1, 2.95, 3.20, "MAT_fascia")
+    # the one replaced fascia board — dilapidation-as-content (spec, Roofscape)
+    box("fascia_patch", 2.60, 3.90, -4.755, -4.745, 3.22, 3.58, "MAT_plywood")
+
+
+def check_roof():
+    out = []
+    beams = [ob for ob in staging_meshes() if ob.name.startswith("beam_")]
+    if len(beams) != 9:
+        out.append(f"{len(beams)} beams, want 9")
+    roof = _ob("house_roof")
+    if roof is None or abs(_bounds(roof)[5] - 3.35) > 0.01:
+        out.append("house_roof missing or wrong height (want top 3.35)")
+    if _ob("house_fascia") is None:
+        out.append("house_fascia missing")
+    return out
+
+
+CHECKS.append(check_roof)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -275,7 +333,8 @@ def build():
     stage()
     modeling_scene()
     build_house_shell()
-    # Tasks 3-8 append build calls here.
+    build_house_roof()
+    # Tasks 4-8 append build calls here.
 
 
 def run_checks():
