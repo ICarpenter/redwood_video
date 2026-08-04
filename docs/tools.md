@@ -619,6 +619,27 @@ Facts worth keeping:
 - Defaults are tuned for a close shot. At 20 m a 0.06 m chunk is invisible;
   raise `Debris Scale`/`Hole Size` on the modifier for wide coverage.
 
+### `tools/tilt_palette.py` — the tilt-dab swatch registry + picker sheet
+
+```sh
+python3 tools/tilt_palette.py            # writes assets/materials/tilt_palette/
+```
+
+Source of truth for the Mid-Century Print candidate's tilt-dab palette
+(`docs/treatment/style-midcentury-print.md`): 12 clock directions × 4 lean
+tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
+tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
+12/1/…/11 o'clock; rows = whisper→strong) and a JSON sidecar with every
+swatch's normal/RGB/hex plus the per-family tier legality table. Stdlib
+only; importable — the future Ucupaint dab-kit builder reads its math from
+here. Retuning tiers/directions and rerunning never invalidates painted
+work (old swatches stay valid, new ones interleave).
+
+- The sheet is **data, not color**: load as Non-Color when sampling.
+  Known gotcha to verify at the first paint session: Blender's color-picker
+  hex field assumes sRGB — sample from the image loaded Non-Color rather
+  than typing hex values.
+
 ### `tools/encode_delivery.sh` — final masters
 
 ```sh

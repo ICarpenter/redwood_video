@@ -225,10 +225,12 @@ out-prints the world around it.
   stroke writes both channels with different colors: Substance
   Painter's multi-channel brush, rebuilt out of palette law. The kit
   ships as a template and is appended per asset.
-- **Generated, not hand-managed:** a `tools/` script emits the palette
-  artifacts — picker-sheet PNG, named kit layers, the per-family
-  legality table. Retune the tiers → rerun → nothing repainted (old
-  swatches stay valid; new directions interleave).
+- **Generated, not hand-managed:** `tools/tilt_palette.py` (built
+  2026-08-03) is the swatch registry and emits the palette artifacts —
+  picker-sheet PNG + JSON with the per-family legality table, in
+  `assets/materials/tilt_palette/`. Retune the tiers → rerun → nothing
+  repainted (old swatches stay valid; new directions interleave). The
+  future dab-kit builder imports its math from the same module.
 - **Escalation path if the kit chafes:** (1) two-pass painting — normals
   then color; the kettle file's color maps are nearly flat, so pass two
   is cheap; (2) the layer-pair kit; (3) a small "commit dab" operator
@@ -282,3 +284,33 @@ out-prints the world around it.
   music-video-friendly, but a big tonal move.
 - **VHS broadcast finish** — the `style.md` back-pocket modifier stacks on
   this candidate too if wanted.
+
+## Pinned state (2026-08-03 — resume later this week)
+
+Done:
+
+- This treatment, developed and revised through the tilt-dab discovery.
+- `tools/tilt_palette.py` + generated picker sheet and JSON in
+  `assets/materials/tilt_palette/` (sheet verified by eye: flat column
+  uniform, whisper near-flat, strong row cycling hue around the clock).
+- Kettle demo filed at `~/blender/add-ons/cody-gindy-kettle-patreon-02.blend`;
+  extracted textures + color re-render examined.
+
+Next, in order (blocked on tablet):
+
+1. **Paint one asset** — the truck or the Santa. Two-pass first (tilt
+   dabs, then albedo drift) to feel the workflow before building the
+   Ucupaint kit. Note the trade discovered en route: kit-painted color
+   stays a live variable (overrides re-color painted dabs film-wide);
+   two-pass bakes it. If palette flexibility matters, build the kit.
+2. **Stage the sq020-sh020 test frame** and A/B: banding vs
+   soft-physical diffuse, motion blur, DOF — this candidate vs
+   Bigature, side by side.
+
+Open verify items:
+
+- Blender color-pick behavior on Non-Color images (sample from the
+  sheet, don't type hex — hex field assumes sRGB).
+- Deep Paint's Blender 5.x compatibility (claims 3.6+).
+- Whether Ucupaint mask/alpha painting writes with correct values into
+  Non-Color normal-channel overrides (test on the first asset).
