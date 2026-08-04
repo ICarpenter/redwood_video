@@ -102,6 +102,7 @@ GUIDES: list[GuideSpec] = [
     # this different is a variant collection, not a bent instance. Same body
     # masses as build_sheriff so he reads as the same man off his feet.
     GuideSpec("sheriff_seated", CAST_FILE, "cast", 1.45),
+    GuideSpec("sheriff_eating", CAST_FILE, "cast", 1.48),
     # Pose variants of the boy for sq010/sq020. Guides are rigid and the box()
     # primitive is axis-aligned, so a pose this different is a variant
     # collection — there is no way to straight-arm a door or shoulder a gun by
