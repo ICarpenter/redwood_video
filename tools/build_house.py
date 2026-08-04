@@ -139,6 +139,82 @@ def wall_spec(face, a0, a1, n0, n1, z0, z1):
     return (a0, a1, p, q, z0, z1) if axis == "X" else (p, q, a0, a1, z0, z1)
 
 
+# openings per wall: (a0, a1, sill, head) along the wall's axis.
+# FROZEN — docs/treatment/house.md "Elevations". Clerestory is the one NEW cut.
+E_OPENINGS = [                       # -Y wall, a = x
+    (-6.00, -4.20, 1.20, 2.40),      # front_south
+    (-2.40, -1.40, 0.50, 2.50),      # front door
+    ( 1.99,  3.79, 1.20, 2.40),      # front_north
+    ( 1.40,  4.60, 2.60, 3.05),      # clerestory (stacks over front_north)
+]
+N_OPENINGS = [                       # +X wall, a = y
+    (-2.80, -1.40, 1.20, 2.40),      # north_east
+    ( 1.60,  4.20, 1.20, 2.40),      # kitchen_north casement pair
+]
+W_OPENINGS = [                       # +Y wall, a = x
+    (-3.40, -2.20, 0.45, 2.55),      # back door
+    (-6.40, -5.20, 1.50, 2.40),      # west_south
+    ( 1.40,  4.20, 1.20, 2.40),      # kitchen_west casement pair
+]
+S_OPENINGS = [                       # -X wall, a = y
+    ( 3.40,  4.60, 1.20, 2.40),      # south_west
+]
+
+
+def wall_run(name, face, a_lo, a_hi, z_lo, z_hi, openings, mat_name):
+    """One wall as clean segment boxes: slice into vertical bands at every
+    opening edge, fill the z-gaps per band. Quads only, handles stacked
+    openings (the clerestory over front_north), no booleans to go stale."""
+    edges = sorted({a_lo, a_hi, *[a for o in openings for a in o[:2]]})
+    specs = []
+    for b_lo, b_hi in zip(edges, edges[1:]):
+        mid = (b_lo + b_hi) / 2
+        cuts = sorted((o[2], o[3]) for o in openings if o[0] < mid < o[1])
+        z = z_lo
+        for c_lo, c_hi in cuts:
+            if c_lo > z:
+                specs.append(wall_spec(face, b_lo, b_hi, -WALL_T, 0.0, z, c_lo))
+            z = max(z, c_hi)
+        if z < z_hi:
+            specs.append(wall_spec(face, b_lo, b_hi, -WALL_T, 0.0, z, z_hi))
+    return multi_box(name, specs, mat_name)
+
+
+def build_house_shell():
+    # ±Y walls own the corners (full 12 m); ±X walls butt between them.
+    wall_run("house_wall_e", "-Y", -7.00, 5.00, 0.0, 3.2, E_OPENINGS, "MAT_siding")
+    wall_run("house_wall_w", "+Y", -7.00, 5.00, 0.0, 3.2, W_OPENINGS, "MAT_siding")
+    wall_run("house_wall_n", "+X", -3.75, 4.75, 0.0, 3.2, N_OPENINGS, "MAT_siding")
+    wall_run("house_wall_s", "-X", -3.75, 4.75, 0.0, 3.2, S_OPENINGS, "MAT_siding")
+    box("house_floor", -7.0, 5.0, -4.0, 5.0, 0.0, 0.25, "MAT_interior")
+    # concrete plinth course proud of the siding at grade; the -X run skips
+    # the garage attachment (y -3..3), the others overhang corners 0.04
+    multi_box("house_plinth", [
+        wall_spec("-Y", -7.04, 5.04, 0.0, 0.04, 0.0, 0.18),
+        wall_spec("+Y", -7.04, 5.04, 0.0, 0.04, 0.0, 0.18),
+        wall_spec("+X", -4.04, 5.04, 0.0, 0.04, 0.0, 0.18),
+        wall_spec("-X", 3.0, 5.04, 0.0, 0.04, 0.0, 0.18),
+    ], "MAT_block")
+
+
+def check_shell():
+    out = []
+    for nm in ("house_wall_e", "house_wall_n", "house_wall_w", "house_wall_s",
+               "house_floor", "house_plinth"):
+        ob = bpy.data.objects.get(nm)
+        if ob is None:
+            out.append(f"{nm} missing")
+            continue
+        b = _bounds(ob)
+        if not (-7.05 <= b[0] and b[1] <= 5.05 and -4.05 <= b[2]
+                and b[3] <= 5.05 and b[5] <= 3.21):
+            out.append(f"{nm} outside house envelope: {b}")
+    return out
+
+
+CHECKS.append(check_shell)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -198,7 +274,8 @@ def build():
     clear_stage()
     stage()
     modeling_scene()
-    # Tasks 2-8 append build calls here.
+    build_house_shell()
+    # Tasks 3-8 append build calls here.
 
 
 def run_checks():
