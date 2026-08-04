@@ -497,6 +497,72 @@ def build_tea_glass(c):
     cyl(c, "tg_tea", 0, 0, 0.05, 0.035, 0.10, "tea", axis="Z")
 
 
+def build_boy_run(c):
+    """Mid-stride with the leading arm straight out — the door-shove pose.
+
+    box() is axis-aligned, so the run is built out of offset masses rather than
+    rotated limbs: front leg forward and planted, back leg lifted and trailing,
+    torso and head pitched over the front foot, one arm extended a full 0.52 m
+    in -Y (the facing direction) and the other cocked back.
+    """
+    box(c, "br_leg_front", -0.11, -0.18, 0.36, 0.16, 0.20, 0.72, "boy")
+    box(c, "br_leg_back", 0.11, 0.20, 0.42, 0.16, 0.20, 0.55, "boy")
+    box(c, "br_torso", 0, -0.14, 0.88, 0.42, 0.30, 0.52, "boy")
+    box(c, "br_arm_out", -0.26, -0.36, 1.00, 0.10, 0.52, 0.10, "skin")
+    box(c, "br_arm_back", 0.26, 0.22, 0.92, 0.10, 0.36, 0.10, "skin")
+    ball(c, "br_head", 0, -0.16, 1.24, 0.15, "skin")
+
+
+def build_boy_push(c):
+    """Both arms locked out at carton height, weight through a braced back leg."""
+    box(c, "bp_leg_front", -0.12, 0.02, 0.30, 0.16, 0.20, 0.60, "boy")
+    box(c, "bp_leg_back", 0.12, 0.26, 0.28, 0.16, 0.22, 0.56, "boy")
+    box(c, "bp_torso", 0, -0.22, 0.82, 0.42, 0.34, 0.46, "boy")
+    box(c, "bp_arm_l", -0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
+    box(c, "bp_arm_r", 0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
+    ball(c, "bp_head", 0, -0.30, 1.10, 0.15, "skin")
+
+
+def build_boy_peer(c):
+    """Up on his toes, hands on the carton rim, head over the top of it.
+
+    Sized against `box_open`: hands at 1.25 and the crown at 1.47 clear that
+    guide's 1.235 lid, which is the whole point of the pose.
+    """
+    box(c, "bpe_leg_l", -0.11, 0, 0.30, 0.16, 0.18, 0.60, "boy")
+    box(c, "bpe_leg_r", 0.11, 0, 0.30, 0.16, 0.18, 0.60, "boy")
+    box(c, "bpe_torso", 0, -0.06, 0.88, 0.42, 0.24, 0.56, "boy")
+    box(c, "bpe_arm_l", -0.26, -0.20, 1.10, 0.10, 0.10, 0.40, "skin")
+    box(c, "bpe_arm_r", 0.26, -0.20, 1.10, 0.10, 0.10, 0.40, "skin")
+    box(c, "bpe_hand_l", -0.26, -0.30, 1.28, 0.12, 0.16, 0.06, "skin")
+    box(c, "bpe_hand_r", 0.26, -0.30, 1.28, 0.12, 0.16, 0.06, "skin")
+    ball(c, "bpe_head", 0, -0.10, 1.32, 0.15, "skin")
+
+
+def build_boy_aim(c):
+    """Gun shouldered: support arm out, trigger arm tucked, weight back."""
+    box(c, "ba_leg_l", -0.13, -0.06, 0.29, 0.16, 0.20, 0.58, "boy")
+    box(c, "ba_leg_r", 0.13, 0.14, 0.30, 0.16, 0.20, 0.60, "boy")
+    box(c, "ba_torso", 0, -0.04, 0.84, 0.42, 0.26, 0.52, "boy")
+    box(c, "ba_arm_support", -0.22, -0.30, 0.98, 0.10, 0.44, 0.10, "skin")
+    box(c, "ba_arm_trigger", 0.26, -0.08, 0.96, 0.10, 0.26, 0.10, "skin")
+    ball(c, "ba_head", 0, -0.06, 1.22, 0.15, "skin")
+
+
+def build_box_open(c):
+    """build_box's carton with the flaps torn open and folded out FLAT.
+
+    Body masses are build_box's verbatim so the swap on the frame he opens it
+    reads as flaps moving, not as a different carton.
+    """
+    box(c, "bo_body", 0.00, 0, 0.60, 1.10, 0.90, 1.20, "wood")
+    box(c, "bo_tape", 0.00, 0, 1.20, 1.12, 0.10, 0.02, "white")
+    box(c, "bo_flap_n", 0, -0.62, 1.22, 1.10, 0.44, 0.03, "wood")
+    box(c, "bo_flap_f", 0, 0.62, 1.22, 1.10, 0.44, 0.03, "wood")
+    box(c, "bo_flap_l", -0.72, 0, 1.22, 0.34, 0.90, 0.03, "wood")
+    box(c, "bo_flap_r", 0.72, 0, 1.22, 0.34, 0.90, 0.03, "wood")
+
+
 def build_box(c):
     # The printer's shipping carton: the boy drags it in sq010_sh040 and tears
     # it open in sh045. Flaps and a tape stripe give the silhouette a definite
@@ -730,6 +796,9 @@ BUILDERS = {
     "santa_head": build_santa_head,
     "title_card": build_title_card,
     "bullet_hole": build_bullet_hole,
+    "boy_run": build_boy_run, "boy_push": build_boy_push,
+    "boy_peer": build_boy_peer, "boy_aim": build_boy_aim,
+    "box_open": build_box_open,
 }
 
 

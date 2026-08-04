@@ -88,6 +88,10 @@ GUIDES: list[GuideSpec] = [
     # squib.py needs a MESH and every guide in a layout scene is a linked
     # collection instance — an EMPTY, which it refuses outright.
     GuideSpec("bullet_hole", PROPS_FILE, "props", 0.19),
+    # The carton with its flaps folded out flat — swapped for `box` on the
+    # frame the boy tears it open. Flat, not standing: upright flaps top out
+    # above his head and hide the very thing he is peering over.
+    GuideSpec("box_open", PROPS_FILE, "props", 1.25),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look
@@ -97,6 +101,14 @@ GUIDES: list[GuideSpec] = [
     # this different is a variant collection, not a bent instance. Same body
     # masses as build_sheriff so he reads as the same man off his feet.
     GuideSpec("sheriff_seated", CAST_FILE, "cast", 1.45),
+    # Pose variants of the boy for sq010/sq020. Guides are rigid and the box()
+    # primitive is axis-aligned, so a pose this different is a variant
+    # collection — there is no way to straight-arm a door or shoulder a gun by
+    # transforming the standing guide.
+    GuideSpec("boy_run", CAST_FILE, "cast", 1.40),
+    GuideSpec("boy_push", CAST_FILE, "cast", 1.25),
+    GuideSpec("boy_peer", CAST_FILE, "cast", 1.47),
+    GuideSpec("boy_aim", CAST_FILE, "cast", 1.37),
 ]
 
 # The whole property SET is linkable too, but it is NOT built by guide_assets

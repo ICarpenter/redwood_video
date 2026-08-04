@@ -1,14 +1,14 @@
 sq,sh,description,start_frame,end_frame,duration,assets,status
 010,010,sunrise wide over the rural house,1,163,163,,scripted
 010,020,package sticks the landing on the porch,164,245,82,,scripted
-010,030,boy at the screen door clocks the package,246,368,123,,scripted
-010,040,boy drags the box up the drive into the garage,369,449,81,boy;box,scripted
-010,045,reverse through garage from back yard - unbox and pocket the sticker,450,531,82,boy;box,scripted
-010,050,devious grin CU,532,613,82,,scripted
-010,060,printer boots and warms up,614,735,122,,scripted
+010,030,boy comes through the door running and jumps the porch,246,368,123,boy_run;box,scripted
+010,040,boy shoves the box up the drive into the garage,369,449,81,boy_push;box,scripted
+010,045,reverse through garage - box comes open and he looks in,450,531,82,boy_peer;box;box_open,scripted
+010,050,devious grin CU,532,613,82,boy;printer,scripted
+010,060,printer boots and warms up - he cannot keep still,614,735,122,boy;printer,scripted
 020,010,gun prints like soft-serve - bell ding,736,899,164,,scripted
-020,020,sticker slapped on gun - drawing beads,900,1062,163,,scripted
-020,030,mom villain shadow - freeze,1063,1185,123,,scripted
+020,020,gun off the floor - three beads then the swing left,900,1062,163,boy;machine_gun;printer,scripted
+020,030,play-shooting the santa when mom's shadow lands,1063,1185,123,boy;boy_aim;machine_gun;santa;mom,scripted
 020,040,finger wag - barrel droops - do not shoot the santa,1186,1307,122,,scripted
 020,044,santa CU - duct tape repairs and mismatched paint - THE SETUP,1308,1348,41,santa,scripted
 020,046,kid reaction - eyes flick to the santa,1349,1389,41,boy,scripted

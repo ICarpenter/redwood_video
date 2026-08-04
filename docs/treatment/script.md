@@ -35,19 +35,19 @@ picture and the song.
 |----|------|--------|-----|------|
 | 010 | 0–4 | 1–163 | 6.8s | Wide: sun rises over the rural house. Pedal steel yawns. Long and lazy — let the world breathe. |
 | 020 | 4–6 | 164–245 | 3.4s | Delivery truck never stops — the big package spirals out like a football and sticks the landing on the porch mat. [IF TIME: simplify to truck pulling away] |
-| 030 | 6–9 | 246–368 | 5.1s | Boy pushes open the screen door, clocks the package. ♪ door-slap on the beat. |
-| 040 | 9–11 | 369–449 | 3.4s | Boy drags the big box up the drive and in through the garage FRONT door. Packing peanuts already trailing. |
-| 045 | 11–13 | 450–531 | 3.4s | REVERSE — from the back yard, looking in through the open rear door: the passthrough established, road beyond. He tears the box open and peels the big "NOT A TOY" sticker off, pocketing it — deliberately. |
+| 030 | 6–9 | 246–368 | 5.1s | Boy comes through the screen door on a straight arm **already running** takes the porch steps in one jump and pulls up hard over the package. ♪ door-slap on the beat. |
+| 040 | 9–11 | 369–449 | 3.4s | Boy SHOVES the big box up the drive and in through the garage FRONT door — four shoves not one slide he loads up drives and rocks back off it. Packing peanuts already trailing. |
+| 045 | 11–13 | 450–531 | 3.4s | REVERSE — from the back yard, looking in through the open rear door: the passthrough established, road beyond. He works the lid **the flaps come open** and he leans in over the rim to look. Then he peels the big "NOT A TOY" sticker off and pockets it — deliberately. |
 | 050 | 13–15 | 532–613 | 3.4s | CLOSE UP: the devious grin. Hold it. |
-| 060 | 15–18 | 614–735 | 5.1s | Printer boots and warms up, little chugs and wiggles. ♪ warm-up chunks in time as verse 1 approaches. |
+| 060 | 15–18 | 614–735 | 5.1s | Printer boots and warms up little chugs and wiggles — and he cannot keep still in front of it: leans in cranes round one side then the other and ends up bouncing with his nose almost on it. ♪ warm-up chunks in time as verse 1 approaches. |
 
 ## sq020 — VERSE 1 · bars 18–38 · frames 736–1552 · 34.0s
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
 | 010 | 18–22 | 736–899 | 6.8s | The machine gun prints like soft-serve — one continuous extrusion the boy snaps off. Bells and whistles are LITERAL: he flicks the tiny bell — ding. ♪ "the product's movin'" as it plops off the bed. |
-| 020 | 22–26 | 900–1062 | 6.8s | He slaps the "NOT A TOY" sticker on the gun, then swings it around drawing beads on garage junk, the yard, the mailbox. |
-| 030 | 26–29 | 1063–1185 | 5.1s | MOM'S SHADOW falls across him — full villain silhouette. Boy freezes mid-aim. |
+| 020 | 22–26 | 900–1062 | 6.8s | He picks the gun up off the garage floor and comes up with it slaps the "NOT A TOY" sticker on and then draws a bead on three separate things — garage junk the yard the mailbox holding each one — before the big swing round to his LEFT. |
+| 030 | 26–29 | 1063–1185 | 5.1s | He brings the gun up onto his shoulder and starts play-shooting the Santa — six jerks he makes himself no muzzle flash he is going "pew". Then MOM'S SHADOW falls across him — full villain silhouette — and he freezes mid-aim. |
 | 040 | 29–32 | 1186–1307 | 5.1s | Reveal: curlers, housecoat, oven mitts, sweetest face in the county — finger wagging. ♪ wags on beats; the clay gun barrel DROOPS a little more with each wag, scolded. The warning lands: do NOT shoot the Santa. |
 | 044 | 32–33 | 1308–1348 | 1.7s | HARD CUT — CLOSE UP on the vintage Santa by the garage's back door: duct-tape repairs, mismatched paint. It has survived incidents before. **THE SETUP** (and it's already parked in the eventual line of fire). |
 | 046 | 33–34 | 1349–1389 | 1.7s | REACTION — the boy's eyes flick from Mom to the Santa and back. He heard her. He is also, visibly, doing arithmetic. |
