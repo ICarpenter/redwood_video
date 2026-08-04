@@ -153,7 +153,7 @@ E_OPENINGS = [                       # -Y wall, a = x
     (-6.00, -4.20, 1.20, 2.40),      # front_south
     (-2.40, -1.40, 0.50, 2.50),      # front door
     ( 1.99,  3.79, 1.20, 2.40),      # front_north
-    ( 1.40,  4.60, 2.60, 3.05),      # clerestory (stacks over front_north)
+    ( 1.40,  4.60, 2.60, 2.90),      # clerestory (stacks over front_north; below beam soffit 2.95)
 ]
 N_OPENINGS = [                       # +X wall, a = y
     (-2.80, -1.40, 1.20, 2.40),      # north_east
@@ -194,14 +194,15 @@ def build_house_shell():
     wall_run("house_wall_w", "+Y", -7.00, 5.00, 0.0, 3.2, W_OPENINGS, "MAT_siding")
     wall_run("house_wall_n", "+X", -3.75, 4.75, 0.0, 3.2, N_OPENINGS, "MAT_siding")
     wall_run("house_wall_s", "-X", -3.75, 4.75, 0.0, 3.2, S_OPENINGS, "MAT_siding")
-    box("house_floor", -7.0, 5.0, -4.0, 5.0, 0.0, 0.25, "MAT_interior")
+    box("house_floor", -6.75, 4.75, -3.75, 4.75, 0.0, 0.25, "MAT_interior")  # inset to the wall inner faces
     # concrete plinth course proud of the siding at grade; the -X run skips
-    # the garage attachment (y -3..3), the others overhang corners 0.04
+    # the garage attachment (y -3..3), the others overhang corners 0.04.
+    # Inner face buried at n=-0.02 inside the wall so no coplanar pair remains.
     multi_box("house_plinth", [
-        wall_spec("-Y", -7.04, 5.04, 0.0, 0.04, 0.0, 0.18),
-        wall_spec("+Y", -7.04, 5.04, 0.0, 0.04, 0.0, 0.18),
-        wall_spec("+X", -4.04, 5.04, 0.0, 0.04, 0.0, 0.18),
-        wall_spec("-X", 3.0, 5.04, 0.0, 0.04, 0.0, 0.18),
+        wall_spec("-Y", -7.04, 5.04, -0.02, 0.04, 0.0, 0.18),
+        wall_spec("+Y", -7.04, 5.04, -0.02, 0.04, 0.0, 0.18),
+        wall_spec("+X", -4.04, 5.04, -0.02, 0.04, 0.0, 0.18),
+        wall_spec("-X", 3.0, 5.04, -0.02, 0.04, 0.0, 0.18),
     ], "MAT_block")
 
 
@@ -224,14 +225,16 @@ CHECKS.append(check_shell)
 
 
 # beam module 1.35 lands on both porch posts (x -4.7, 0.7) — spec "Massing".
-CANOPY_XS = (-4.70, -3.35, -2.00, -0.65, 0.70)
-BEAM_XS = (-6.05, *CANOPY_XS, 2.05, 3.40, 4.75)
+CANOPY_XS = (-4.70, -3.35, -2.00, -0.65, 0.70)   # unchanged
+# end beams flush at the 12 m span's ends (centers 0.05 in from x=-7 and
+# x=5), beams over both porch posts (-4.7, 0.7), infill bays 1.125/1.35/1.417.
+BEAM_XS = (-6.95, -5.825, *CANOPY_XS, 2.117, 3.533, 4.95)
 
 ROOF_SLABS = [  # z 3.2..3.35, tar-and-gravel. Stepped south edge: the 0.75
-    (-7.00, 5.75, -4.75, 5.75),   # main (garage abuts x=-7 across y -3..3)
-    (-7.75, -7.00, -4.75, -3.00), # south overhang, road corner
-    (-7.75, -7.00,  3.00, 5.75),  # south overhang, backyard corner
-    (-5.20, 1.20, -6.60, -4.75),  # porch canopy tongue (old porch_roof span)
+    (-7.00, 5.67, -4.67, 5.67),   # main — north/west/east edges at fascia inner faces
+    (-7.67, -7.00, -4.67, -3.00), # south overhang ear, road corner
+    (-7.67, -7.00,  3.00, 5.67),  # south overhang ear, backyard corner
+    (-5.12, 1.12, -6.52, -4.67),  # porch canopy tongue — edges at canopy fascia inner faces, meets main at y=-4.67
 ]
 
 FASCIA = [  # z 3.2..3.6 band, 0.08 thick, following the roof perimeter
@@ -268,8 +271,8 @@ def build_house_roof():
 def check_roof():
     out = []
     beams = [ob for ob in staging_meshes() if ob.name.startswith("beam_")]
-    if len(beams) != 9:
-        out.append(f"{len(beams)} beams, want 9")
+    if len(beams) != 10:
+        out.append(f"{len(beams)} beams, want 10")
     roof = _ob("house_roof")
     if roof is None or abs(_bounds(roof)[5] - 3.35) > 0.01:
         out.append("house_roof missing or wrong height (want top 3.35)")
@@ -373,7 +376,7 @@ def hinged_door(name, face, a0, a1, z0, z1, open_deg, mat_name, lites=()):
 def build_house_windows():
     fixed_lite("front_south", "-Y", -6.00, -4.20, 1.20, 2.40)
     fixed_lite("front_north", "-Y", 1.99, 3.79, 1.20, 2.40)
-    fixed_lite("clerestory", "-Y", 1.40, 4.60, 2.60, 3.05, mullions=2)
+    fixed_lite("clerestory", "-Y", 1.40, 4.60, 2.60, 2.90, mullions=2)
     fixed_lite("north_east", "+X", -2.80, -1.40, 1.20, 2.40)
     fixed_lite("west_south", "+Y", -6.40, -5.20, 1.50, 2.40)
     fixed_lite("south_west", "-X", 3.40, 4.60, 1.20, 2.40)
@@ -421,9 +424,9 @@ def build_garage():
             (-12.4, -7.6, y0, y1, 0.0, 0.1),       # curb
         ], "MAT_siding")
     box("garage_wall_s", -13.0, -12.75, -2.75, 2.75, 0.0, 2.9, "MAT_siding")
-    box("garage_floor", -13.0, -7.0, -3.0, 3.0, 0.0, 0.1, "MAT_deck")
+    box("garage_floor", -12.75, -7.0, -2.75, 2.75, 0.0, 0.1, "MAT_deck")  # inset to garage wall inner faces
     # _v2: greybox owns "garage_roof" until the swap (Task 1 note)
-    box("garage_roof_v2", -13.6, -7.0, -3.6, 3.6, 2.90, 3.00, "MAT_roof_gravel")
+    box("garage_roof_v2", -13.52, -7.0, -3.52, 3.52, 2.90, 3.00, "MAT_roof_gravel")
     box("garage_ceiling", -12.75, -7.0, -2.75, 2.75, 2.88, 2.90, "MAT_interior")
     multi_box("garage_fascia", [                    # z 2.9..3.25, 0.08 thick
         (-13.60, -7.00, -3.60, -3.52, 2.90, 3.25),  # east (road) edge
@@ -473,8 +476,9 @@ def build_porch_and_roofscape():
     # _v2 on deck/posts/stoop: greybox owns the plain names (Task 1 note)
     box("porch_deck_v2", -5.0, 1.0, -6.4, -4.0, 0.0, 0.5, "MAT_deck")  # FROZEN
     # one intermediate tread: grade -> 0.25 -> deck 0.5. Full run x -3..0,
-    # projecting south of the deck — sq010_sh030's one-jump steps.
-    box("porch_step", -3.0, 0.0, -7.0, -6.7, 0.0, 0.25, "MAT_deck")
+    # projecting south of the deck, tread touching the deck face at
+    # y=-6.4 — sq010_sh030's one-jump steps.
+    box("porch_step", -3.0, 0.0, -6.7, -6.4, 0.0, 0.25, "MAT_deck")
     for i, px in enumerate((-4.7, 0.7)):            # FROZEN positions
         box(f"porch_post_{i}_v2", px - 0.06, px + 0.06, -6.24, -6.12,
             0.5, 3.2, "MAT_frames")                 # slim steel, meets canopy
