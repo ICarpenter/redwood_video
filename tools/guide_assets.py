@@ -725,34 +725,6 @@ def build_sheriff_seated(c):
     cyl(c, "ss_hat_crown", 0, 0, 1.41, 0.15, 0.14, "hat", axis="Z")
 
 
-def build_sheriff_eating(c):
-    """sheriff_seated with both hands forward on the sandwich.
-
-    The seated guide's arms hang at his sides, so "two-handing an egg salad
-    sandwich" — the whole point of sq040_sh035 and the reason sh042's "he saves
-    the SANDWICH first" lands — had nothing holding anything. The arms run
-    forward in -Y at chest height and end in hands 0.50 m out, which is also
-    what finally puts the sandwich clear of his belly: the belly ball reaches
-    y -0.24 at hand height, so 0.50 leaves a quarter of a metre of daylight.
-
-    Everything else is build_sheriff_seated verbatim — same man, same seat.
-    """
-    box(c, "se_shin_l", -0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
-    box(c, "se_shin_r", 0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
-    box(c, "se_thigh_l", -0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
-    box(c, "se_thigh_r", 0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
-    box(c, "se_hips", 0, 0.02, 0.55, 0.46, 0.34, 0.18, "sheriff")
-    ball(c, "se_belly", 0, -0.10, 0.84, 0.26, "sheriff")
-    box(c, "se_torso", 0, 0, 0.92, 0.46, 0.26, 0.34, "sheriff")
-    box(c, "se_arm_l", -0.20, -0.28, 1.02, 0.11, 0.40, 0.11, "sheriff")
-    box(c, "se_arm_r", 0.20, -0.28, 1.02, 0.11, 0.40, 0.11, "sheriff")
-    box(c, "se_hand_l", -0.13, -0.50, 1.06, 0.10, 0.10, 0.10, "skin")
-    box(c, "se_hand_r", 0.13, -0.50, 1.06, 0.10, 0.10, 0.10, "skin")
-    ball(c, "se_head", 0, 0, 1.22, 0.16, "skin")
-    cyl(c, "se_hat_brim", 0, 0, 1.34, 0.28, 0.03, "hat", axis="Z")
-    cyl(c, "se_hat_crown", 0, 0, 1.41, 0.15, 0.14, "hat", axis="Z")
-
-
 def build_trench(c):
     """Vietnam trench mini-set for the sq050 war flashback.
 
@@ -859,7 +831,6 @@ BUILDERS = {
     "boy_peer": build_boy_peer, "boy_aim": build_boy_aim,
     "box_open": build_box_open,
     "cruiser_door": build_cruiser_door,
-    "sheriff_eating": build_sheriff_eating,
 }
 
 
