@@ -273,6 +273,135 @@ def check_roof():
 CHECKS.append(check_roof)
 
 
+def _sash_matrix(hinge, u, n, swing_deg):
+    """Blockout_property's sash placement, verbatim: local x = hinge->free
+    edge, y = outward normal; the second leaf's closed basis is a reflection,
+    which no Euler produces — write matrix_world directly. Positive swing
+    moves the free edge outward."""
+    sign = 1.0 if (Vector((0, 0, 1)).cross(u) - n).length < 1e-6 else -1.0
+    t = math.radians(swing_deg) * sign
+    c, s = math.cos(t), math.sin(t)
+    rz = Matrix(((c, -s, 0.0), (s, c, 0.0), (0.0, 0.0, 1.0)))
+    uu, nn = rz @ u, rz @ n
+    return Matrix(((uu.x, nn.x, 0.0, hinge.x),
+                   (uu.y, nn.y, 0.0, hinge.y),
+                   (uu.z, nn.z, 1.0, hinge.z),
+                   (0.0, 0.0, 0.0, 1.0)))
+
+
+def _leaf_frames(face):
+    w, s, axis = _wall(face)
+    n = Vector((0, s, 0)) if axis == "X" else Vector((s, 0, 0))
+    return w, axis, n
+
+
+def fixed_lite(tag, face, a0, a1, z0, z1, mullions=0):
+    specs = [
+        wall_spec(face, a0, a1, -0.10, -0.05, z1 - FRAME_T, z1),
+        wall_spec(face, a0, a1, -0.10, -0.05, z0, z0 + FRAME_T),
+        wall_spec(face, a0, a0 + FRAME_T, -0.10, -0.05, z0, z1),
+        wall_spec(face, a1 - FRAME_T, a1, -0.10, -0.05, z0, z1),
+    ]
+    for i in range(mullions):
+        m = a0 + (a1 - a0) * (i + 1) / (mullions + 1)
+        specs.append(wall_spec(face, m - 0.02, m + 0.02, -0.10, -0.05, z0, z1))
+    multi_box(f"win_{tag}_frame", specs, "MAT_frames")
+    multi_box(f"win_{tag}_glass",
+              [wall_spec(face, a0, a1, -0.085, -0.065, z0, z1)], "MAT_glass")
+    multi_box(f"win_{tag}_sill",
+              [wall_spec(face, a0 - 0.03, a1 + 0.03, -WALL_T, 0.06,
+                         z0 - 0.04, z0)], "MAT_frames")
+
+
+def casement_pair(tag, face, a0, a1, z0, z1, open_deg=62.0):
+    """Static baked-open pair — matches today's set and the spec's default
+    state; per-shot closed/animated states are the casement_leaf PROP."""
+    multi_box(f"win_{tag}_frame", [
+        wall_spec(face, a0, a1, -0.10, -0.05, z1 - FRAME_T, z1),
+        wall_spec(face, a0, a1, -0.10, -0.05, z0, z0 + FRAME_T),
+        wall_spec(face, a0, a0 + FRAME_T, -0.10, -0.05, z0, z1),
+        wall_spec(face, a1 - FRAME_T, a1, -0.10, -0.05, z0, z1),
+    ], "MAT_frames")
+    multi_box(f"win_{tag}_sill",
+              [wall_spec(face, a0 - 0.03, a1 + 0.03, -WALL_T, 0.06,
+                         z0 - 0.04, z0)], "MAT_frames")
+    w, axis, n = _leaf_frames(face)
+    half, height = (a1 - a0) / 2, z1 - z0
+    for leaf, (a_h, along) in enumerate(((a0, 1.0), (a1, -1.0))):
+        u = Vector((along, 0, 0)) if axis == "X" else Vector((0, along, 0))
+        hinge = (Vector((a_h, w, z0)) if axis == "X"
+                 else Vector((w, a_h, z0)))
+        m = _sash_matrix(hinge, u, n, open_deg)
+        r = 0.07
+        stile = multi_box(f"win_{tag}_sash{leaf}", [
+            (0, half, 0, 0.05, 0, r),
+            (0, half, 0, 0.05, height - r, height),
+            (0, r, 0, 0.05, 0, height),
+            (half - r, half, 0, 0.05, 0, height)], "MAT_frames")
+        pane = multi_box(f"win_{tag}_sash{leaf}_glass",
+                         [(r, half - r, 0.012, 0.038, r, height - r)],
+                         "MAT_glass")
+        for ob in (stile, pane):
+            ob.matrix_world = m
+
+
+def hinged_door(name, face, a0, a1, z0, z1, open_deg, mat_name, lites=()):
+    """Slab door hinged at the a0 jamb. open_deg > 0 swings OUTWARD,
+    negative swings into the house. Lites are leaf-local (x from hinge)."""
+    w, axis, n = _leaf_frames(face)
+    width, height = a1 - a0, z1 - z0
+    u = Vector((1, 0, 0)) if axis == "X" else Vector((0, 1, 0))
+    hinge = Vector((a0, w, z0)) if axis == "X" else Vector((w, a0, z0))
+    m = _sash_matrix(hinge, u, n, open_deg)
+    door = multi_box(name, [(0, width, -0.15, -0.10, 0, height)], mat_name)
+    door.matrix_world = m
+    for i, (lx0, lx1, lz0, lz1) in enumerate(lites):
+        g = multi_box(f"{name}_lite{i}",
+                      [(lx0, lx1, -0.155, -0.095, lz0, lz1)], "MAT_glass")
+        g.matrix_world = m
+    return door
+
+
+def build_house_windows():
+    fixed_lite("front_south", "-Y", -6.00, -4.20, 1.20, 2.40)
+    fixed_lite("front_north", "-Y", 1.99, 3.79, 1.20, 2.40)
+    fixed_lite("clerestory", "-Y", 1.40, 4.60, 2.60, 3.05, mullions=2)
+    fixed_lite("north_east", "+X", -2.80, -1.40, 1.20, 2.40)
+    fixed_lite("west_south", "+Y", -6.40, -5.20, 1.50, 2.40)
+    fixed_lite("south_west", "-X", 3.40, 4.60, 1.20, 2.40)
+    casement_pair("kitchen_north", "+X", 1.60, 4.20, 1.20, 2.40)
+    casement_pair("kitchen_west", "+Y", 1.40, 4.20, 1.20, 2.40)
+    # front door: accent slab, three staggered lites, baked open INTO the
+    # house ~80 (dark doorway read; the screen door is a PROP).
+    # _v2: greybox owns "front_door" until the swap (Task 1 note).
+    hinged_door("front_door_v2", "-Y", -2.40, -1.40, 0.50, 2.50, -80.0,
+                "MAT_door_accent",
+                lites=((0.15, 0.35, 1.55, 1.75),
+                       (0.40, 0.60, 1.30, 1.50),
+                       (0.65, 0.85, 1.05, 1.25)))
+    # back door: baked closed, half-glass (upper pane), painted not accent
+    hinged_door("back_door", "+Y", -3.40, -2.20, 0.45, 2.55, 0.0,
+                "MAT_frames", lites=((0.10, 1.10, 1.25, 2.00),))
+    # window box on the SOUTH leaf's half of the kitchen_west sill only —
+    # the north half is the sill Mom vaults in sq070_sh010 (spec, West)
+    box("window_box", 1.50, 2.70, 5.06, 5.30, 0.95, 1.18, "MAT_metal_93")
+
+
+def check_windows():
+    out = []
+    want = ["win_front_south_glass", "win_front_north_glass",
+            "win_clerestory_glass", "win_north_east_glass",
+            "win_west_south_glass", "win_south_west_glass",
+            "win_kitchen_north_sash0", "win_kitchen_north_sash1",
+            "win_kitchen_west_sash0", "win_kitchen_west_sash1",
+            "front_door", "back_door", "window_box"]
+    out += [f"{nm} missing" for nm in want if _ob(nm) is None]
+    return out
+
+
+CHECKS.append(check_windows)
+
+
 def camera(name, loc, look_at, lens=35):
     data = bpy.data.cameras.new(name)
     data.lens = lens
@@ -334,7 +463,8 @@ def build():
     modeling_scene()
     build_house_shell()
     build_house_roof()
-    # Tasks 4-8 append build calls here.
+    build_house_windows()
+    # Tasks 5-8 append build calls here.
 
 
 def run_checks():
