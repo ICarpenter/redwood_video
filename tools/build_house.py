@@ -226,9 +226,9 @@ CHECKS.append(check_shell)
 
 # beam module 1.35 lands on both porch posts (x -4.7, 0.7) — spec "Massing".
 CANOPY_XS = (-4.70, -3.35, -2.00, -0.65, 0.70)   # unchanged
-# end beams flush at the 12 m span's ends (centers 0.05 in from x=-7 and
+# end beams flush at the 12 m span's ends (centers 0.06 in from x=-7 and
 # x=5), beams over both porch posts (-4.7, 0.7), infill bays 1.125/1.35/1.417.
-BEAM_XS = (-6.95, -5.825, *CANOPY_XS, 2.117, 3.533, 4.95)
+BEAM_XS = (-6.94, -5.825, *CANOPY_XS, 2.117, 3.533, 4.94)
 
 ROOF_SLABS = [  # z 3.2..3.35, tar-and-gravel. Stepped south edge: the 0.75
     (-7.00, 5.67, -4.67, 5.67),   # main — north/west/east edges at fascia inner faces
@@ -263,7 +263,9 @@ def build_house_roof():
     for i, bx in enumerate(BEAM_XS):
         y1 = 5.90                                   # punches west fascia 0.15
         y0 = -6.75 if bx in CANOPY_XS else -4.90    # and east/canopy fascia
-        box(f"beam_{i}", bx - 0.05, bx + 0.05, y0, y1, 2.95, 3.20, "MAT_fascia")
+        # top held 5 mm shy of the slab bottom so no face shares the slab's
+        # plane (invisible at building scale)
+        box(f"beam_{i}", bx - 0.05, bx + 0.05, y0, y1, 2.95, 3.195, "MAT_fascia")
     # the one replaced fascia board — dilapidation-as-content (spec, Roofscape)
     box("fascia_patch", 2.60, 3.90, -4.755, -4.745, 3.22, 3.58, "MAT_plywood")
 
