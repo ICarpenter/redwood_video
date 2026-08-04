@@ -1,7 +1,7 @@
 # redwood_video — handoff
 
 State of the project for anyone (or any future session) picking it up cold.
-Written 2026-07-20, updated 2026-07-31.
+Written 2026-07-20, updated 2026-08-03.
 
 ## What this is
 
@@ -10,7 +10,7 @@ An animated music video for **`guns`** (`audio/track/guns.wav` — 4:15,
 **claymation** look: bright colors, white-trash Americana, Spike & Mike
 energy. A heartland kid 3D-prints a machine gun, and by sundown has
 dragged his mom and the county sheriff into a three-way backyard war.
-40 shots. Solo production.
+50 shots. Solo production.
 
 Read next, in order: `treatment/story.md` (what happens),
 `treatment/script.md` (shot by shot, frame-locked), `treatment/site.md`
@@ -25,47 +25,47 @@ Written 2026-07-20, status updated 2026-08-03.
 |-------|--------|
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
-| 3. Layout / animatic | **in progress — 45 of 50 shots blocked, through the end of verse 3 (frame 4166)** |
-| 4. Asset production | greybox — property shell, 26 guides, 2 mini-sets, squib FX |
+| 3. Layout / animatic | **BLOCKED END TO END — all 50 shots, frames 1–4780. Undrawn.** |
+| 4. Asset production | greybox — property shell, 28 guides, 2 mini-sets, squib FX |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
 
 The film is watchable now: `edit/edit.blend` cuts the track, 9 section
-markers, 45 live layout strips and 5 slugs. Nothing is rendered yet, so
+markers and 50 live layout strips — no slugs left. Nothing is rendered yet, so
 every strip is a **linked scene strip** — the edit previews `layout.blend`
 directly, and you must **reload libraries** after a headless run to see
 changes.
 
 ### What is left
 
-Five shots, frames 4167–4780 — the ending:
+Nothing structural. Every shot is blocked and animated at guide tier and
+cuts as layout; the film plays start to finish. **What it does not have is a
+single drawn line** — 50 empty Grease Pencil papers. That is the next phase.
 
-| Shots | Frames | What |
-|---|---|---|
-| `sq080_sh010…sh040` | 4167–4534 | Mom final boss, the look, she unloads, final sprint under fire |
-| `sq090_sh010` | 4535–4780 | title card takes one last bullet hole |
+`sq070`–`sq090` were blocked 2026-08-03. Their continuity basis is
+`sq060_sh030`'s LAST frame, read out of the file rather than assumed: boy
+`(3.757, 16.753)` rotX −92 and sheriff `(14.515, 15.726)` rotX −92, both flat
+on their backs; Mom still in the kitchen at `(3.990, 3.195, 0.25)`;
+clothesline down at `(9.060, 10.280)` rotY 88.
 
-They are empty layout scenes sitting at slug tier.
+Four constraints that shape any reframe down there:
 
-`sq070` (the aftermath) was blocked and animated 2026-08-03 and now cuts as
-layout. Its continuity basis is `sq060_sh030`'s LAST frame, read out of the
-file rather than assumed: boy `(3.757, 16.753)` rotX −92 and sheriff
-`(14.515, 15.726)` rotX −92, both flat on their backs; Mom still in the
-kitchen at `(3.990, 3.195, 0.25)`; clothesline down at `(9.060, 10.280)`
-rotY 88; the blast column still at scale 1.05 over the BBQ. `sq080` opens on
-where `sq070_sh050` leaves them — the sweet-tea table on the grass off the
-garage's rear door, Mom standing, the sheriff sitting, the boy on his feet,
-and a charred Santa head in the grass at their feet.
-
-Two things that shape any reframe of `sq070`:
-
-- **The sheriff is 10.8 m north of the boy.** No single frame holds him, the
-  boy and the back door at a readable size — that is why the aerial drops him
-  and `sh020` is a long-lens OTS rather than a two-shot.
+- **The sheriff is 10.8 m north of the boy.** No frame holds him, the boy and
+  the back door at a readable size, which is why `sq070_sh010`'s aerial drops
+  him and `sh020` is a long-lens OTS rather than a two-shot.
 - **The Santa stands INSIDE the garage tunnel**, 0.24 m off its north wall at
   `(-7.839, 2.198)` — its world position since `sq010`, so invariant 3 keeps it
-  there. `sh050` therefore shoots out through the rear passthrough, and the
-  tea table's position is dictated by that sight-line, not by taste: pushed any
-  further north the tunnel wall eats the tableau.
+  there. `sq070_sh050` therefore shoots out through the rear passthrough, and
+  the sweet-tea table's position is dictated by that sight-line, not by taste:
+  pushed any further north the tunnel wall eats the tableau.
+- **`ground_far` is not flat.** It runs z 0..42 and rises out past the road,
+  which ate the bottom third of `sq090`'s title card when the card sat on the
+  ground. The card is parked FLOATING at `(0, -60, 5)`, oversize for its frame,
+  which is how that shot gets to be "Black." without touching the world.
+- **Four shots carry armed guns** — `sq060_sh012`, `sq060_sh014`, `sq080_sh030`
+  and `sq080_sh040`. `fire_rig --arm` deleted their gun instances and replaced
+  them with `<p>_ctrl` objects inside the overridden gun collection, so any
+  blocking script that re-adds a gun to those scenes leaves TWO in the shot.
+  See the gunfire chain below.
 
 ### The gunfire chain, if you have not met it
 
@@ -339,15 +339,15 @@ z 2.35..2.45, not slabs filling the opening.
 
 ## Next actions
 
-1. **Keep blocking out story beats.** Add a row to `STAGING` in
-   `stage_shots.py` per shot, drop guides by hand with Sidebar ▸ Redwood ▸
-   Add Guide, or carry a beat forward with `continue_shot.py`. Conform and
-   watch — beats read before anything is drawn.
-2. **Draw the film.** A rough scribble pass over all 39 layout scenes
-   first, polish later — blocking and drawing both render together,
-   always, so there is nothing to re-run afterward.
-3. **Arbitrate verse 2** with the animatic, then firm durations and move
-   statuses `scripted → boarded` (all 39 rows are still `scripted`).
+1. **Watch it end to end** and cut for time. The blocking tier is now
+   complete, so for the first time the whole film is arbitrable: verse 2's gag
+   density, the `[IF TIME]` shots, and whether any beat is holding too long.
+2. **Draw the film.** A rough scribble pass over all 50 layout scenes first,
+   polish later — blocking and drawing both render together, always, so there
+   is nothing to re-run afterward. This is the long pole.
+3. **Firm durations after the watch**, then move statuses `scripted →
+   boarded` (all 50 rows still say `scripted`, including the blocked ones —
+   the column has never been maintained, so do it in one pass or not at all).
 4. **Design pass on the property** once the layout says what the camera
    actually needs.
 5. Then asset production proper: clay material library, characters.

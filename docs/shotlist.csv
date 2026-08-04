@@ -36,16 +36,16 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 050,040,gun cabinet - draw - spin - rack,2941,3023,83,mom;rosco;gun_cabinet,scripted
 060,010,three-way firefight - boy runs and dives under fire,3024,3146,123,boy;sheriff;machine_gun,scripted
 060,012,rear on mom blasting away at the cop,3147,3227,81,mom;rosco,scripted
-060,014,cop reaction - clocks fire from the house - swings west,3228,3350,123,sheriff;machine_gun,scripted
+060,014,cop reaction - clocks fire from the house - swings west,3228,3350,123,sheriff;machine_gun;mom;rosco,scripted
 060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,,scripted
 060,030,MUSHROOM CLOUD - everyone blasted,3432,3513,82,,scripted
-070,010,aerial hover - mom sprints out to her son,3514,3636,123,boy;sheriff;mom;clothesline;mushroom_cloud,scripted
+070,010,aerial hover - mom sprints out to her son,3514,3636,123,boy;sheriff;mom;clothesline,scripted
 070,020,over the sheriff's shoulder - twitch of recognition,3637,3758,122,sheriff;boy;mom;clothesline,scripted
 070,030,reverse - hat tip and mom starts to laugh,3759,3922,164,sheriff;boy;mom;clothesline,scripted
-070,040,pitcher push-out reveals the sweet tea truce,3923,4044,122,patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;clothesline,scripted
-070,050,santa slumps - head pops off and rolls,4045,4166,122,santa;santa_torso;santa_head;patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;clothesline,scripted
-080,010,mom final boss - dual wield,4167,4247,81,,scripted
-080,020,the look,4248,4288,41,,scripted
-080,030,mom unloads - they bolt,4289,4370,82,,scripted
-080,040,FINAL SPRINT under fire - smash to black,4371,4534,164,,scripted
-090,010,title card takes one last bullet hole,4535,4780,246,,scripted
+070,040,pitcher push-out reveals the sweet tea truce,3923,4044,122,patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
+070,050,santa slumps - head pops off and rolls,4045,4166,122,santa;santa_torso;santa_head;patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
+080,010,mom final boss - both guns off the table,4167,4247,81,mom;machine_gun;rosco;sheriff_seated;boy;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,020,the look,4248,4288,41,boy;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,030,mom unloads - they bolt for the garage,4289,4370,82,mom;machine_gun;rosco;boy;sheriff;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,040,FINAL SPRINT under fire - the boy overtakes,4371,4534,164,boy;sheriff;mom;machine_gun;rosco,scripted
+090,010,title card takes one last bullet hole,4535,4780,246,title_card;bullet_hole,scripted

@@ -30,10 +30,13 @@ composition.
 - **Props** (`assets/props/props.blend`): `machine_gun`, `printer`,
   `action_figure`, `delivery_truck`, `cruiser`, `rosco`, `big_pistol`, `santa`,
   `box`, `scale_stick`, `egg_salad_sando`, `gun_cabinet`, `mushroom_cloud`,
-  `clothesline`, `hubcap`, and the sq070 aftermath set — `patio_table`,
-  `folding_chair`, `tea_pitcher`, `tea_glass`, `santa_torso`, `santa_head`.
-  `santa_torso` + `santa_head` are the decapitated pair the intact `santa` is
-  swapped for on the frame its head comes off.
+  `clothesline`, `hubcap`, the sq070 aftermath set — `patio_table`,
+  `folding_chair`, `tea_pitcher`, `tea_glass`, `santa_torso`, `santa_head` —
+  and sq090's end card, `title_card` + `bullet_hole`. `santa_torso` +
+  `santa_head` are the decapitated pair the intact `santa` is swapped for on
+  the frame its head comes off. `bullet_hole` exists because `squib.py` needs
+  a MESH and every guide in a layout scene is a collection instance, i.e. an
+  EMPTY, which it refuses outright.
 - **Set** (`assets/envs/property/property.blend`): the whole `property`
   massing. It is linked at identity in every layout scene already
   (invariant 1) — it is not a guide you drop; see below.

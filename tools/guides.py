@@ -79,6 +79,15 @@ GUIDES: list[GuideSpec] = [
     # slump can be keyed identically on both and the cut is invisible.
     GuideSpec("santa_torso", PROPS_FILE, "props", 1.30),
     GuideSpec("santa_head", PROPS_FILE, "props", 0.60),
+    # sq090's end card. A guide rather than a camera-parented mesh so the shot
+    # cuts as layout like every other one, and so the lettering can be drawn
+    # over it in the drawing pass — the card is hand-sculpted clay in the end,
+    # not type.
+    GuideSpec("title_card", PROPS_FILE, "props", 2.25),
+    # The last round of the film. A guide rather than a squib because
+    # squib.py needs a MESH and every guide in a layout scene is a linked
+    # collection instance — an EMPTY, which it refuses outright.
+    GuideSpec("bullet_hole", PROPS_FILE, "props", 0.19),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look

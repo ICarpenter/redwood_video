@@ -462,6 +462,36 @@ def build_tea_pitcher(c):
     ball(c, "tp_lemon", 0.0, -0.06, 0.25, 0.03, "egg")
 
 
+def build_title_card(c):
+    """sq090's end card: a black field with a raised clay slab to letter on.
+
+    Deliberately oversized (4.0 x 2.25, wider than 16:9) so that from the one
+    camera that ever sees it the black backing fills the frame edge to edge and
+    nothing of the property shows behind — which is how the shot gets to open on
+    "Black." without touching the scene's world.
+    """
+    box(c, "tc_field", 0, 0.03, 1.125, 4.00, 0.06, 2.25, "dark")
+    box(c, "tc_slab", 0, -0.05, 1.150, 2.60, 0.10, 0.90, "bread")
+    box(c, "tc_slab_shadow", 0, 0.01, 1.120, 2.68, 0.04, 0.96, "mud")
+
+
+def build_bullet_hole(c):
+    """One impact. Authored as a disc on the Y axis so it faces -Y like every
+    other guide — drop it on a wall at rotZ 0 and it reads flat to camera.
+
+    Everything is lifted clear of z=0 because a Y-axis cylinder's RADIUS runs
+    in Z: laid out around the origin the rim and the downward crack both hang
+    below the floor and the feet-at-zero check fails.
+    """
+    cyl(c, "bh_hole", 0, 0, 0.085, 0.060, 0.030, "char", axis="Y")
+    cyl(c, "bh_rim", 0, 0.012, 0.085, 0.080, 0.014, "dark", axis="Y")
+    for i, (dx, dz, sx, sz) in enumerate([(0.085, 0.040, 0.090, 0.016),
+                                          (-0.078, 0.055, 0.085, 0.016),
+                                          (0.016, -0.048, 0.016, 0.070),
+                                          (-0.040, 0.075, 0.016, 0.062)]):
+        box(c, f"bh_crack_{i}", dx, 0.006, 0.085 + dz, sx, 0.012, sz, "dark")
+
+
 def build_tea_glass(c):
     cyl(c, "tg_body", 0, 0, 0.07, 0.04, 0.14, "glass", axis="Z")
     cyl(c, "tg_tea", 0, 0, 0.05, 0.035, 0.10, "tea", axis="Z")
@@ -698,6 +728,8 @@ BUILDERS = {
     "tea_glass": build_tea_glass,
     "santa_torso": build_santa_torso,
     "santa_head": build_santa_head,
+    "title_card": build_title_card,
+    "bullet_hole": build_bullet_hole,
 }
 
 

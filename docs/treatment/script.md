@@ -113,7 +113,7 @@ plays through the chorus hit rather than waiting for it.
 |----|------|--------|-----|------|
 | 010 | 74–77 | 3024–3146 | 5.1s | **THREE-WAY FIREFIGHT.** The boy breaks across the yard under fire and dives; the sheriff tracks him the whole way, firing. ♪ gunfire phrases with the guitar. |
 | 012 | 77–79 | 3147–3227 | 3.4s | The instant the boy hits the dirt — REAR on Mom, planted on the back stoop, blasting away at the sheriff. She has been the third gun all along. |
-| 014 | 79–82 | 3228–3350 | 5.1s | Back on the sheriff, camera looking WEST past him toward the house. He is still firing north at the boy when he registers the second muzzle flash coming out of his flank — and swings the gun onto the house. The swing rakes straight across the propane BBQ. |
+| 014 | 79–82 | 3228–3350 | 5.1s | Back on the sheriff, camera looking WEST past him toward the house. **Mom is visible 20 m down the lens behind him, Rosco up, returning fire through the kitchen's north window** — muzzle flash after muzzle flash out of his flank. He is still firing north at the boy when he registers it, and swings the gun onto the house. The swing rakes straight across the propane BBQ. |
 | 020 | 82–84 | 3351–3431 | 3.4s | The spray rakes the propane BBQ. Hiss. **All three freeze — one shared "oh no" look across the yard.** |
 | 030 | 84–86 | 3432–3513 | 3.4s | **MUSHROOM CLOUD** — for exactly one frame it resolves into a bald eagle. Everyone blasted off their feet, slow-mo clay pinwheel. ♪ detonation on the solo's final accent. |
 
@@ -121,9 +121,9 @@ plays through the chorus hit rather than waiting for it.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 86–89 | 3514–3636 | 5.1s | AERIAL hover over the charred backyard — the blast column still collapsing over the BBQ crater the boy flat on his back out on the grass. **Mom bursts out the back door and sprints the length of the yard to her son.** Quiet under the verse. (The sheriff is 10.8 m north of the boy and cannot be held in this frame as well as the back door — he is sq070_sh020's shot.) |
+| 010 | 86–89 | 3514–3636 | 5.1s | AERIAL hover over the charred backyard — scorched grass the flattened clothesline the boy flat on his back out on the middle of it. **Mom bursts out the back door and sprints the length of the yard to her son.** She is the only thing moving. Quiet under the verse. (No blast column: it swallowed the frame at any size that read. The sheriff is 10.8 m north of the boy and cannot be held here as well as the back door — he is sh020's shot.) |
 | 020 | 89–92 | 3637–3758 | 5.1s | OVER THE SHERIFF'S SHOULDER. He props himself up on the grass and — a twitch of recognition — finally sees who he has been trading fire with. A boy. And his mother. This was never a war. ♪ "the kid are lying in a slump." (Noodle-gun gag CUT 2026-08-02 — diecast can't droop under `style.md`'s physics law.) |
-| 030 | 92–96 | 3759–3922 | 6.8s | REVERSE onto him past Mom and the boy. He gets up walks over and tips his mangled hat in apology — and Mom starts to laugh in spite of herself. All good fun after all. |
+| 030 | 92–96 | 3759–3922 | 6.8s | REVERSE onto him past Mom and the boy. He gets up and crosses to them — and **she works out who he is**: head up off her son, freeze, a double-take, and it lands. THEN the mangled hat comes off in apology and it goes out of her — she is still laughing when we cut. All good fun after all. |
 | 040 | 96–99 | 3923–4044 | 5.1s | Tight on the sweet-tea pitcher — the only pristine object in the wreckage — then PUSH OUT to reveal a table set up in the charred yard facing the garage: the sheriff sitting screen-left Mom centre-left handing him a glass the boy on the right. |
 | 050 | 99–102 | 4045–4166 | 5.1s | REVERSE out of the garage: the charred Santa fills the foreground the tea tableau small beyond him. He slumps over — and his head pops off and rolls out across the grass toward them. **THE PAYOFF.** |
 
@@ -131,16 +131,16 @@ plays through the chorus hit rather than waiting for it.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 102–104 | 4167–4247 | 3.4s | Mom's face goes final boss. She picks up BOTH their guns — dual-wield, oven mitts still on. ♪ "Who got the bag?" |
-| 020 | 104–105 | 4248–4288 | 1.7s | Boy and sheriff exchange ONE look. |
-| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt, clay divots exploding at their heels. ♪ the hook changes owners — SHE'S "got the guns" now. |
-| 040 | 107–111 | 4371–4534 | 6.8s | **FINAL IMAGE:** wide — boy and sheriff sprinting down the dirt road under heavy fire from the porch. **Sheriff holds his pants up one-handed (runner 3/3). The boy OVERTAKES him.** ♪ song dies dead on bar 111's hit — **SMASH TO BLACK** with it. |
+| 010 | 102–104 | 4167–4247 | 3.4s | Mom's face goes final boss. She takes BOTH guns off the tea table — his and the boy's — and comes up dual-wielding, oven mitts still on. Push in onto her face. ♪ "Who got the bag?" |
+| 020 | 104–105 | 4248–4288 | 1.7s | Two-shot square onto the two and a half metres between them. Boy and sheriff exchange ONE look. |
+| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt for the garage passthrough — the only way out of the backyard and the door the whole arsenal came out of — his chair going over behind him clay divots exploding at their heels. ♪ the hook changes owners — SHE'S "got the guns" now. |
+| 040 | 107–111 | 4371–4534 | 6.8s | **FINAL IMAGE:** wide on the dirt road from the far shoulder panning with them — boy and sheriff sprinting north under heavy fire from the porch, and the pan carries the house and Mom on it through the middle of the shot. **Sheriff holds his pants up one-handed (runner 3/3). The boy OVERTAKES him** — the pass lands on camera at 4470. ♪ song dies dead on bar 111's hit — **SMASH TO BLACK** with it. |
 
 ## sq090 — TAIL (audio only) · bars 111–~117 · frames 4535–~4780 · ~10.2s
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 111–~117 | 4535–~4780 | ~10.2s | Black. Hand-sculpted clay title card settles… takes one last stray bullet hole. Fade with the ring-out — exact out-point picked in the edit. |
+| 010 | 111–~117 | 4535–~4780 | ~10.2s | Black. Hand-sculpted clay title card settles out of an overshoot… holds… and takes one last stray bullet hole at 4700. Fade with the ring-out — exact out-point picked in the edit. |
 
 ## Tally & density notes
 
