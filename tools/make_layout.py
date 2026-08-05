@@ -226,9 +226,10 @@ def build_scene(shot, track, ink, prompt):
     scene.frame_end = shot.end_frame
 
     cam_data = bpy.data.cameras.new(f"{shot.code}_cam")
-    # far enough to see `ground_far`, which runs to 4 km so the land reaches
-    # the visual horizon instead of stopping at the property's 45 m edge and
-    # leaving the world HDRI's dark lower hemisphere as a black band
+    # far enough to see the `skyline` backdrop (tools/skyline.py), which
+    # superseded `ground_far`: three ridge rings out to a 1500 m crest with the
+    # desert floor running to 2400 m. The mountains close the horizon on every
+    # side, so nothing beyond needs to be drawn.
     cam_data.clip_end = CAM_CLIP_END
     cam = bpy.data.objects.new(f"{shot.code}_cam", cam_data)
     # A starting point only — stage_shots.py and hand framing move it. The
