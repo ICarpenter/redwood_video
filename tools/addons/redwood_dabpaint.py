@@ -496,7 +496,10 @@ class VIEW3D_PT_redwood_dabpaint(bpy.types.Panel):
             box.label(text=label)
             if palette.has_drifted(stored):
                 box.label(text="palette reordered — dabs now decode wrong", icon="ERROR")
-            box.label(text=f"selected: {name_prop or palette.ordering[0]}")
+            # Say "none" rather than falling back to ordering[0] — naming a
+            # swatch nobody clicked reads as a selection that was made.
+            box.label(text=f"selected: {name_prop}" if name_prop
+                      else "no swatch clicked yet")
             grid = box.grid_flow(columns=8, even_columns=True, even_rows=True)
             for swatch in palette.ordering:
                 icon_id = _icon_for(root, dabpaint, label.lower(), swatch)
