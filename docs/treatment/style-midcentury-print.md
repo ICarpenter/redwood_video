@@ -69,10 +69,10 @@ butterfly roof. This hands the shared "slightly unsettling" given a
 second engine: every frame is slightly wrong-in-time.
 
 The setting itself is film canon — it holds under any style candidate
-and is recorded in `style.md`'s shared givens. This doc legislates only
-how the print expresses it.
+and is recorded in `style.md`'s shared givens. This doc covers only how
+the print expresses it.
 
-## The two strata — content law
+## The two strata — what the world is made of
 
 Every object in the lived-in world belongs to one of two strata:
 
@@ -83,20 +83,21 @@ Every object in the lived-in world belongs to one of two strata:
 - **The 1980s–90s stratum** — everything the family added out of
   necessity: the hand-me-down plaid recliner, particle-board shelving,
   the 27-inch CRT, boombox, VCR, cordless phone, the boy's printer, all
-  wardrobe, the sheriff's Crown Vic. This stratum may draw on the 1993
-  annex swatches (below); core MCM swatches remain legal on it.
+  wardrobe, the sheriff's Crown Vic. This stratum can draw on the 1993
+  annex swatches (below); core MCM swatches sit on it happily too.
 
-**The hodgepodge law: every lived-in frame carries at least one
-post-1980 object.** The architecture is never dressed pure — the film
-never shows the clean 1962 poster, only 1993 wearing it.
+**Aim for at least one post-1980 object in every lived-in frame.** The
+architecture dressed pure reads as a period piece, which is the one
+thing this setting isn't — the film never shows the clean 1962 poster,
+only 1993 wearing it.
 
 **Dilapidation is content, not medium.** The print stays flat and clean
 while *depicting* wear: a fascia board replaced with bare plywood, dead
 patches in the lawn, aluminum foil sunshading one clerestory, a swamp
 cooler squatting on the flat roof, the duct-taped blow-mold Santa
-(already canon). Era makes no difference to print wear — the patina law
-stays uniform; a thrifted 1985 recliner fades and misregisters exactly
-like a 1962 breeze block.
+(already canon). Era makes no difference to how wear reads — a thrifted
+1985 recliner fades and misregisters exactly like a 1962 breeze block,
+because the wear belongs to the print, not to the object's decade.
 
 Maybe (a story/set call, not a style call): a drained, cracked pool —
 the most on-theme failed-fantasy set piece available if a beat ever
@@ -114,47 +115,76 @@ dabs** on a quantized palette (Gindy paints absolute object-space
 normals; tangent tilts need no per-asset bake and deform correctly on
 characters).
 
-- **`MCM_Toon`** — flat painted albedo in, poster shading out. The tilt
-  map perturbs the normal; diffuse is then either quantized to 2–3
-  poster bands (Shader-to-RGB) *or* left soft and physical — **A/B at
-  the test frame**: with dabs carrying the painterly read, banding may
-  be redundant. Either way the terminator breaks along stroke shapes,
-  never a smooth CG gradient, and shadow color runs through the
-  **global shadow tint** (poster shadows shift hue, not just value).
+- **`MCM_Toon`** — flat painted albedo in, painted shading out. The tilt
+  map perturbs the normal; diffuse is left **soft and physical**.
+  **Banding is dead film-wide (decided 2026-08-04, by test — see
+  `assets/materials/tilt_dab_test/`).** The terminator breaks along
+  stroke shapes because the *dabs* break it, and shadow color runs
+  through the **global shadow tint** (shadows shift hue, not just value).
+  - **Why banding had to go.** Banding and tilt dabs are competing
+    mechanisms, not complementary ones. A hard `ColorRamp` step means a
+    3–14° tilt only changes the output within a narrow band around the
+    threshold; everywhere else the tilted and untilted normals land in
+    the same band and shade identically. Measured on the mint C10: with
+    banding on, dabs are invisible across the lit surface and read only
+    along the terminator, leaving flat interiors. With banding off, the
+    same map gives all-over gouache grain. The treatment previously
+    guessed banding might be redundant — it is the reverse, banding made
+    the *dabs* redundant. The dabs are the look, so banding loses.
+  - **Consequence: the engine is no longer forced.** `Shader to RGB` was
+    the only EEVEE-only node in the stack. Without it `MCM_Toon` is
+    engine-agnostic and Cycles is back on the table — see Production
+    notes.
 - **The tilt palette** (replaces the old procedural `MCM_Grain` noise —
   dabs killed it). A swatch = direction × lean, encoded as a
   tangent-space normal color; flat blue = no tilt. Crucially the two
-  palettes are **independent axes**: a dab-kit entry is an
-  (albedo × tilt) *pair*, and one surface uses several tilts of the same
-  albedo — neighboring dabs disagreeing slightly about direction is the
-  entire gouache effect.
+  palettes are **independent axes**: a dab is an (albedo × tilt) pair
+  chosen at the moment it is laid down — any colour with any tilt, no
+  fixed pairing — and one surface uses several tilts of the same albedo.
+  Neighboring dabs disagreeing slightly about direction is the entire
+  gouache effect.
   - **12 directions, universal film-wide** — one hand paints the movie.
     No per-asset bakes; the same swatches serve every object.
   - **Magnitude tiers are the material axis:** whisper (~3°), soft
-    (~7°), medium (~14°), strong (~25°). Family legality: stucco /
-    siding / cream surfaces = whisper+soft; terrain / road =
-    soft+medium; grass & foliage = medium+strong with vertical-biased
-    directions and elongated dabs; diecast = whisper, with strong
-    reserved for crease accents; characters = whisper+soft only.
-  - **Albedo drift:** each palette swatch carries 2–3 legal drift
-    variants (warm / cool / dusk) for dab-level color variation.
-  - **Distance scaling:** tilt magnitude steps down with the depth
-    bands — far layers get whisper-or-nothing. Painterliness is a
+    (~7°), medium (~14°), strong (~25°). **Any tier is available on any
+    surface.** Tier is a call made at the brush — the earlier per-family
+    table (stucco / terrain / diecast / characters) was deleted
+    2026-08-04, because it was guessing at assignments before anything
+    had been painted. See
+    `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`.
+  - **How tiers read at distance — measured 2026-08-04 on the C10.**
+    Whisper (3°) is barely visible in an 85 mm closeup at 2.8 m; medium
+    (14°) reads clearly on a full-truck hero wide. So a surface painted
+    all-whisper goes flat at shot distance: reach for whisper when the
+    grain should only be felt up close, and for medium or strong when a
+    wide has to carry it. Measured with uniform procedural scatter —
+    real hand-laid dabs are denser and more deliberate and may read a
+    step stronger.
+  - **Albedo drift:** each palette swatch carries five drift variants
+    (warm / cool / dusk / pale / deep) for dab-level color variation.
+  - **Distance scaling:** step tilt magnitude down with the depth
+    bands — far layers whisper or nothing. Painterliness reads as a
     foreground privilege, exactly like the refs' flat backgrounds.
-- **Albedo law:** albedo may contain placed color variation (Ucupaint
-  layers: a warm patch on a wall, a darker pass at a roofline, painted
-  occlusion accents under eaves) but **never directional shading** —
-  light direction belongs to the render — and never faked relief:
-  surface facets belong to the tilt map alone.
-- **Matte is the world's law.** Specular is zero film-wide. The only gloss
-  in the entire film belongs to wet-paint FX.
+- **What albedo carries:** placed color variation (paint the drift
+  swatches directly, or Ucupaint layers for whole regions: a warm patch
+  on a wall, a darker pass at a roofline, painted occlusion accents
+  under eaves). What it shouldn't carry is directional shading or faked
+  relief — light direction belongs to the render and facets to the tilt
+  map. Painted into albedo instead, either one stops responding when the
+  sun moves, and reacting to light is the entire point of the technique.
+- **The world is matte.** Specular sits at zero film-wide so that wet
+  paint is the only gloss anywhere; that contrast is what makes the FX
+  read as a foreign substance rather than as highlights.
 - **Glass is a graphic fill** — windows and truck glass render as flat
-  poster fills with a painted diagonal gleam shape. No raytraced anything.
-- **No render AO.** Structural darkening is painted into albedo, placed by
-  hand.
+  poster fills with a painted diagonal gleam shape. A real reflection
+  would put a photographic window into a painted world.
+- **Structural darkening is painted, not rendered.** Render AO adds a
+  soft procedural gradient that flat shapes can't absorb; placed by
+  hand into albedo it stays a shape.
 - **Depth is graphic, not atmospheric:** distant layers step toward
   paper/sky tone in discrete bands (the refs' mountains) via an optional
-  distance-banding input on `MCM_Toon`. No mist.
+  distance-banding input on `MCM_Toon`. Mist would do it as a gradient,
+  and the refs do it as steps.
 
 ## Palette
 
@@ -173,11 +203,11 @@ starting swatches — the test frame tunes them.
 | dusty-rose | `#d8a8a8` | sunset transition, distant warmth |
 | coral | `#f0a082` | the sunset sky |
 | golden | `#eec078` | sun disc, golden-hour wash |
-| **mint (reserved)** | `#76e7cd` | **the truck and the sweet tea. Nothing else, ever.** |
+| **mint (reserved)** | `#76e7cd` | **the truck and the sweet tea** — held back from everything else so it lands |
 
-- **The mint law survives the teal world** by hue-and-value separation:
-  sky-teal is deep and dusty; mint is pale and saturated. No other object
-  may wear mint.
+- **Mint stays distinct from the teal sky** by hue and value: sky-teal is
+  deep and dusty, mint pale and saturated. That separation is what lets
+  mint work as a signal — spent anywhere else, it stops being one.
 - **The color arc is the MCM day:** teal-sky daytime → warm ochre
   afternoon → coral/golden sunset for the finale (the gouache sunset ref
   is the finale's sky).
@@ -197,17 +227,24 @@ inside the gouache world:
 | mall-mauve | `#a98794` | Mom's wardrobe, the afghan, the couch |
 | seafoam-grey | `#9db8ac` | 90s kitchenware, a windbreaker |
 
-Annex law:
+What the annex is for:
 
-- Legal **only on post-1980 objects**; never on sky, terrain, or
-  architecture.
-- Never the majority of a frame — core MCM swatches keep majority rule
-  everywhere.
-- Each annex swatch carries drift variants and obeys the dab-tier family
-  legality exactly like a core swatch.
-- **The mint law survives the annex** the same way it survives the teal
-  world: seafoam-grey is grayed nearly to neutral, faded-denim is grayed
-  blue; mint stays pale *and* saturated. No collision.
+- These are the 1993 stratum's colours. They read as *added later*
+  precisely because the sky, the terrain, and the architecture never
+  wear them.
+- Kept to a minority of any frame. The core swatches carrying the
+  majority is what makes the annex land as intrusion rather than as
+  simply the palette.
+- Each annex swatch carries the same drift variants as a core swatch and
+  paints at any dab tier, exactly like a core swatch.
+- **No collision with mint:** seafoam-grey is grayed nearly to neutral
+  and faded-denim is grayed blue, while mint stays pale *and* saturated
+  — the same separation that holds it apart from the teal sky.
+
+All of the above is the *intent* behind these swatches — why they exist
+and what they're for — not a checklist. Both palettes in the dab painter
+are freeform: every swatch is one click away, and guidance is there to
+be used or overruled at the brush.
 
 ## Sky
 
@@ -225,10 +262,11 @@ as the world, 2-band, mottled, matte:
 - **Faces are flat shapes, not sculpts:** dot/wedge eyes, graphic brows,
   mouth as a cut shape. No linework on a face. Acting is carried by
   silhouette, pose, and holds.
-- **One print artifact is allowed on people:** the off-register **blush
+- **One print artifact rides on people:** the off-register **blush
   dot** — period-correct Golden Books misregistration, and the project's
-  off-register signature surviving on flesh. Otherwise people are always
-  cleanly registered.
+  off-register signature surviving on flesh. It only reads as a print
+  artifact while it's the only one, so people otherwise stay cleanly
+  registered.
 - **Hair is a solid graphic mass** — bowl cut is one shape, Mom's
   hairspray helmet is one huge sculpted mass, the mustache is a single
   form.
@@ -244,14 +282,17 @@ as the world, 2-band, mottled, matte:
   - **Boy:** bowl cut over a faded-denim baggy silhouette, cuffs
     pooling over the sneakers, band tee as above.
   - **Sheriff:** the man reads timeless county lawman; his anachronism
-    is the car (see strata law) — a boxy 80s LTD Crown Victoria, a
+    is the car (see the two strata) — a boxy 80s LTD Crown Victoria, a
     decade out of date even in 1993, cream body with the rust pop the
     palette already assigns (`refs/cop_car/`).
 - Character DNA still comes from `refs/boy/`, `refs/mom/`, `refs/cop/` —
   wardrobe and grooming silhouettes, translated to flat shapes.
-- **Dab tiers: whisper + soft only.** Tangent-space tilts deform
-  correctly with the rig, so the grain survives animation; the gentle
-  tiers keep flesh calm while the world around it gets brushier.
+- **Flesh reads better calmer than the world.** Tangent-space tilts
+  deform correctly with the rig, so grain survives animation — but a
+  brushy face competes with the acting, which silhouette and holds are
+  already carrying. Keeping skin quieter than its surroundings also
+  makes the world look brushier by contrast. Guidance, not a tier
+  assignment: every tier is available anywhere.
 
 ## Motion
 
@@ -260,9 +301,10 @@ as the world, 2-band, mottled, matte:
 - **Characters: limited animation** — strong holds, snappy transitions.
   Fast actions use **painted smears**: the smear frame is literally a
   brushstroke shape, plus optional speed-line cards.
-- **No soft-body comedy.** Objects in this world do not droop, sag, or
-  melt as behavior — that vocabulary belongs to the claymation candidate.
-  Destruction is splatter and graphic effects only.
+- **Objects don't droop, sag, or melt as behavior.** That vocabulary is
+  the claymation candidate's, and it's most of what distinguishes the two
+  candidates' reads — borrowing it here blurs both. Destruction in this
+  world is splatter and graphic effects.
 - **Script consequence if this candidate wins:** the scolded barrel-droop
   beat depends on droop physics and needs a graphic restaging (a dribble
   of wet paint from the muzzle, a hung-head pose from the boy) or a cut —
@@ -291,57 +333,74 @@ film: saturated, deeper-hued, with slow drips.
   cloud → a giant graphic paint-plume in stacked flat shapes, one-frame
   bald eagle as a print stamp; clay title card → splat card.
 
-## Patina law — print wear
+## Print wear — how age reads
 
 Secondhand wear reads as **print wear**: slightly off-register color fills
 on old objects (the truck's chips become misregistered plates), sun-faded
 hues, paper-tone ghosting at edges. Fresh printed objects are *perfectly*
 registered, fully saturated — too perfect, which is the "NOT A TOY" note.
 
-Print wear touches the built world only, never people (blush dot excepted).
+Print wear stays on the built world; people keep their clean registration
+(blush dot excepted), so wear reads as the world aging *around* them.
 
-**The sweet-tea pitcher is still the single lawfully pristine object:** the
-only thing in the film with zero misregistration and full saturation. It
-out-prints the world around it.
+**The sweet-tea pitcher stays pristine:** the one thing in the film with
+zero misregistration and full saturation. It out-prints the world around
+it, which is only legible while nothing else does.
 
 ## Production notes (Blender / EEVEE)
 
-- **Engine: EEVEE assumed, not settled — decide at the test frame.**
-  The kettle demo itself renders in Cycles; the dab technique is
-  engine-agnostic (painted normals shade identically everywhere), but
-  the engines differ in shadow character and bounce fill — and physical
-  bounce may *fight* the art-directed global shadow tint. The banded
-  variant needs Shader-to-RGB (EEVEE-only); the soft-physical variant
-  runs in either engine. Render the test frame in both and look. If
-  banding wins, EEVEE is locked. Render cost is not the tiebreak:
-  Ian's PC with one or two RTX 3090s is available as a Cycles farm,
-  and the style is cheap in either engine (diffuse-only, no glass, no
-  reflections).
-- **The style bans most render cost by law:** no raytraced reflections, no
-  AO pass, no bloom, no cloth sim, no hair systems, no specular outside
-  wet paint. Frames render extremely fast.
-- **The dab kit (Ucupaint):** one layer per (albedo × tilt) pair in use —
-  Color channel override = the swatch, Normal channel override = the
-  tilt color, and the *painted element is the layer's alpha*. One
-  stroke writes both channels with different colors: Substance
-  Painter's multi-channel brush, rebuilt out of palette law. The kit
-  ships as a template and is appended per asset.
+- **Engine: genuinely open, and now a free choice.** Killing banding
+  (2026-08-04) removed `Shader to RGB`, the only EEVEE-only node in the
+  stack, so `MCM_Toon` runs unmodified in both engines and nothing about
+  the look forces the decision any more. The kettle demo itself renders
+  in Cycles. What still differs is shadow character and bounce fill —
+  and physical bounce may *fight* the art-directed global shadow tint,
+  which is now the **only** real tiebreak.
+  - **Measured 2026-08-04 (C10, identical shader, both engines):** EEVEE
+    holds dab contrast crisp and graphic; Cycles' bounce fill lifts the
+    shadow side and visibly *dilutes* the dab read, and ground bounce
+    pushes warm colour up onto the body. For a style whose entire
+    identity is the dab grain, that leans **EEVEE** — not because
+    anything forces it now, but because physical bounce washes out the
+    look. If Cycles is wanted for the 3090 farm, it needs clamped/limited
+    diffuse bounces to compete. Confirm on the sq020-sh020 frame.
+  - Render cost is not the tiebreak: Ian's PC with one or two RTX 3090s
+    is available as a Cycles farm, and the style is cheap in either
+    engine (diffuse-only, no glass, no reflections).
+- **The style is cheap by construction.** No raytraced reflections, no AO
+  pass, no bloom, no cloth sim, no hair systems, no specular outside wet
+  paint — every one of those is an aesthetic choice made for the look,
+  which happens to also cost nothing. Frames render extremely fast.
+- **The dab painter** (`tools/addons/redwood_dabpaint.py`, designed
+  2026-08-04 — `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`):
+  one native brush stroke sets both channels, because the painted image
+  isn't colour at all. It stores `R = albedo swatch index`,
+  `G = tilt swatch index`, and two film-wide 256×1 LUTs resolve those
+  indices into the real colour and the real tangent normal. One image
+  means Ctrl+Z is correct by construction; regenerating a palette
+  recolours every dab in the film; and any albedo composes with any
+  tilt, so the two axes are independent with no pair table. Both
+  palettes are freeform — pick a swatch, paint, change either, keep
+  painting.
 - **Generated, not hand-managed:** `tools/tilt_palette.py` (built
-  2026-08-03) is the swatch registry and emits the palette artifacts —
-  picker-sheet PNG + JSON with the per-family legality table, in
-  `assets/materials/tilt_palette/`. Retune the tiers → rerun → nothing
-  repainted (old swatches stay valid; new directions interleave). The
-  future dab-kit builder imports its math from the same module.
-- **Escalation path if the kit chafes:** (1) two-pass painting — normals
-  then color; the kettle file's color maps are nearly flat, so pass two
-  is cheap; (2) the layer-pair kit; (3) a small "commit dab" operator
-  (paint a scratch image; stamp alpha×colorA into albedo and
-  alpha×colorB into the tilt map; clear). Build (3) only if (1)/(2)
-  prove annoying in real painting.
+  2026-08-03) is the tilt swatch registry and emits the palette
+  artifacts into `assets/materials/tilt_palette/` — picker sheet, JSON,
+  LUT, swatch icons. `tools/albedo_palette.py` is its counterpart for
+  colour. Retune → rerun → nothing repainted (old swatches stay valid,
+  new ones append; only *reordering* would invalidate painted pixels).
+  `tilt_palette.json` still carries a per-family tier table from before
+  legality was dropped — that field is vestigial and nothing reads it.
+- **Routes tried and rejected 2026-08-04**, recorded so they don't get
+  retried: two-pass painting (normals, then colour) defeats the
+  technique, because the dab boundaries stop coinciding; the Ucupaint
+  layer-pair kit works but needs a layer switch before *every dab*; a
+  scratch-image "commit dab" operator desynced undo and outlined every
+  stroke in black. Full reasoning in the design doc.
 - **Object-space variant in the back pocket** (Gindy's original: bake
   object-space normals, overpaint sampling from the bake — full
-  resculpting-by-paint): rigid hero props only, unique UVs required,
-  never on deforming meshes.
+  resculpting-by-paint): rigid hero props only, unique UVs required. It
+  can't go on deforming meshes — the bake is in object space, so it's
+  wrong the moment the mesh moves.
 - **Noir-window trick** (stolen from the kettle file): painted
   window-light texture + a light-path shadow-ray gag casts painted
   mullion shadows — a direct fit for the garage interior.
@@ -352,35 +411,56 @@ out-prints the world around it.
   the pipeline already has blockout-grade geometry everywhere. The
   distance from the current animatic to final frames is shorter under this
   candidate than any other.
-- **Tools:** Ucupaint (free) for layered albedo painting; Deep Paint Pro
-  (~$40) for gouache/pastel brushes and material presets to dissect. Both
-  are conveniences — the core machine is vanilla nodes. **To verify: Deep
-  Paint's Blender 5.x compatibility** (it claims 3.6+).
-- **No camera projections anywhere.** Dome sky + world-space grain keep
-  the camera-driven layout pipeline unconstrained.
+- **Tools:** Ucupaint (free) stays installed for layered *region* work —
+  it is not the dab painter; Deep Paint Pro (~$40) for gouache/pastel
+  brushes and material presets to dissect. Both are conveniences — the
+  core machine is vanilla nodes. **To verify: Deep Paint's Blender 5.x
+  compatibility** (it claims 3.6+).
+- **No camera projections.** Dome sky + world-space grain keep the
+  camera-driven layout pipeline unconstrained. A projection would make
+  the camera a shading authority as well as a framing one, and
+  `docs/layout.md` depends on it being only the latter.
 
-## Banned list (within this candidate)
+## What this style doesn't do — and why
 
-- Outlines / linework of any kind (Freestyle, Line Art, grease pencil)
-- Raytraced reflections/refractions, render AO, bloom/glow
-- Smooth CG gradients inside a shape (shading variation comes from light
-  + tilt dabs, never from painted or procedural gradients)
-- Photographic textures anywhere
-- Camera projections
-- Soft-body droop/melt comedy on objects (molten *aftermath* is lawful
-  wet-paint FX; what's banned is solid objects deforming as behavior)
-- Specular outside the wet-paint FX family
-- Mint on anything but the truck and the sweet tea
-- Memphis patterns, airbrush gradients, neon hues — the 80s/90s stratum
-  is drawn in the same serene gouache as everything else; no
-  era-differentiated graphic language
-- Annex swatches on sky, terrain, or architecture
+Not prohibitions. These are the choices that make it one style rather
+than several, each one buying something specific. If a shot ever wants
+to spend one, that's worth doing on purpose rather than by drift.
+
+- **Outlines / linework** (Freestyle, Line Art, grease pencil) —
+  stroke-free is what separates this from Candidate C and its per-shot
+  2D labor. The shapes have to hold on colour alone.
+- **Raytraced reflections/refractions, render AO, bloom/glow** — each
+  one lays a smooth photographic gradient over a world built from flat
+  registered shapes.
+- **Diffuse poster banding / `Shader to RGB` quantization** — dropped
+  2026-08-04 on measurement: it suppresses the tilt dabs everywhere but
+  the terminator, and the dabs are the look. Doesn't touch the separate
+  distance-banding of colour toward paper/sky tone under "Depth".
+- **Smooth CG gradients inside a shape** — shading variation comes from
+  light plus tilt dabs. A painted or procedural gradient fills the same
+  space with none of the hand in it.
+- **Photographic textures** — the world is registered colour on paper,
+  and a photograph is the one thing that can't be.
+- **Camera projections** — see production notes: the camera stays a
+  framing authority only.
+- **Soft-body droop/melt as behavior** — the claymation candidate's
+  vocabulary. Molten *aftermath* is wet-paint FX and welcome; solid
+  objects deforming as a gag is the other film.
+- **Specular outside wet paint** — gloss is the signal that something is
+  wet and doesn't belong. Spread it around and the FX stop reading.
+- **Mint outside the truck and the sweet tea** — a reserved colour is
+  only reserved if it goes unspent everywhere else.
+- **Memphis patterns, airbrush gradients, neon hues** — the 80s/90s
+  stratum is drawn in the same serene gouache as everything else. An
+  era-differentiated graphic language would let the frame acknowledge
+  the anachronism, and the deadpan depends on it never doing that.
+- **Annex swatches on sky, terrain, or architecture** — see the annex
+  above: they read as *added later* only because those three never wear
+  them.
 
 ## Maybes (decide late, by test render)
 
-- **Poster banding vs soft physical diffuse** — with tilt dabs carrying
-  the painterly read, 2–3 band quantization may be redundant. A/B the
-  test frame both ways; the kettle file argues soft-physical is enough.
 - **Motion blur** — prints don't blur, but the solo's fast action may want
   it. Test with and without.
 - **DOF** — same: poster flatness argues no, cinematic camera may argue
@@ -390,7 +470,7 @@ out-prints the world around it.
 - **VHS broadcast finish** — the `style.md` back-pocket modifier stacks on
   this candidate too if wanted.
 
-## Pinned state (2026-08-03 — resume later this week)
+## Pinned state (2026-08-04 — resume later this week)
 
 Done:
 
@@ -401,29 +481,78 @@ Done:
 - Kettle demo filed at `~/blender/add-ons/cody-gindy-kettle-patreon-02.blend`;
   extracted textures + color re-render examined.
 - The 1993 setting layer (2026-08-03): serene-print era clash, the
-  two-strata content law, the 4-swatch annex, Mom's mall-glam
+  two-strata content split, the 4-swatch annex, Mom's mall-glam
   replacement of the curler look, the sheriff's boxy Crown Vic. Setting
   canon recorded in `style.md` shared givens.
+- **Tilt-dab proof, 2026-08-04 — the technique is validated and banding
+  is dead.** `assets/materials/tilt_dab_test/` (mint 1963 C10,
+  `MCM_Toon`, paintable tilt + albedo maps, Blender palettes built from
+  the swatch JSON, sun turntable). Run tablet-free with procedurally
+  stamped dab maps. Findings: banding suppresses dabs everywhere but the
+  terminator, so it's out film-wide; the engine is consequently
+  unforced; and whisper is too gentle to read at shot distance, so tier
+  choice is a per-surface judgement rather than a fixed assignment.
+  Ucupaint 2.4.9 installed and enabled.
+- **Per-family dab-tier assignments dropped, 2026-08-04.** The stucco /
+  terrain / grass / diecast / characters tier table is deleted — tier is
+  a freeform choice at the brush. Its last home is a vestigial field in
+  `tilt_palette.json`.
+- **Dab painter designed, 2026-08-04** —
+  `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`
+  (index-map + LUT, undo correct by construction). Approved, not yet
+  built.
 
-Next, in order (blocked on tablet):
+Next, in order:
 
-1. **Paint one asset** — the truck or the Santa. Two-pass first (tilt
-   dabs, then albedo drift) to feel the workflow before building the
-   Ucupaint kit. Note the trade discovered en route: kit-painted color
-   stays a live variable (overrides re-color painted dabs film-wide);
-   two-pass bakes it. If palette flexibility matters, build the kit.
-2. **Stage the sq020-sh020 test frame** and A/B: banding vs
-   soft-physical diffuse, EEVEE vs Cycles (soft-physical only —
-   banding can't leave EEVEE), motion blur, DOF — this candidate vs
-   Bigature, side by side.
+1. **Build the dab painter** from the design doc, plus
+   `tools/albedo_palette.py`. Not blocked on the tablet.
+2. **Paint one asset** — the truck or the Santa — with the painter, to
+   feel the workflow on a real surface. Watch for index fringing at dab
+   boundaries early rather than late. Blocked on the tablet.
+3. **Stage the sq020-sh020 test frame** and A/B: EEVEE vs Cycles (both
+   now open — banding is dead, so nothing forces the engine), motion
+   blur, DOF, and how the tiers actually read at shot distance — this
+   candidate vs Bigature, side by side.
 
 Open verify items:
 
-- Blender color-pick behavior on Non-Color images (sample from the
-  sheet, don't type hex — hex field assumes sRGB).
+- ~~Blender color-pick behavior on Non-Color images.~~ **Closed
+  2026-08-04** by building the swatches as real Blender *palettes*
+  (`tilt_DIECAST_legal`, `tilt_ALL` in the test file) straight from
+  `tilt_palette.json`'s `rgb8`, stored as raw floats. Clicking a palette
+  swatch writes the exact intended byte into a Non-Color image. Never
+  type hex (the field assumes sRGB) and never eyedropper the sheet (it
+  samples display-transformed pixels) — both silently corrupt the
+  encoding. This trap is why the dab painter sets `brush.color` itself
+  from the palette JSON instead of leaving colour picking to the hand;
+  the test file's hand-built palettes are superseded by its swatch grid,
+  and `tilt_DIECAST_legal` is a leftover of the dropped tier table.
 - Deep Paint's Blender 5.x compatibility (claims 3.6+).
-- Whether Ucupaint mask/alpha painting writes with correct values into
-  Non-Color normal-channel overrides (test on the first asset).
+- ~~Whether Ucupaint mask/alpha painting writes with correct values into
+  Non-Color normal-channel overrides.~~ **CLOSED 2026-08-04 — it works.**
+  Confirmed in the UI on a test plane: one Solid Color layer with an image
+  mask, Color channel Source = Custom Color (rust) and Normal channel
+  Source = Custom Color (`#804af3`, `h06_strong`). Painting the mask white
+  drove *both* channels from one stroke. Measured across sun azimuths, the
+  untilted mint base held constant at ~0.42 luminance while the painted
+  patch swung 0.43 → 0.04 — a tilt that is genuinely live, not a colour
+  swap. Ucupaint 2.4.9 on Blender 5.1.2. Two gotchas found en route:
+  - **The Normal channel defaults to Bump mode.** In Bump it reads the
+    swatch as a *height*, not a tangent normal, and fails silently — a
+    headless run gave a constant result across flat/whisper/soft/medium/
+    strong and across directions, with no error. It must be switched to
+    **Normal Map**. (Internally: `override` is the bump slot, `override_1`
+    is the normal-map slot.)
+  - **The Ucupaint kit probably cannot be script-generated.** Building a working
+    ypaint stack from Python failed repeatedly — colour worked but the
+    Normal output rendered black through `set_input_default_value`,
+    `check_all_channel_ios(yp_node=...)`, a hard reset, and an explicit
+    Geometry normal. The tree is assembled by UI-driven update callbacks;
+    `override_1_color` has no update callback and is merely a mirror of a
+    node input socket. Together with the layer-switch-per-dab cost, this
+    is why the Ucupaint route was dropped entirely rather than re-scoped
+    to a hand-authored template — the technique was sound, the
+    ergonomics weren't.
 - The noir-window trick comes from the Cycles kettle file and leans on
   a light-path gag — verify it (or an equivalent gobo approach) in
   EEVEE if EEVEE wins the engine A/B.

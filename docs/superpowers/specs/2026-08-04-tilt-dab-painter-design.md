@@ -52,10 +52,11 @@ dab in both channels, cleanly, every time.
 ## Non-goals
 
 - **No family legality.** The `diecast` / `characters` / `stucco` tier
-  restrictions are not enforced, and the corresponding rule should be deleted
-  from `style-midcentury-print.md` rather than left claiming a constraint the
-  tool ignores. Ian: *"the categories like diecast don't apply to MCM… freeform,
-  lets me make artistic choices on the spot and experiment."*
+  restrictions are not enforced. Ian: *"the categories like diecast don't apply
+  to MCM… freeform, lets me make artistic choices on the spot and experiment."*
+  The rule has been deleted from `style-midcentury-print.md` (2026-08-04) rather
+  than left claiming a constraint the tool ignores; its last trace is a vestigial
+  `families` field in `tilt_palette.json` that nothing reads.
 - No palette *generation logic inside the add-on*. The add-on only reads
   generated artifacts. `tools/albedo_palette.py` is in scope for this project,
   but as a standalone CLI generator matching `tilt_palette.py`.

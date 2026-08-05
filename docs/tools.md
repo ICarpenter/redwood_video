@@ -630,15 +630,19 @@ Source of truth for the Mid-Century Print candidate's tilt-dab palette
 tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
 tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
 12/1/…/11 o'clock; rows = whisper→strong) and a JSON sidecar with every
-swatch's normal/RGB/hex plus the per-family tier legality table. Stdlib
-only; importable — the future Ucupaint dab-kit builder reads its math from
-here. Retuning tiers/directions and rerunning never invalidates painted
-work (old swatches stay valid, new ones interleave).
+swatch's normal/RGB/hex. Stdlib only; importable — the dab painter reads its
+math from here. Retuning tiers/directions and rerunning never invalidates
+painted work (old swatches stay valid, new ones interleave).
 
+- The JSON's `families` field is **vestigial**. Per-family tier legality
+  (`diecast = whisper`, `characters = whisper+soft`, …) was dropped
+  2026-08-04 — any tier is legal on any surface. Nothing reads the field;
+  it goes on the next revision of this tool.
 - The sheet is **data, not color**: load as Non-Color when sampling.
-  Known gotcha to verify at the first paint session: Blender's color-picker
-  hex field assumes sRGB — sample from the image loaded Non-Color rather
-  than typing hex values.
+  Blender's color-picker hex field assumes sRGB and the eyedropper samples
+  display-transformed pixels — both silently corrupt the normal encoding.
+  Pick swatches from a real Blender palette built from the JSON's `rgb8`
+  values, or let the dab painter set the brush colour for you.
 
 ### `tools/encode_delivery.sh` — final masters
 

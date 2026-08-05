@@ -192,7 +192,7 @@ plaster), and modeled grooves would fight the print candidate's flatness.
 
 | slot | covers | Claymation (caste 2 earthy unless noted) | Mid-Century Print (core swatches only — annex is illegal on architecture) |
 |---|---|---|---|
-| `MAT_siding` | main wall cladding | troweled plaster, hand-finished, subtle patina | paper-cream, whisper+soft dabs, painted groove suggestion |
+| `MAT_siding` | main wall cladding | troweled plaster, hand-finished, subtle patina | paper-cream, gentle dabs (tier by eye — no family rule), painted groove suggestion |
 | `MAT_fascia` | fascia bands, beam ends | painted plaster, chips at corners | paper-cream (lighter drift); the one plywood patch board in sand |
 | `MAT_block` | breeze-block, plinth course | adobe block | paper-cream w/ painted joints |
 | `MAT_roof_gravel` | roof decks | packed grit | sand/khaki |
