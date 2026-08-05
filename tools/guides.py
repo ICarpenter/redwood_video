@@ -66,11 +66,61 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("scale_stick", PROPS_FILE, "props", 2.0),
     GuideSpec("egg_salad_sando", PROPS_FILE, "props", 0.07),
     GuideSpec("gun_cabinet", PROPS_FILE, "props", 1.95),
+    GuideSpec("mushroom_cloud", PROPS_FILE, "props", 14.0),
+    GuideSpec("clothesline", PROPS_FILE, "props", 2.2),
+    GuideSpec("hubcap", PROPS_FILE, "props", 0.32),
+    # sq070's aftermath: the sweet-tea truce, staged in the charred yard.
+    GuideSpec("patio_table", PROPS_FILE, "props", 0.75),
+    GuideSpec("folding_chair", PROPS_FILE, "props", 0.88),
+    GuideSpec("tea_pitcher", PROPS_FILE, "props", 0.30),
+    GuideSpec("tea_glass", PROPS_FILE, "props", 0.15),
+    # The payoff. `santa_torso` and `santa_head` are the decapitated pair: the
+    # intact `santa` is swapped for them on the frame the head pops off, so the
+    # slump can be keyed identically on both and the cut is invisible.
+    GuideSpec("santa_torso", PROPS_FILE, "props", 1.30),
+    GuideSpec("santa_head", PROPS_FILE, "props", 0.60),
+    # sq090's end card. A guide rather than a camera-parented mesh so the shot
+    # cuts as layout like every other one, and so the lettering can be drawn
+    # over it in the drawing pass — the card is hand-sculpted clay in the end,
+    # not type.
+    GuideSpec("title_card", PROPS_FILE, "props", 2.25),
+    # The last round of the film. A guide rather than a squib because
+    # squib.py needs a MESH and every guide in a layout scene is a linked
+    # collection instance — an EMPTY, which it refuses outright.
+    GuideSpec("bullet_hole", PROPS_FILE, "props", 0.19),
+    # The carton with its flaps folded out flat — swapped for `box` on the
+    # frame the boy tears it open. Flat, not standing: upright flaps top out
+    # above his head and hide the very thing he is peering over.
+    GuideSpec("box_open", PROPS_FILE, "props", 1.25),
+    GuideSpec("cruiser_door", PROPS_FILE, "props", 1.24),
     # Flashback variant of the sheriff: same body, M1 helmet instead of the
     # stetson. A separate collection rather than a reposed instance — guides
     # are rigid, so a variant is the documented way to get a distinct look
     # (see docs/layout.md).
     GuideSpec("sheriff_war", CAST_FILE, "cast", 1.8),
+    # Seated variant for the sq070 truce table — guides are rigid, so a pose
+    # this different is a variant collection, not a bent instance. Same body
+    # masses as build_sheriff so he reads as the same man off his feet.
+    GuideSpec("sheriff_seated", CAST_FILE, "cast", 1.45),
+    # Pose variants of the boy for sq010/sq020. Guides are rigid and the box()
+    # primitive is axis-aligned, so a pose this different is a variant
+    # collection — there is no way to straight-arm a door or shoulder a gun by
+    # transforming the standing guide.
+    GuideSpec("boy_run", CAST_FILE, "cast", 1.40),
+    GuideSpec("boy_push", CAST_FILE, "cast", 1.25),
+    GuideSpec("boy_peer", CAST_FILE, "cast", 1.47),
+    GuideSpec("boy_aim", CAST_FILE, "cast", 1.37),
+    # House door/sash leaves. The property is linked at identity and cannot
+    # change state per shot (the clothesline precedent) — so the openable
+    # leaves are props, staged only in shots that need a state the baked
+    # set doesn't show: the screen door's sq010 slap, a CLOSED kitchen
+    # casement for sq050's through-the-glass beat, the back door open
+    # behind Mom on the stoop. Authored CENTRED like every guide
+    # (CENTRE_TOL forbids hinge-at-origin) — to swing one, parent the
+    # instance to an Empty at the hinge edge and rotate the Empty.
+    GuideSpec("screen_door", PROPS_FILE, "props", 2.0),
+    GuideSpec("casement_leaf", PROPS_FILE, "props", 1.2),
+    GuideSpec("back_door_leaf", PROPS_FILE, "props", 2.1),
 ]
 
 # The whole property SET is linkable too, but it is NOT built by guide_assets
@@ -94,6 +144,13 @@ SETS: list[GuideSpec] = [
     SET_GUIDE,
     GuideSpec("trench", TRENCH_FILE, "set", 2.4),
 ]
+# Set dressing: staged in every shot's blocking collection so it appears
+# wherever the camera can see it, but it is scenery, not a story beat. A shot
+# that contains ONLY these is still an empty shot, and must stay a slug in the
+# edit rather than cutting to an empty yard.
+SCENERY: frozenset[str] = frozenset(
+    {"clothesline", "screen_door", "casement_leaf", "back_door_leaf"})
+
 DROPPABLE: list[GuideSpec] = GUIDES + SETS
 
 

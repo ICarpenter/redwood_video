@@ -397,6 +397,253 @@ transform: shot renders already have AgX baked in, and applying AgX again in
 the edit visibly washes out every strip (verified: double-transformed frames
 measure 25 dB PSNR against source vs. 102 dB when passed through untouched).
 
+### `tools/blockout_property.py` — build the greybox set
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/blockout_property.py [-- --force] \
+    [-- --out=<path>] [-- --previews=<dir>]
+```
+
+Builds `assets/envs/property/property.blend`: house, garage, road, ditch,
+yards, fence, treeline. **Refuses to overwrite without `--force`** — the file
+is hand-maintained once layout edits begin. Use `--out=` to build a throwaway
+copy and look at it before committing to a regeneration.
+
+The house is a **shell**, not a solid block: hollowed, with real openings cut
+through the walls and a painted interior behind them, so a window can be an
+actual hole. Seven windows on the schedule in `WINDOWS`, named by COMPASS
+(see the axis table in `docs/treatment/site.md` — **the compass does not line
+up with the blend axes by eye**: −Y is east, +Y is west, +X is north). The two
+kitchen windows are open double casements hinged on the outer jambs:
+`kitchen_north` looks down the side corridor at the truck (Mom watches the
+sheriff creep, and later fires on him, through it) and `kitchen_west` looks
+over the backyard.
+
+The kitchen is the **whole rear/west half** of the house, open across to the
+back door — one partition across the middle. Walling off just the corner put
+a wall directly in front of the `sq050_sh040` camera and rendered that shot
+black, and the interior is painted light for the same reason: cameras go
+*inside* this house.
+
+Three things worth knowing:
+
+- **`box()` used to wind its faces inside out.** Nothing noticed for a long
+  time (EEVEE shades backfaces with a flipped normal, so a greybox looks
+  identical either way), but a boolean reads an inverted solid as its own
+  complement and every cut silently did nothing while reporting FINISHED. All
+  mesh builders now recalculate normals.
+- **The far ground is a rising frame, not a slab.** A slab roofs over the
+  roadside ditch. It rises ~42 m over 4 km because the sky asset draws a hard
+  dark band *above* the geometric horizon — measured as 6 near-black rows with
+  the ground continuous right up to them, so no flat ground can ever cover it.
+- Casement sashes are placed by writing `matrix_world` directly. The closed
+  pose of the second leaf of a pair is a **reflection**, and no Euler rotation
+  produces one.
+
+### `tools/fire_rig.py` — make a linked gun fireable
+
+```sh
+# add the rig to machine_gun / rosco / big_pistol inside props.blend
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/fire_rig.py -- --install
+
+# override one gun instance in a shot and key a looping burst on it
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/fire_rig.py -- --arm=sq060_sh010:machine_gun.011 \
+    [--period=18] [--start=F] [--end=F] [--dry-run] [--force]
+```
+
+Guns are linked assets, and **a Collection custom property cannot be
+animated** — Collections have no `animation_data`, and a driver reading one
+does not survive linking (both measured). So each gun collection carries a
+control object instead:
+
+```
+<p>_ctrl   ["fire"] 0..1     <- the one thing a shot keyframes
+  <p>_rig  driven: kick + muzzle rise
+    geometry, <p>_flash (scale driven)
+```
+
+`--arm` library-overrides one instance, because an override is the only way a
+shot reaches inside a linked collection. The override **deletes the instance
+empty**, so `--arm` snapshots the empty's parent, transform and constraints
+first and transplants them onto `<p>_ctrl`.
+
+Two traps, both hit for real:
+
+- The override's objects land in the overridden gun collection, **not** in
+  `<scene>_blocking`. A blocking script that clears `<scene>_blocking` and
+  re-adds a gun therefore leaves **two** guns in the shot — one armed and
+  static, one animated and dead. Check for a stray gun instance after
+  re-running any blocking script over an armed shot.
+- Idempotency is keyed on the instance still existing, never on "is there
+  already a `<p>_ctrl` in this scene" — the latter is true as soon as *any*
+  gun of that type is armed, and silently refuses the second gun.
+
+### `tools/squib.py` — geo-nodes damage squibs
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/squib.py -- --install [--force]
+"$BLENDER" --background --python-exit-code 1 --python tools/squib.py -- \
+    --apply=<scene>:<object> [--surface=dirt] [--start=F] [--count=N] \
+    [--targeted --target=x,y,z --direction=x,y,z] \
+    [--stagger=N] [--chunks=N] [--debris=F] [--hole=F] [--spread=F] [--life=N]
+```
+
+Builds `assets/fx/squibs.blend` holding two node groups and seven materials.
+Surfaces: `dirt grass plastic wood stucco metal`.
+
+- **`squib_burst`** — scatters impacts over a model (`Count` density,
+  `Stagger` spread in time) or fires one at a `Target` point along a
+  `Direction`. Driven by Scene Time off a single `Start Frame`, so the
+  modifier plays wherever it is dropped, with no keys of its own.
+- **`squib_impacts`** — the same burst, but driven by **baked hit points**:
+  every vertex is a real raycast hit carrying `hit_frame` (float) and
+  `hit_normal` (vector) named attributes. One modifier covers a whole burst
+  landing at different times on the same object. This is what `gunfire.py`
+  writes.
+
+Each impact throws `Debris Count` chunks (`--chunks`) that flare and die on a
+`min(t*8,1)*(1-t)` envelope, and grows a dark hole that reaches full size at
+t=0.25 and **stays** — the damage is permanent, the debris is not.
+
+Two flags matter more than they look for a single, deliberate hit:
+
+- **`--stagger=0`.** `Stagger` scatters impacts forward in time, which is what
+  makes a burst feel like a burst — but it applies to one targeted impact too,
+  so the default silently delays the hit by up to 10 frames and it lands
+  nowhere near the beat you asked for.
+- **`--debris`.** The authored 6 cm chunk does not read past a few metres.
+  `gunfire.py` scales this by camera distance automatically; `--apply` does
+  not, so set it yourself for anything that is not a close-up.
+
+`--target`/`--direction` are given in **world** space on the CLI and converted
+to the object's local space, because the sockets are object-local; passing
+world values put impacts off the model and decals edge-on.
+
+### `tools/aim_gun.py` — point an armed gun at something
+
+```sh
+# step across targets, one per shot
+"$BLENDER" --background --python-exit-code 1 --python tools/aim_gun.py -- \
+    --scene=sq040_sh050 --ctrl=mg_ctrl.002 --mode=targets \
+    --targets=action_figure.018,action_figure.019 [--part-z=1.2]
+
+# walk the ground behind a runner: near misses that chase them
+"$BLENDER" --background --python-exit-code 1 --python tools/aim_gun.py -- \
+    --scene=sq060_sh010 --ctrl=mg_ctrl.004 --mode=trail --follow=boy.016 \
+    [--lag=16] [--spread=0.8] [--z=0.02] [--hold=2] \
+    [--at=3085:8.6,9.0,1.85] [--dry-run]
+```
+
+`fire_rig.py` says WHEN a gun fires, this says WHERE it points, `gunfire.py`
+bakes what it hit. Aim goes through a TRACK_TO on an empty, never by keying
+the gun's rotation, so the mount and recoil animation survive and only facing
+changes. Keys land `LEAD` frames early so the gun has settled by the flash.
+`--at=FRAME:x,y,z` overrides one shot — that is how two rounds of the cop's
+spray are sent through the clothesline.
+
+Hitting what you aim at is otherwise unlikely: before this existed the boy's
+target practice missed 5 of 5 in `sq040_sh050`, threading the gaps between
+figures.
+
+Two traps, both measured:
+
+- **Aim empties are often parented** to the thing being shot at (`boy_aim`
+  hangs off `boy.016`). Writing a world point straight into `.location` put
+  the aim 8 m out and the whole spray in the wrong half of the yard, so every
+  key is solved in the parent's frame — separately per key, since the parent
+  moves between them.
+- **`--part-z` is measured in the TARGET's space**, not world Z. A figure that
+  has been knocked over still has its origin on the ground, so a world-Z
+  offset aims at empty air above it — exactly the 3 of 7 rounds that missed.
+
+### `tools/gunfire.py` — connect the guns to the squibs
+
+```sh
+"$BLENDER" --background --python-exit-code 1 \
+    --python tools/gunfire.py -- --bake=<scene>:<gun_ctrl> \
+    [--surface=dirt] [--delay=3] [--life=12] [--range=120] \
+    [--impulse] [--dry-run] [--force]
+```
+
+The whole chain in one command: read every frame the gun's `["fire"]` control
+goes off, cast a ray out of the muzzle, find what it hit, and bake an impact
+there that lands `--delay` frames later. Impacts are grouped per target and
+written as one points object per target, parented to it, carrying
+`hit_frame`/`hit_normal` and a `squib_impacts` modifier.
+
+**`--dry-run` first, always.** It prints each shot, what it hit and where,
+which doubles as an aim audit of the blocking — it is how the two
+180°-backwards guns in the solo were found.
+
+Facts worth keeping:
+
+- `scene.ray_cast` **does** see collection-instance geometry, but returns the
+  source object *inside* the linked collection (e.g. `af_torso`), not the
+  instance. The instancer is recovered by matching the returned instance
+  matrix.
+- Guns fire along **local +X** (all three take a positive `muzzle_x`). Aiming
+  a `-Y`-authored guide at a target uses `heading(from, to)`; a gun needs
+  `heading(from, to) - 90`. Using `+ 90` aims it exactly backwards.
+- Baked, not live: a live geometry-nodes raycast would have to live on the
+  *gun*, so its holes would travel with the gun instead of sticking to the
+  wall.
+- The points are written in the **target's local space**, so the parent
+  inverse stays identity. Setting `matrix_parent_inverse` as well applies the
+  inverse twice and parks every impact near the world origin.
+- That local conversion is done **per hit, at the hit's own frame**. One
+  shared inverse is only right for a target that never moves: with figures
+  being shot to pieces, a head hit ended up parked in the sky, holding still
+  while its figure lay on the grass below it.
+- `--surface=auto` (the default) picks the surface from the name of the source
+  object each round hit, so one burst throws grass off the lawn, splinters off
+  the fence and dust off the stucco. Impacts are grouped per (target, surface).
+- Impacts are **sized for camera distance**. The authored 6 cm chunk is tuned
+  for a close shot and vanishes in a wide — the first `sq040_sh010` bake put a
+  correct impact 13 m out and it was invisible. `--scale=F` multiplies on top.
+- Baked impacts are real geometry, so a re-bake will **shoot the old damage**
+  unless it is cleared and hidden before casting. Measured: a round landed on
+  `impacts_mg_ctrl_action_figure.024_plastic`.
+- The instancer behind a hit is found by **containment** (`source.name in
+  coll.all_objects`), not by matching the instance matrix. Matrix matching only
+  works for source objects sitting at their collection's origin: `af_head` is
+  modelled at z=1.65, so every head shot fell through to the raw linked object.
+- `--impulse` **records** force, it does not simulate it: per-hit frames,
+  world points and directions are stored as custom properties for a
+  hand-animated reaction (or a later sim) to read. A rigid-body sim needs
+  collision bodies the linked property does not have — a simulated hubcap in
+  `sq040_sh044` fell straight through the ground to z = −2.8.
+- Defaults are tuned for a close shot. At 20 m a 0.06 m chunk is invisible;
+  raise `Debris Scale`/`Hole Size` on the modifier for wide coverage.
+
+### `tools/tilt_palette.py` — the tilt-dab swatch registry + picker sheet
+
+```sh
+python3 tools/tilt_palette.py            # writes assets/materials/tilt_palette/
+```
+
+Source of truth for the Mid-Century Print candidate's tilt-dab palette
+(`docs/treatment/style-midcentury-print.md`): 12 clock directions × 4 lean
+tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
+tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
+12/1/…/11 o'clock; rows = whisper→strong) and a JSON sidecar with every
+swatch's normal/RGB/hex. Stdlib only; importable — the dab painter reads its
+math from here. Retuning tiers/directions and rerunning never invalidates
+painted work (old swatches stay valid, new ones interleave).
+
+- The JSON's `families` field is **vestigial**. Per-family tier legality
+  (`diecast = whisper`, `characters = whisper+soft`, …) was dropped
+  2026-08-04 — any tier is legal on any surface. Nothing reads the field;
+  it goes on the next revision of this tool.
+- The sheet is **data, not color**: load as Non-Color when sampling.
+  Blender's color-picker hex field assumes sRGB and the eyedropper samples
+  display-transformed pixels — both silently corrupt the normal encoding.
+  Pick swatches from a real Blender palette built from the JSON's `rgb8`
+  values, or let the dab painter set the brush colour for you.
+
 ### `tools/encode_delivery.sh` — final masters
 
 ```sh

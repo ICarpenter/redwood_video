@@ -1,14 +1,14 @@
 sq,sh,description,start_frame,end_frame,duration,assets,status
 010,010,sunrise wide over the rural house,1,163,163,,scripted
 010,020,package sticks the landing on the porch,164,245,82,,scripted
-010,030,boy at the screen door clocks the package,246,368,123,,scripted
-010,040,boy drags the box up the drive into the garage,369,449,81,boy;box,scripted
-010,045,reverse through garage from back yard - unbox and pocket the sticker,450,531,82,boy;box,scripted
-010,050,devious grin CU,532,613,82,,scripted
-010,060,printer boots and warms up,614,735,122,,scripted
+010,030,boy comes through the door running and jumps the porch,246,368,123,boy_run;box,scripted
+010,040,boy shoves the box up the drive into the garage,369,449,81,boy_push;box,scripted
+010,045,reverse through garage - box comes open and he looks in,450,531,82,boy_peer;box;box_open,scripted
+010,050,devious grin CU,532,613,82,boy;printer,scripted
+010,060,printer boots and warms up - he cannot keep still,614,735,122,boy;printer,scripted
 020,010,gun prints like soft-serve - bell ding,736,899,164,,scripted
-020,020,sticker slapped on gun - drawing beads,900,1062,163,,scripted
-020,030,mom villain shadow - freeze,1063,1185,123,,scripted
+020,020,gun off the floor - three beads then the swing left,900,1062,163,boy;machine_gun;printer,scripted
+020,030,play-shooting the santa when mom's shadow lands,1063,1185,123,boy;boy_aim;machine_gun;santa;mom,scripted
 020,040,finger wag - barrel droops - do not shoot the santa,1186,1307,122,,scripted
 020,044,santa CU - duct tape repairs and mismatched paint - THE SETUP,1308,1348,41,santa,scripted
 020,046,kid reaction - eyes flick to the santa,1349,1389,41,boy,scripted
@@ -19,31 +19,33 @@ sq,sh,description,start_frame,end_frame,duration,assets,status
 030,030,OBLITERATION - xylophone head pops,1717,1878,162,,scripted
 040,010,carnage - head balloons and bursts,1879,1920,42,,scripted
 040,020,mom admires from kitchen window,1921,2002,82,,scripted
-040,030,cruiser ambles down the rural road,2003,2043,41,,scripted
-040,035,interior - knee driving with the egg salad sandwich,2044,2124,81,sheriff;cruiser,scripted
-040,040,PANG - stray ricochet blows the back tire,2125,2165,41,,scripted
-040,042,interior - he saves the sandwich first,2166,2206,41,sheriff;cruiser,scripted
-040,044,ditch crash - hubcap flies - stops past the house,2207,2247,41,cruiser,scripted
+040,030,cruiser ambles down the rural road,2003,2043,41,cruiser;hubcap,scripted
+040,035,interior - knee driving with the egg salad sandwich,2044,2124,81,sheriff_seated;cruiser;egg_salad_sando;hubcap,scripted
+040,040,PANG - stray ricochet blows the front left tire,2125,2165,41,sheriff_seated;cruiser;hubcap,scripted
+040,042,interior - he saves the sandwich first,2166,2206,41,sheriff_seated;cruiser;egg_salad_sando;hubcap,scripted
+040,044,ditch crash - hubcap flies - stops past the house,2207,2247,41,sheriff_seated;cruiser;hubcap,scripted
 040,050,hubcap rolls in - no-look skeet,2248,2329,82,,scripted
-040,060,window exit - crack debut,2330,2369,40,sheriff;cruiser,scripted
-040,062,sheriff head pops up from the trench,2370,2410,41,sheriff;cruiser,scripted
-040,064,reverse - danny head lands and bounces,2411,2451,41,sheriff,scripted
-040,066,shudder - back arch - Danny - fast zoom in,2452,2614,163,sheriff,scripted
+040,060,window exit - the door falls off after - crack debut,2330,2369,40,sheriff;cruiser;cruiser_door;hubcap,scripted
+040,062,sheriff head pops up from the trench,2370,2410,41,sheriff;cruiser;hubcap,scripted
+040,064,reverse - danny head lands and bounces,2411,2451,41,,scripted
+040,066,shudder - back arch - Danny - snap to 100mm,2452,2614,163,sheriff;cruiser;hubcap,scripted
 050,010,sepia war flashback - salty mug,2615,2777,163,,scripted
 050,020,army crawl - butterfly lands,2778,2858,81,,scripted
 050,030,window POV - mom sees creeper,2859,2911,53,mom;sheriff,scripted
 050,035,reverse - mom reaction at the window,2912,2940,29,mom,scripted
 050,040,gun cabinet - draw - spin - rack,2941,3023,83,mom;rosco;gun_cabinet,scripted
-060,010,THREE-WAY FIREFIGHT setpiece,3024,3350,327,,scripted
-060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,,scripted
+060,010,three-way firefight - boy runs and dives under fire,3024,3146,123,boy;sheriff;machine_gun,scripted
+060,012,rear on mom blasting away at the cop,3147,3227,81,mom;rosco,scripted
+060,014,cop reaction - clocks fire from the house - swings west,3228,3350,123,sheriff;machine_gun;mom;rosco,scripted
+060,020,BBQ hiss - shared oh-no freeze,3351,3431,81,boy;sheriff;machine_gun;mom;rosco;clothesline,scripted
 060,030,MUSHROOM CLOUD - everyone blasted,3432,3513,82,,scripted
-070,010,aerial hover over charred yard,3514,3636,123,,scripted
-070,020,dazed trio - smoldering hair - noodle gun,3637,3758,122,,scripted
-070,030,recognition - mangled hat apology,3759,3922,164,,scripted
-070,040,sweet tea truce - hand swat,3923,4044,122,,scripted
-070,050,santa head rotates - tips over dead,4045,4166,122,,scripted
-080,010,mom final boss - dual wield,4167,4247,81,,scripted
-080,020,the look,4248,4288,41,,scripted
-080,030,mom unloads - they bolt,4289,4370,82,,scripted
-080,040,FINAL SPRINT under fire - smash to black,4371,4534,164,,scripted
-090,010,title card takes one last bullet hole,4535,4780,246,,scripted
+070,010,aerial hover - mom out the window to her son,3514,3636,123,boy;sheriff;mom;clothesline,scripted
+070,020,over the sheriff's shoulder - twitch of recognition,3637,3758,122,sheriff;boy;mom;clothesline,scripted
+070,030,reverse - hat tip and mom starts to laugh,3759,3922,164,sheriff;boy;mom;clothesline,scripted
+070,040,pitcher push-out reveals the sweet tea truce,3923,4044,122,patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
+070,050,santa slumps - head pops off and rolls,4045,4166,122,santa;santa_torso;santa_head;patio_table;folding_chair;tea_pitcher;tea_glass;sheriff_seated;mom;boy;machine_gun;rosco;clothesline,scripted
+080,010,mom final boss - both guns off the table,4167,4247,81,mom;machine_gun;rosco;sheriff_seated;boy;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,020,the look - past mom and both her guns,4248,4288,41,boy;sheriff_seated;mom;machine_gun;rosco;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,030,mom unloads - they bolt west for the fence,4289,4370,82,mom;machine_gun;rosco;boy;sheriff;sheriff_seated;patio_table;folding_chair;tea_pitcher;tea_glass;santa_head;clothesline,scripted
+080,040,FINAL SPRINT west over the fence into the trees,4371,4534,164,boy;sheriff;mom;machine_gun;rosco,scripted
+090,010,title card takes one last bullet hole,4535,4780,246,title_card;bullet_hole,scripted

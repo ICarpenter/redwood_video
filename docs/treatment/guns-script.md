@@ -50,8 +50,8 @@ there's a tiny bell and a whistle mounted on it, and he flicks the bell —
 lazy beads on the garage junk, the yard, the mailbox.
 
 A shadow falls over him — a full villain silhouette. He freezes mid-aim.
-The reveal: it's Mom. Curlers, housecoat, oven mitts, the sweetest face in
-the county, wagging one finger. As she wags, the clay gun barrel visibly
+The reveal: it's Mom. Hairspray helmet, shoulder pads, oven mitts, the
+sweetest face in the county, wagging one finger. As she wags, the clay gun barrel visibly
 *droops* a little more with each wag, like a scolded dog. She pans a look
 to the vintage Santa Claus decoration standing just outside the garage's
 back door — duct-tape repairs, mismatched paint, a thing that has clearly

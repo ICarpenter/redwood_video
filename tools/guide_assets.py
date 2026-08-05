@@ -59,6 +59,8 @@ PALETTE = {
     "wood":     (0.50, 0.35, 0.20),
     "bread":    (0.87, 0.78, 0.60),
     "egg":      (0.90, 0.74, 0.25),
+    "tea":      (0.62, 0.40, 0.14),
+    "char":     (0.16, 0.14, 0.13),
     # war flashback
     "helmet":   (0.22, 0.26, 0.19),
     "sandbag":  (0.62, 0.55, 0.38),
@@ -142,6 +144,105 @@ def ball(coll, name, cx, cy, cz, radius, color):
     return ob
 
 
+# --- fire rig ------------------------------------------------------------
+# One keyable control per gun. The control MUST be an object, not the
+# collection: collections have no animation_data (keyframe_insert raises
+# "not animatable") and a driver reading a collection property does not
+# survive being linked. An object's custom property is keyable and
+# object-to-object drivers remap correctly through a library override, which
+# is how a shot reaches inside a linked asset at all.
+#
+# Layout, three deep so nothing self-references:
+#   <p>_ctrl   holds ["fire"] 0..1        <- the only thing a shot touches
+#     <p>_rig  driven by fire: kick+rise  <- all geometry parented here
+#       geometry, <p>_flash (scale driven by fire)
+#
+# Idle is fire=0, which is bit-identical to the gun before the rig existed.
+
+FIRE_KICK = 0.055     # metres the gun slides back at fire=1
+FIRE_RISE = 0.16      # radians of muzzle climb at fire=1
+
+
+def _flash_mat():
+    m = bpy.data.materials.get("guide_flash")
+    if m is None:
+        m = bpy.data.materials.new("guide_flash")
+        m.use_nodes = True
+        bsdf = m.node_tree.nodes.get("Principled BSDF")
+        if bsdf:
+            bsdf.inputs["Base Color"].default_value = (1.0, 0.82, 0.32, 1.0)
+            if "Emission Color" in bsdf.inputs:
+                bsdf.inputs["Emission Color"].default_value = (1.0, 0.78, 0.25, 1.0)
+            if "Emission Strength" in bsdf.inputs:
+                bsdf.inputs["Emission Strength"].default_value = 3.0
+        m.diffuse_color = (1.0, 0.82, 0.32, 1.0)
+    return m
+
+
+def _drive(ob, path, index, ctrl, expr):
+    fc = ob.driver_add(path, index)
+    d = fc.driver
+    d.type = "SCRIPTED"
+    v = d.variables.new()
+    v.name = "fire"
+    v.type = "SINGLE_PROP"
+    v.targets[0].id_type = "OBJECT"
+    v.targets[0].id = ctrl
+    v.targets[0].data_path = '["fire"]'
+    d.expression = expr
+    return fc
+
+
+def fire_rig(coll, prefix, muzzle_x, muzzle_z, flash_r=0.10, flash_len=0.22):
+    """Add the fire control + muzzle flash to an already-built gun collection.
+
+    Idempotent: returns False and changes nothing if the rig is already there,
+    so it is safe to run over a hand-maintained props.blend.
+    """
+    ctrl_name = f"{prefix}_ctrl"
+    if any(o.name == ctrl_name for o in coll.objects):
+        return False
+
+    geometry = list(coll.objects)
+
+    ctrl = bpy.data.objects.new(ctrl_name, None)
+    ctrl.empty_display_type = "SINGLE_ARROW"
+    ctrl.empty_display_size = 0.25
+    coll.objects.link(ctrl)
+    ctrl["fire"] = 0.0
+    ctrl.id_properties_ui("fire").update(
+        min=0.0, max=1.0, description="0 idle, 1 firing — keyframe this")
+
+    rig = bpy.data.objects.new(f"{prefix}_rig", None)
+    rig.empty_display_type = "PLAIN_AXES"
+    rig.empty_display_size = 0.15
+    coll.objects.link(rig)
+    rig.parent = ctrl
+
+    for ob in geometry:
+        ob.parent = rig
+
+    bpy.ops.mesh.primitive_cone_add(radius1=flash_r, radius2=0.0,
+                                    depth=flash_len,
+                                    location=(muzzle_x + flash_len / 2, 0, muzzle_z),
+                                    rotation=(0, math.radians(90), 0),
+                                    vertices=8)
+    flash = bpy.context.active_object
+    flash.name = f"{prefix}_flash"
+    flash.data.materials.append(_flash_mat())
+    _move_to(flash, coll)
+    flash.parent = rig
+    flash.scale = (0.0, 0.0, 0.0)
+
+    # recoil: the whole gun slides back and the muzzle climbs
+    _drive(rig, "location", 0, ctrl, f"-{FIRE_KICK} * fire")
+    _drive(rig, "rotation_euler", 1, ctrl, f"-{FIRE_RISE} * fire")
+    # flash pops open
+    for axis in range(3):
+        _drive(flash, "scale", axis, ctrl, "fire")
+    return True
+
+
 # --- builders (initial geometry; refine against --previews) --------------
 # Each takes the target collection; builds facing -Y, feet at Z=0, centred X=0.
 
@@ -188,6 +289,7 @@ def build_machine_gun(c):
     box(c, "mg_mag", -0.03, 0, 0.06, 0.10, 0.08, 0.16, "metal")
     box(c, "mg_stock", -0.45, 0, 0.15, 0.30, 0.10, 0.16, "wood")
     box(c, "mg_grip", -0.15, 0, 0.05, 0.08, 0.08, 0.12, "wood")
+    fire_rig(c, "mg", muzzle_x=0.705, muzzle_z=0.20)
 
 
 def build_printer(c):
@@ -221,37 +323,133 @@ def build_delivery_truck(c):
 
 
 def build_cruiser(c):
-    # Hollow greenhouse instead of a solid cabin block: corner pillars, a
-    # thin roof, and alpha-blended glass panes, so blocking inside the car
-    # (the sheriff at the wheel) reads through the windows. Nose is -X,
-    # matching dt_cab; driver side is -Y.
-    box(c, "cr_body", 0, 0, 0.70, 3.60, 1.70, 0.60, "cruiser")
-    box(c, "cr_roof", 0, 0, 1.42, 1.70, 1.44, 0.06, "cruiser")
+    """Sheriff's cruiser with a cabin you can actually sit in.
+
+    The first version was a 0.60 m body under a 0.39 m greenhouse — a shape,
+    not a car. sq040_sh035 and sh042 are both INTERIORS shot through that
+    glass, so it had to hold a seated man: body down to 0.68, cabin 0.68..1.52,
+    and the seats where a driver's hips go. His legs vanish into the body,
+    which is exactly what a footwell looks like from outside.
+
+    Hollow greenhouse rather than a solid cabin block so blocking inside reads
+    through the windows. Nose is -X, matching dt_cab; DRIVER SIDE IS -Y, which
+    is where the wheel and the driver's bucket both are.
+    """
+    box(c, "cr_body", 0, 0, 0.34, 3.60, 1.70, 0.68, "cruiser")
+    box(c, "cr_roof", 0, 0, 1.56, 1.90, 1.48, 0.08, "cruiser")
     for px, fx in ((-0.90, "f"), (0.90, "b")):
         for py, fy in ((-0.72, "l"), (0.72, "r")):
-            box(c, f"cr_pillar_{fx}{fy}", px, py, 1.20, 0.10, 0.10, 0.40,
+            box(c, f"cr_pillar_{fx}{fy}", px, py, 1.10, 0.10, 0.10, 0.84,
                 "cruiser")
-    box(c, "cr_glass_front", -0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
-    box(c, "cr_glass_back", 0.92, 0, 1.20, 0.04, 1.40, 0.36, "glass")
-    box(c, "cr_glass_left", 0, -0.78, 1.20, 1.70, 0.04, 0.36, "glass")
-    box(c, "cr_glass_right", 0, 0.78, 1.20, 1.70, 0.04, 0.36, "glass")
-    box(c, "cr_dash", -0.70, 0, 1.06, 0.30, 1.40, 0.16, "dark")
-    cyl(c, "cr_steering", -0.50, -0.40, 1.14, 0.09, 0.03, "dark", axis="X")
+    box(c, "cr_glass_front", -0.92, 0, 1.10, 0.04, 1.40, 0.76, "glass")
+    box(c, "cr_glass_back", 0.92, 0, 1.10, 0.04, 1.40, 0.76, "glass")
+    box(c, "cr_glass_left", 0, -0.78, 1.10, 1.70, 0.04, 0.76, "glass")
+    box(c, "cr_glass_right", 0, 0.78, 1.10, 1.70, 0.04, 0.76, "glass")
+    box(c, "cr_dash", -0.70, 0, 0.80, 0.30, 1.40, 0.18, "dark")
+    cyl(c, "cr_steering", -0.50, -0.40, 0.94, 0.09, 0.03, "dark", axis="X")
+    # front buckets, rear bench, and the cage — it is a cop car
+    for sy, side in ((-0.40, "driver"), (0.40, "passenger")):
+        box(c, f"cr_seat_{side}", -0.16, sy, 0.74, 0.46, 0.44, 0.12, "dark")
+        box(c, f"cr_seatback_{side}", 0.10, sy, 1.05, 0.10, 0.44, 0.50, "dark")
+    box(c, "cr_bench", 0.70, 0, 0.74, 0.50, 1.30, 0.12, "dark")
+    box(c, "cr_benchback", 1.00, 0, 1.05, 0.14, 1.30, 0.50, "dark")
+    for i, sy in enumerate((-0.50, -0.17, 0.17, 0.50)):
+        box(c, f"cr_cage_{i}", 0.40, sy, 1.10, 0.03, 0.03, 0.60, "metal")
+    box(c, "cr_cage_rail", 0.40, 0, 1.42, 0.03, 1.30, 0.04, "metal")
     for i, (x, y) in enumerate([(-1.2, -0.85), (-1.2, 0.85),
                                 (1.2, -0.85), (1.2, 0.85)]):
         cyl(c, f"cr_wheel_{i}", x, y, 0.35, 0.35, 0.25, "tire", axis="Y")
-    box(c, "cr_lightbar", 0, 0, 1.50, 0.60, 0.40, 0.12, "lightbar")
+    box(c, "cr_lightbar", 0, 0, 1.66, 0.60, 0.40, 0.12, "lightbar")
+
+
+def build_cruiser_door(c):
+    """The driver's door, off. sq040_sh060's "the door falls off AFTER" has
+    been in the script since draft 1 with nothing in the file to play it."""
+    box(c, "cd_skin", 0, 0, 0.34, 1.10, 0.06, 0.68, "cruiser")
+    box(c, "cd_frame_top", 0, 0, 0.72, 1.10, 0.06, 0.08, "cruiser")
+    box(c, "cd_frame_l", -0.52, 0, 0.96, 0.06, 0.06, 0.56, "cruiser")
+    box(c, "cd_frame_r", 0.52, 0, 0.96, 0.06, 0.06, 0.56, "cruiser")
+    box(c, "cd_glass", 0, 0, 0.98, 1.00, 0.03, 0.50, "glass")
+    box(c, "cd_handle", 0.26, -0.05, 0.58, 0.22, 0.05, 0.05, "metal")
 
 
 def build_rosco(c):
     box(c, "ro_slide", 0.0, 0, 0.15, 0.22, 0.05, 0.06, "metal")
     box(c, "ro_grip", -0.07, 0, 0.065, 0.06, 0.05, 0.13, "dark")
+    fire_rig(c, "ro", muzzle_x=0.12, muzzle_z=0.15, flash_r=0.05, flash_len=0.11)
 
 
 def build_big_pistol(c):
     box(c, "bp_slide", 0.0, 0, 0.34, 0.52, 0.10, 0.12, "metal")
     cyl(c, "bp_barrel", 0.30, 0, 0.34, 0.05, 0.14, "metal", axis="X")
     box(c, "bp_grip", -0.16, 0, 0.15, 0.12, 0.10, 0.30, "dark")
+    fire_rig(c, "bp", muzzle_x=0.37, muzzle_z=0.34, flash_r=0.07, flash_len=0.15)
+
+
+def build_hubcap(c):
+    """One wheel cover, feet at z=0 like every other guide.
+
+    The cruiser does not carry these itself. They are staged per shot and
+    parented to the car, because sq040_sh044 needs ONE of them to leave —
+    and a linked collection instance is all-or-nothing, so a cap that has to
+    come off cannot be part of the car's own geometry.
+
+    Thin axis is Y, matching the cruiser's wheels (cyl axis="Y").
+    """
+    cyl(c, "hc_disc", 0.0, 0.0, 0.16, 0.16, 0.04, "metal", axis="Y")
+    cyl(c, "hc_hub", 0.0, 0.0, 0.16, 0.05, 0.06, "dark", axis="Y")
+
+
+def build_clothesline(c):
+    """Posts + hanging sheet, authored about the line's own base centre.
+
+    Lived in the property set until the mushroom cloud needed to knock it
+    down. The property is linked at identity in every layout scene and never
+    moves (see CLAUDE.md), so anything that has to be destroyed on camera
+    cannot live inside it — it has to be a prop the shot instances and blocks
+    in world space like any other. Instanced at (8.6, 10.28, 0) it reproduces
+    exactly where it stood in the set, and rotating that instance topples it.
+    """
+    for i, y in ((0, -4.50), (1, 4.50)):
+        cyl(c, f"cl_post_{i}", 0.0, y, 1.10, 0.09, 2.20, "tin")
+    box(c, "cl_laundry", 0.0, 0.02, 1.80, 0.20, 7.20, 0.60, "white")
+
+
+def build_screen_door(c):
+    """sq010_sh030's door-slap. Faces -Y, centred on X (CENTRE_TOL forbids
+    hinge-at-origin) — swing it by parenting the instance to an Empty at
+    the hinge edge (x -0.49 in guide space) and rotating the Empty."""
+    w, h, t = 0.98, 2.00, 0.04
+    box(c, "sd_stile_l", -(w / 2 - 0.045), 0, h / 2, 0.09, t, h, "wood")
+    box(c, "sd_stile_r", (w / 2 - 0.045), 0, h / 2, 0.09, t, h, "wood")
+    box(c, "sd_rail_top", 0, 0, h - 0.045, w - 0.18, t, 0.09, "wood")
+    box(c, "sd_rail_mid", 0, 0, 0.75, w - 0.18, t, 0.09, "wood")
+    box(c, "sd_rail_bot", 0, 0, 0.14, w - 0.18, t, 0.28, "wood")
+    box(c, "sd_mesh_hi", 0, 0, (0.795 + h - 0.09) / 2,
+        w - 0.18, 0.01, h - 0.09 - 0.795, "glass")
+    box(c, "sd_mesh_lo", 0, 0, (0.28 + 0.705) / 2,
+        w - 0.18, 0.01, 0.705 - 0.28, "glass")
+
+
+def build_casement_leaf(c):
+    """One kitchen-casement sash, matching the set's baked-open leaves
+    (win_kitchen_*_sash*: 1.4 x 1.2, stiles 0.07). Staged closed-ish over
+    the opening for sq050_sh035's through-the-glass beat."""
+    w, h, r, t = 1.40, 1.20, 0.07, 0.05
+    box(c, "cl_rail_bot", 0, 0, r / 2, w, t, r, "wood")
+    box(c, "cl_rail_top", 0, 0, h - r / 2, w, t, r, "wood")
+    box(c, "cl_stile_l", -(w - r) / 2, 0, h / 2, r, t, h, "wood")
+    box(c, "cl_stile_r", (w - r) / 2, 0, h / 2, r, t, h, "wood")
+    box(c, "cl_pane", 0, 0.005, h / 2, w - 2 * r, 0.026, h - 2 * r, "glass")
+
+
+def build_back_door_leaf(c):
+    """The half-glass back door, openable behind Mom on the stoop
+    (sq060_sh012). Set's back_door is baked closed; this leaf overlays it
+    open. 1.2 x 2.1 like the opening (z 0.45..2.55 world, feet-at-0 here)."""
+    w, h = 1.20, 2.10
+    box(c, "bd_slab", 0, 0, h / 2, w, 0.05, h, "wood")
+    box(c, "bd_pane", 0, -0.028, 1.475, w - 0.20, 0.012, 0.75, "glass")
 
 
 def build_santa(c):
@@ -261,6 +459,176 @@ def build_santa(c):
     ball(c, "sa_hat", 0, 0, 1.62, 0.15, "santa")
     ball(c, "sa_hat_tip", 0.05, 0, 1.76, 0.05, "white")
     box(c, "sa_tape", 0, -0.22, 0.90, 0.20, 0.02, 0.34, "white")
+
+
+def build_santa_torso(c):
+    """The santa with its head off — the second half of sq070_sh050's payoff.
+
+    Body masses are build_santa's verbatim (minus head, hat and hat tip) so the
+    frame the intact `santa` is swapped for `santa_torso` + `santa_head` reads
+    as a head coming off, not as a different santa. The charred neck stump is
+    the only addition: it is what sells the head as *detached* rather than
+    merely hidden behind the body.
+    """
+    box(c, "st_body", 0, 0, 0.60, 0.60, 0.42, 1.20, "santa")
+    box(c, "st_belt", 0, -0.01, 0.72, 0.62, 0.44, 0.12, "dark")
+    box(c, "st_tape", 0, -0.22, 0.90, 0.20, 0.02, 0.34, "white")
+    cyl(c, "st_neck", 0, 0, 1.24, 0.08, 0.14, "char", axis="Z")
+
+
+def build_santa_head(c):
+    """The head, off. build_santa's head cluster dropped 1.20 m to the ground.
+
+    Origin sits at the ground contact point, not the ball centre, because every
+    guide is authored feet-at-zero — which is the right pivot anyway: a hatted
+    head does not roll, it TUMBLES end over end about whatever is touching the
+    grass, and keying rotation about this origin gives exactly that.
+    """
+    ball(c, "sh_ball", 0, 0, 0.22, 0.22, "skin")
+    ball(c, "sh_hat", 0, 0, 0.42, 0.15, "santa")
+    ball(c, "sh_hat_tip", 0.05, 0, 0.56, 0.05, "white")
+
+
+def build_patio_table(c):
+    """Folding table for the sweet-tea truce. Top at 0.74 to match a real one."""
+    box(c, "pt_top", 0, 0, 0.72, 1.60, 0.80, 0.04, "white")
+    for i, (x, y) in enumerate([(-0.72, -0.32), (0.72, -0.32),
+                                (-0.72, 0.32), (0.72, 0.32)]):
+        box(c, f"pt_leg_{i}", x, y, 0.35, 0.06, 0.06, 0.70, "metal")
+    box(c, "pt_brace", 0, 0, 0.20, 1.50, 0.05, 0.04, "metal")
+
+
+def build_folding_chair(c):
+    """Folding chair, seat at 0.46 — the height build_sheriff_seated sits on.
+
+    Authored facing -Y like every guide, which for a chair means the BACK is at
+    +Y: the sitter faces -Y too, so chair and occupant share one rotZ.
+    """
+    box(c, "fc_seat", 0, 0, 0.44, 0.44, 0.44, 0.04, "metal")
+    for i, (x, y) in enumerate([(-0.19, -0.19), (0.19, -0.19),
+                                (-0.19, 0.19), (0.19, 0.19)]):
+        box(c, f"fc_leg_{i}", x, y, 0.21, 0.04, 0.04, 0.42, "dark")
+    box(c, "fc_back_l", -0.20, 0.20, 0.65, 0.04, 0.04, 0.46, "dark")
+    box(c, "fc_back_r", 0.20, 0.20, 0.65, 0.04, 0.04, 0.46, "dark")
+    box(c, "fc_back", 0, 0.20, 0.67, 0.44, 0.04, 0.42, "metal")
+
+
+def build_tea_pitcher(c):
+    """The sweet tea — the only pristine object in the wreckage.
+
+    Reuses the `glass` material (alpha + BLENDED, as the cruiser's windows and
+    the gun cabinet's door do) so the tea reads THROUGH the pitcher wall rather
+    than the wall reading as a solid cylinder. sq070_sh040 opens tight on this.
+    """
+    cyl(c, "tp_body", 0, 0, 0.13, 0.09, 0.26, "glass", axis="Z")
+    cyl(c, "tp_tea", 0, 0, 0.105, 0.082, 0.21, "tea", axis="Z")
+    box(c, "tp_handle", 0.105, 0, 0.16, 0.03, 0.05, 0.14, "glass")
+    box(c, "tp_spout", -0.10, 0, 0.25, 0.06, 0.06, 0.04, "glass")
+    ball(c, "tp_lemon", 0.0, -0.06, 0.25, 0.03, "egg")
+
+
+def build_title_card(c):
+    """sq090's end card: a black field with a raised clay slab to letter on.
+
+    Deliberately oversized (4.0 x 2.25, wider than 16:9) so that from the one
+    camera that ever sees it the black backing fills the frame edge to edge and
+    nothing of the property shows behind — which is how the shot gets to open on
+    "Black." without touching the scene's world.
+    """
+    box(c, "tc_field", 0, 0.03, 1.125, 4.00, 0.06, 2.25, "dark")
+    box(c, "tc_slab", 0, -0.05, 1.150, 2.60, 0.10, 0.90, "bread")
+    box(c, "tc_slab_shadow", 0, 0.01, 1.120, 2.68, 0.04, 0.96, "mud")
+
+
+def build_bullet_hole(c):
+    """One impact. Authored as a disc on the Y axis so it faces -Y like every
+    other guide — drop it on a wall at rotZ 0 and it reads flat to camera.
+
+    Everything is lifted clear of z=0 because a Y-axis cylinder's RADIUS runs
+    in Z: laid out around the origin the rim and the downward crack both hang
+    below the floor and the feet-at-zero check fails.
+    """
+    cyl(c, "bh_hole", 0, 0, 0.085, 0.060, 0.030, "char", axis="Y")
+    cyl(c, "bh_rim", 0, 0.012, 0.085, 0.080, 0.014, "dark", axis="Y")
+    for i, (dx, dz, sx, sz) in enumerate([(0.085, 0.040, 0.090, 0.016),
+                                          (-0.078, 0.055, 0.085, 0.016),
+                                          (0.016, -0.048, 0.016, 0.070),
+                                          (-0.040, 0.075, 0.016, 0.062)]):
+        box(c, f"bh_crack_{i}", dx, 0.006, 0.085 + dz, sx, 0.012, sz, "dark")
+
+
+def build_tea_glass(c):
+    cyl(c, "tg_body", 0, 0, 0.07, 0.04, 0.14, "glass", axis="Z")
+    cyl(c, "tg_tea", 0, 0, 0.05, 0.035, 0.10, "tea", axis="Z")
+
+
+def build_boy_run(c):
+    """Mid-stride with the leading arm straight out — the door-shove pose.
+
+    box() is axis-aligned, so the run is built out of offset masses rather than
+    rotated limbs: front leg forward and planted, back leg lifted and trailing,
+    torso and head pitched over the front foot, one arm extended a full 0.52 m
+    in -Y (the facing direction) and the other cocked back.
+    """
+    box(c, "br_hip", 0, -0.02, 0.62, 0.40, 0.30, 0.20, "boy")
+    box(c, "br_leg_front", -0.11, -0.18, 0.32, 0.16, 0.20, 0.64, "boy")
+    box(c, "br_leg_back", 0.11, 0.14, 0.40, 0.16, 0.20, 0.50, "boy")
+    box(c, "br_torso", 0, -0.14, 0.88, 0.42, 0.30, 0.52, "boy")
+    box(c, "br_arm_out", -0.26, -0.36, 1.00, 0.10, 0.52, 0.10, "skin")
+    box(c, "br_arm_back", 0.26, 0.22, 0.92, 0.10, 0.36, 0.10, "skin")
+    ball(c, "br_head", 0, -0.16, 1.24, 0.15, "skin")
+
+
+def build_boy_push(c):
+    """Both arms locked out at carton height, weight through a braced back leg."""
+    box(c, "bp_hip", 0, -0.06, 0.58, 0.40, 0.44, 0.20, "boy")
+    box(c, "bp_leg_front", -0.12, -0.06, 0.28, 0.16, 0.22, 0.56, "boy")
+    box(c, "bp_leg_back", 0.12, 0.16, 0.26, 0.16, 0.22, 0.52, "boy")
+    box(c, "bp_torso", 0, -0.22, 0.82, 0.42, 0.34, 0.46, "boy")
+    box(c, "bp_arm_l", -0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
+    box(c, "bp_arm_r", 0.24, -0.52, 0.86, 0.10, 0.50, 0.10, "skin")
+    ball(c, "bp_head", 0, -0.30, 1.10, 0.15, "skin")
+
+
+def build_boy_peer(c):
+    """Up on his toes, hands on the carton rim, head over the top of it.
+
+    Sized against `box_open`: hands at 1.25 and the crown at 1.47 clear that
+    guide's 1.235 lid, which is the whole point of the pose.
+    """
+    box(c, "bpe_leg_l", -0.11, 0, 0.30, 0.16, 0.18, 0.60, "boy")
+    box(c, "bpe_leg_r", 0.11, 0, 0.30, 0.16, 0.18, 0.60, "boy")
+    box(c, "bpe_torso", 0, -0.06, 0.88, 0.42, 0.24, 0.56, "boy")
+    box(c, "bpe_arm_l", -0.26, -0.20, 1.10, 0.10, 0.10, 0.40, "skin")
+    box(c, "bpe_arm_r", 0.26, -0.20, 1.10, 0.10, 0.10, 0.40, "skin")
+    box(c, "bpe_hand_l", -0.26, -0.30, 1.28, 0.12, 0.16, 0.06, "skin")
+    box(c, "bpe_hand_r", 0.26, -0.30, 1.28, 0.12, 0.16, 0.06, "skin")
+    ball(c, "bpe_head", 0, -0.10, 1.32, 0.15, "skin")
+
+
+def build_boy_aim(c):
+    """Gun shouldered: support arm out, trigger arm tucked, weight back."""
+    box(c, "ba_hip", 0, 0.02, 0.58, 0.40, 0.34, 0.18, "boy")
+    box(c, "ba_leg_l", -0.13, -0.06, 0.29, 0.16, 0.20, 0.58, "boy")
+    box(c, "ba_leg_r", 0.13, 0.14, 0.30, 0.16, 0.20, 0.60, "boy")
+    box(c, "ba_torso", 0, -0.04, 0.84, 0.42, 0.26, 0.52, "boy")
+    box(c, "ba_arm_support", -0.22, -0.30, 0.98, 0.10, 0.44, 0.10, "skin")
+    box(c, "ba_arm_trigger", 0.26, -0.08, 0.96, 0.10, 0.26, 0.10, "skin")
+    ball(c, "ba_head", 0, -0.06, 1.22, 0.15, "skin")
+
+
+def build_box_open(c):
+    """build_box's carton with the flaps torn open and folded out FLAT.
+
+    Body masses are build_box's verbatim so the swap on the frame he opens it
+    reads as flaps moving, not as a different carton.
+    """
+    box(c, "bo_body", 0.00, 0, 0.60, 1.10, 0.90, 1.20, "wood")
+    box(c, "bo_tape", 0.00, 0, 1.20, 1.12, 0.10, 0.02, "white")
+    box(c, "bo_flap_n", 0, -0.62, 1.22, 1.10, 0.44, 0.03, "wood")
+    box(c, "bo_flap_f", 0, 0.62, 1.22, 1.10, 0.44, 0.03, "wood")
+    box(c, "bo_flap_l", -0.72, 0, 1.22, 0.34, 0.90, 0.03, "wood")
+    box(c, "bo_flap_r", 0.72, 0, 1.22, 0.34, 0.90, 0.03, "wood")
 
 
 def build_box(c):
@@ -310,6 +678,41 @@ def build_gun_cabinet(c):
     box(c, "gc_handle", 0.31, -0.23, 1.12, 0.04, 0.05, 0.24, "metal")
 
 
+def build_mushroom_cloud(c):
+    """Blast column + cap for sq060_sh030, authored at FULL size.
+
+    Sized to the property so it reads at the right scale: the house ridge is
+    5.2 m, so a 14 m column with a 9 m cap towers unmistakably over it. Grown
+    in-shot by scaling the INSTANCE from 0 to 1 — a per-instance transform, so
+    unlike the guns this needs no library override to animate.
+
+    Origin is the detonation point at z=0, so the instance is dropped straight
+    onto whatever exploded.
+    """
+    # stem, widening as it rises
+    for i, (z, r) in enumerate(((0.9, 1.5), (2.4, 1.35), (4.0, 1.2),
+                                (5.7, 1.15), (7.3, 1.3))):
+        cyl(c, f"mc_stem_{i}", 0, 0, z, r, 1.8, "white", axis="Z")
+    # the cap: overlapping balls make a lumpy silhouette, not a smooth dome
+    ball(c, "mc_cap", 0, 0, 9.8, 4.2, "white")
+    for i in range(7):
+        a = math.radians(i * 51.4)
+        ball(c, f"mc_cap_lobe_{i}", 4.0 * math.cos(a), 4.0 * math.sin(a),
+             9.3 + 0.5 * (i % 3), 2.3, "white")
+    # the skirt rolling back under the cap
+    for i in range(6):
+        a = math.radians(20 + i * 60)
+        ball(c, f"mc_skirt_{i}", 3.4 * math.cos(a), 3.4 * math.sin(a),
+             7.4, 1.5, "white")
+    # ground-level dust ring
+    for i in range(8):
+        a = math.radians(i * 45)
+        ball(c, f"mc_dust_{i}", 4.6 * math.cos(a), 4.6 * math.sin(a),
+             1.5, 1.5, "white")
+    # flash core at the base, hot for the first frames
+    ball(c, "mc_core", 0, 0, 1.6, 1.6, "ref")
+
+
 def build_sheriff_war(c):
     """The sheriff in-country: same body, M1 helmet instead of the stetson.
 
@@ -332,6 +735,31 @@ def build_sheriff_war(c):
     ball(c, "sw_helmet", 0, 0, 1.64, 0.19, "helmet")
     cyl(c, "sw_helmet_brim", 0, 0, 1.58, 0.22, 0.03, "helmet", axis="Z")
     box(c, "sw_chinstrap", 0, -0.15, 1.50, 0.24, 0.03, 0.03, "dark")
+
+
+def build_sheriff_seated(c):
+    """The sheriff sitting down — sq070_sh040's truce table.
+
+    Guides are rigid, so "sitting" is a variant collection rather than a bent
+    instance (docs/layout.md). Body masses come from build_sheriff unchanged —
+    same belly, same torso box, same stetson — folded at the hip and knee onto
+    a 0.46 seat, because the whole point of the shot is that this is the same
+    man who was shooting at them ninety seconds ago.
+
+    Authored facing -Y like every guide, so he shares one rotZ with the chair.
+    """
+    box(c, "ss_shin_l", -0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
+    box(c, "ss_shin_r", 0.13, -0.32, 0.22, 0.18, 0.20, 0.44, "sheriff")
+    box(c, "ss_thigh_l", -0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
+    box(c, "ss_thigh_r", 0.13, -0.15, 0.51, 0.18, 0.46, 0.14, "sheriff")
+    box(c, "ss_hips", 0, 0.02, 0.55, 0.46, 0.34, 0.18, "sheriff")
+    ball(c, "ss_belly", 0, -0.10, 0.84, 0.26, "sheriff")
+    box(c, "ss_torso", 0, 0, 0.92, 0.46, 0.26, 0.34, "sheriff")
+    box(c, "ss_arm_l", -0.30, -0.06, 0.86, 0.11, 0.11, 0.40, "sheriff")
+    box(c, "ss_arm_r", 0.30, -0.06, 0.86, 0.11, 0.11, 0.40, "sheriff")
+    ball(c, "ss_head", 0, 0, 1.22, 0.16, "skin")
+    cyl(c, "ss_hat_brim", 0, 0, 1.34, 0.28, 0.03, "hat", axis="Z")
+    cyl(c, "ss_hat_crown", 0, 0, 1.41, 0.15, 0.14, "hat", axis="Z")
 
 
 def build_trench(c):
@@ -424,6 +852,25 @@ BUILDERS = {
     "santa": build_santa, "box": build_box, "scale_stick": build_scale_stick,
     "egg_salad_sando": build_egg_salad_sando,
     "gun_cabinet": build_gun_cabinet,
+    "mushroom_cloud": build_mushroom_cloud,
+    "clothesline": build_clothesline,
+    "screen_door": build_screen_door,
+    "casement_leaf": build_casement_leaf,
+    "back_door_leaf": build_back_door_leaf,
+    "hubcap": build_hubcap,
+    "sheriff_seated": build_sheriff_seated,
+    "patio_table": build_patio_table,
+    "folding_chair": build_folding_chair,
+    "tea_pitcher": build_tea_pitcher,
+    "tea_glass": build_tea_glass,
+    "santa_torso": build_santa_torso,
+    "santa_head": build_santa_head,
+    "title_card": build_title_card,
+    "bullet_hole": build_bullet_hole,
+    "boy_run": build_boy_run, "boy_push": build_boy_push,
+    "boy_peer": build_boy_peer, "boy_aim": build_boy_aim,
+    "box_open": build_box_open,
+    "cruiser_door": build_cruiser_door,
 }
 
 

@@ -24,10 +24,19 @@ Recognisable, correctly-scaled 3D stand-ins for the cast and hero props, to
 block out a shot or draw over. They give truthful relative scale and
 composition.
 
-- **Cast** (`assets/chars/cast.blend`): `boy`, `mom`, `sheriff`.
+- **Cast** (`assets/chars/cast.blend`): `boy`, `mom`, `sheriff`, plus two rigid
+  variants of the sheriff — `sheriff_war` (M1 helmet, the sq050 flashback) and
+  `sheriff_seated` (the sq070 truce table).
 - **Props** (`assets/props/props.blend`): `machine_gun`, `printer`,
   `action_figure`, `delivery_truck`, `cruiser`, `rosco`, `big_pistol`, `santa`,
-  `box`, `scale_stick`.
+  `box`, `scale_stick`, `egg_salad_sando`, `gun_cabinet`, `mushroom_cloud`,
+  `clothesline`, `hubcap`, the sq070 aftermath set — `patio_table`,
+  `folding_chair`, `tea_pitcher`, `tea_glass`, `santa_torso`, `santa_head` —
+  and sq090's end card, `title_card` + `bullet_hole`. `santa_torso` +
+  `santa_head` are the decapitated pair the intact `santa` is swapped for on
+  the frame its head comes off. `bullet_hole` exists because `squib.py` needs
+  a MESH and every guide in a layout scene is a collection instance, i.e. an
+  EMPTY, which it refuses outright.
 - **Set** (`assets/envs/property/property.blend`): the whole `property`
   massing. It is linked at identity in every layout scene already
   (invariant 1) — it is not a guide you drop; see below.

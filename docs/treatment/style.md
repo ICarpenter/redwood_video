@@ -16,6 +16,15 @@ These came from the refs and the script, not from any one style:
 
 - **Tone:** slightly unsettling, **subtle patina only** — secondhand wear,
   never horror moves.
+- **Setting: the early 90s — MCM is out of style.** The house is a 1962
+  Palm Springs fantasy (flat roof, post-and-beam, glass walls) layered
+  over with 80s/90s possessions: thrift-store hodgepodge, anachronism
+  through necessity. Wardrobe canon: Mom in mall-glam armor (hairspray
+  helmet, shoulder pads, pleated pants — supersedes the curler/housecoat
+  look), the boy in bowl cut + baggies, the sheriff driving a boxy 80s
+  Crown Victoria a decade out of date. Developed 2026-08-03 in
+  `style-midcentury-print.md`; how each candidate *renders* the clash is
+  its own business.
 - **Palette:** the `refs/palette.scss` gradient (pale sky `#bcd2ee` →
   periwinkle `#9b7ede` → plum `#832161` → bordeaux `#52050a`) as the film's
   sky/grade arc, with **turquoise `#76e7cd` reserved as the accent** (the
@@ -53,7 +62,7 @@ People, animals, lawn, trees, flowerbed.
   no frame-to-frame boil. The surface is a living sculpture, not a
   re-sculpted one.
 - Proportions near-realistic, lightly pushed. Silhouette comedy comes from
-  wardrobe and grooming (curler helmet, bowl-cut dome, sheriff's belt-line),
+  wardrobe and grooming (hairspray helmet, bowl-cut dome, sheriff's belt-line),
   not from caricatured anatomy.
 - **Faces:** sculpt morphs carry the acting (devious grin, final-boss Mom,
   "…Danny?"). Iris, brow, and blush are paint sitting *slightly*
@@ -61,12 +70,13 @@ People, animals, lawn, trees, flowerbed.
 - **Clothes:** sculpted clay masses, even off-body (the Sunday dress on the
   clothesline is sculpted clay). Printed graphics — the vintage band tee
   (`refs/boy/`) — are painted on, slightly off-register.
-- **Hair:** sculpted clay masses. Bowl cut is one smooth dome. Curlers are
-  sculpted cylinders. The mustache is a single form. No fibers, no flocking.
+- **Hair:** sculpted clay masses. Bowl cut is one smooth dome. Mom's
+  hairspray helmet is one massive sculpted dome. The mustache is a single
+  form. No fibers, no flocking.
 - Skin and clothing carry **no wear**. Patina never touches this caste.
 - Character DNA from refs: boy — bowl cut + metal tee (`refs/boy/`);
-  Mom — curlers, housecoat, oven mitts, 80s–90s mom energy (`refs/mom/`,
-  `refs/mom gun/`); sheriff — 70s–90s county lawman (`refs/cop/`).
+  Mom — hairspray helmet, shoulder pads, pleated pants, mall-glam armor
+  (`refs/mom/`, `refs/mom gun/`); sheriff — 70s–90s county lawman (`refs/cop/`).
 
 ### 2. Sets & terrain — earthy
 
@@ -75,8 +85,8 @@ House, garage, road, ditch, ground.
 - Adobe, troweled plaster, packed dirt, organic texture. Hand-worked
   surfaces, but **no model-shop vocabulary**: no balsa grain, no foamcore
   edges, no exposed construction, no penciled layout lines.
-- Architecture from `refs/house/` (mid-century ranch / Eichler, pink
-  kitchen) and `refs/garage interior/` (wood paneling reads as earthy
+- Architecture from `refs/house/` (the 1962 flat-roof glass pavilion per
+  the setting given, pink kitchen) and `refs/garage interior/` (wood paneling reads as earthy
   hand-finished planks, not scribed sheet). Yard from `refs/backyard/`,
   `refs/clothesline/`.
 

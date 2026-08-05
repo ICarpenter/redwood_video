@@ -39,6 +39,9 @@ import layoutlib
 GP_TYPES_LOCAL = layoutlib.GP_TYPES
 
 
+CAM_CLIP_END = 5000.0
+
+
 def gp_data_collection():
     data = bpy.data
     return data.grease_pencils_v3 if hasattr(data, "grease_pencils_v3") \
@@ -223,6 +226,10 @@ def build_scene(shot, track, ink, prompt):
     scene.frame_end = shot.end_frame
 
     cam_data = bpy.data.cameras.new(f"{shot.code}_cam")
+    # far enough to see `ground_far`, which runs to 4 km so the land reaches
+    # the visual horizon instead of stopping at the property's 45 m edge and
+    # leaving the world HDRI's dark lower hemisphere as a black band
+    cam_data.clip_end = CAM_CLIP_END
     cam = bpy.data.objects.new(f"{shot.code}_cam", cam_data)
     # A starting point only — stage_shots.py and hand framing move it. The
     # set never moves, so this is the one thing that decides the shot.
