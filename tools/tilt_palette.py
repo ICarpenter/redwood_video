@@ -5,17 +5,24 @@ The tilt-dab shading system (docs/treatment/style-midcentury-print.md)
 paints gouache facets as tangent-space normal colors drawn from a fixed,
 film-wide palette: 12 clock directions x 4 lean tiers, plus flat. This
 module is the single source of truth for that palette — the swatch math
-lives here, and everything else (picker sheet, JSON sidecar, the future
-Ucupaint dab-kit builder) is materialized from it.
+lives here, and everything else (picker sheet, LUT, icons, JSON sidecar) is
+materialized from it.
 
 Run it to emit:
 
     assets/materials/tilt_palette/tilt_palette.png   picker sheet
-    assets/materials/tilt_palette/tilt_palette.json  swatch data + legality
+    assets/materials/tilt_palette/tilt_lut.png       256x1 lookup
+    assets/materials/tilt_palette/swatches/*.png     picker icons
+    assets/materials/tilt_palette/tilt_palette.json  swatch data + ordering
 
 Sheet layout: columns left->right are FLAT, then 12/1/2/.../11 o'clock;
 rows top->bottom are whisper/soft/medium/strong. The sheet must be loaded
 as Non-Color when sampling (normal colors are data, not color).
+
+Any tier is available on any surface. The per-family tier table this module
+used to carry (stucco = whisper+soft, diecast = whisper, ...) was dropped
+2026-08-04 — it guessed at assignments before anything had been painted, and
+the C10 test showed the guess was wrong. Tier is a call made at the brush.
 
 Stdlib only. Import it for the math; run it for the artifacts.
 """
@@ -23,10 +30,11 @@ Stdlib only. Import it for the math; run it for the artifacts.
 import argparse
 import json
 import math
-import struct
 import sys
-import zlib
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import palette_common as pc
 
 # --- registry ---------------------------------------------------------------
 
@@ -40,16 +48,6 @@ TIERS = {
 
 # Clock-hour directions (12 = up in tangent/UV space), sheet column order.
 HOURS = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-
-# Which tiers each material family may paint with. "+crease" grants strong
-# for crease accents only.
-FAMILIES = {
-    "stucco_siding_cream": ["whisper", "soft"],
-    "terrain_road": ["soft", "medium"],
-    "grass_foliage": ["medium", "strong"],  # vertical-biased, elongated dabs
-    "diecast": ["whisper", "strong"],  # strong = crease accents only
-    "characters": ["whisper", "soft"],
-}
 
 FLAT_NAME = "flat"
 
@@ -94,55 +92,34 @@ def _entry(hour, tier, deg, n):
     }
 
 
-# --- picker sheet (minimal stdlib PNG writer) --------------------------------
-
-CELL = 96
-GUTTER = 4
-MARGIN = 8
-FLAT_GAP = 8  # extra separation between the flat column and the clock ring
-BG = (32, 32, 32)
-
-
-def _png_chunk(tag, payload):
-    data = tag + payload
-    return struct.pack(">I", len(payload)) + data + struct.pack(">I", zlib.crc32(data))
+# --- ordering ---------------------------------------------------------------
+#
+# LUT position is what a painted pixel references. The registry order — flat,
+# then each tier's twelve hours in clock sequence — is already similarity
+# ordering, so it becomes the LUT order unchanged: adjacent indices are
+# adjacent clock hours in the same tier, and a blended texel at an
+# antialiased dab edge lands on a neighbouring direction rather than a
+# random one. Append new swatches; never reorder under existing artwork.
 
 
-def write_png(path, width, height, rows):
-    """rows: list of `height` bytearrays, each 3*width RGB bytes."""
-    raw = b"".join(b"\x00" + bytes(r) for r in rows)
-    png = (
-        b"\x89PNG\r\n\x1a\n"
-        + _png_chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
-        + _png_chunk(b"IDAT", zlib.compress(raw, 9))
-        + _png_chunk(b"IEND", b"")
-    )
-    Path(path).write_bytes(png)
+def ordered_names():
+    """Every swatch name in LUT order."""
+    return list(swatches())
+
+
+# --- picker sheet ------------------------------------------------------------
 
 
 def build_sheet():
     """Render the picker grid. Returns (width, height, rows)."""
     sw = swatches()
-    cols = 1 + len(HOURS)
-    tiers = list(TIERS)
-    width = 2 * MARGIN + cols * CELL + (cols - 1) * GUTTER + FLAT_GAP
-    height = 2 * MARGIN + len(tiers) * CELL + (len(tiers) - 1) * GUTTER
-    rows = [bytearray(BG * width) for _ in range(height)]
-
-    def blit(cx, cy, rgb):
-        x0 = MARGIN + cx * (CELL + GUTTER) + (FLAT_GAP if cx > 0 else 0)
-        y0 = MARGIN + cy * (CELL + GUTTER)
-        px = bytes(rgb)
-        for y in range(y0, y0 + CELL):
-            row = rows[y]
-            for x in range(x0, x0 + CELL):
-                row[3 * x : 3 * x + 3] = px
-
-    for r, tier in enumerate(tiers):
-        blit(0, r, sw[FLAT_NAME]["rgb8"])
-        for c, hour in enumerate(HOURS):
-            blit(1 + c, r, sw[f"h{hour:02d}_{tier}"]["rgb8"])
-    return width, height, rows
+    cell_rows = []
+    for tier in TIERS:
+        row = [sw[FLAT_NAME]["rgb8"]]
+        row += [sw[f"h{hour:02d}_{tier}"]["rgb8"] for hour in HOURS]
+        cell_rows.append(row)
+    # a gap after the flat column, so it reads as separate from the clock ring
+    return pc.grid_sheet(cell_rows, gaps=(1,))
 
 
 # --- main ---------------------------------------------------------------------
@@ -159,27 +136,31 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
 
     sw = swatches()
+    ordering = ordered_names()
+
     width, height, rows = build_sheet()
-    write_png(out / "tilt_palette.png", width, height, rows)
+    pc.write_png(out / "tilt_palette.png", width, height, rows)
+    pc.write_lut_png(out / "tilt_lut.png", [sw[n]["rgb8"] for n in ordering])
+    pc.write_swatch_icons(out / "swatches", {n: sw[n]["rgb8"] for n in sw})
 
     payload = {
         "meta": {
             "encoding": "tangent-space normal, rgb = n * 0.5 + 0.5, 8-bit",
             "colorspace": "Non-Color (data) — never sample as sRGB",
             "directions": "clock hours, 12 = +Y (up in UV space), clockwise",
+            "tiers": "any tier is available on any surface; no family table",
             "sheet_columns": ["flat"] + [f"{h} o'clock" for h in HOURS],
             "sheet_rows": [f"{t} ({d} deg)" for t, d in TIERS.items()],
         },
         "tiers_degrees": TIERS,
-        "families": FAMILIES,
-        "swatches": sw,
+        **pc.indexed_payload(sw, ordering),
     }
     (out / "tilt_palette.json").write_text(json.dumps(payload, indent=2) + "\n")
 
     print(f"wrote {out / 'tilt_palette.png'} ({width}x{height})")
-    print(f"wrote {out / 'tilt_palette.json'} ({len(sw)} swatches)")
-    for fam, tiers in FAMILIES.items():
-        print(f"  {fam:22s} -> {', '.join(tiers)}")
+    print(f"wrote {out / 'tilt_lut.png'} (256x1)")
+    print(f"wrote {out / 'swatches'}/ ({len(sw)} icons)")
+    print(f"wrote {out / 'tilt_palette.json'} ({len(sw)} swatches, order {payload['ordering_hash']})")
     return 0
 
 

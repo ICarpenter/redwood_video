@@ -1,0 +1,1324 @@
+{
+  "meta": {
+    "colorspace": "sRGB \u2014 this palette is colour, unlike the tilt palette",
+    "drifts": "HSV shifts (hue deg, saturation factor, value factor)",
+    "guidance": "group/role say what a swatch is for. Nothing is enforced \u2014 see docs/treatment/style-midcentury-print.md",
+    "sheet_columns": [
+      "base",
+      "warm",
+      "cool",
+      "dusk",
+      "pale",
+      "deep"
+    ],
+    "sheet_rows": [
+      "paper-cream",
+      "sand",
+      "khaki",
+      "olive",
+      "sky-teal",
+      "terracotta",
+      "rust",
+      "dusty-rose",
+      "coral",
+      "golden",
+      "mint",
+      "charcoal-plastic",
+      "faded-denim",
+      "mall-mauve",
+      "seafoam-grey"
+    ]
+  },
+  "drifts": {
+    "warm": [
+      -8.0,
+      1.0,
+      1.0
+    ],
+    "cool": [
+      8.0,
+      1.0,
+      1.0
+    ],
+    "dusk": [
+      -6.0,
+      1.0,
+      0.92
+    ],
+    "pale": [
+      0.0,
+      0.85,
+      1.0
+    ],
+    "deep": [
+      0.0,
+      1.15,
+      0.94
+    ]
+  },
+  "ordering": [
+    "dusty-rose_deep",
+    "dusty-rose",
+    "dusty-rose_pale",
+    "dusty-rose_cool",
+    "coral_warm",
+    "rust_warm",
+    "coral_dusk",
+    "rust_dusk",
+    "coral_deep",
+    "coral",
+    "coral_pale",
+    "rust_deep",
+    "rust_pale",
+    "rust",
+    "terracotta_warm",
+    "terracotta_dusk",
+    "sand_warm",
+    "coral_cool",
+    "rust_cool",
+    "terracotta",
+    "terracotta_deep",
+    "terracotta_pale",
+    "sand_dusk",
+    "golden_warm",
+    "paper-cream_warm",
+    "khaki_warm",
+    "golden_dusk",
+    "paper-cream_dusk",
+    "sand_deep",
+    "sand",
+    "sand_pale",
+    "khaki_dusk",
+    "terracotta_cool",
+    "charcoal-plastic_dusk",
+    "charcoal-plastic_warm",
+    "golden_deep",
+    "olive_warm",
+    "golden_pale",
+    "golden",
+    "paper-cream_pale",
+    "paper-cream",
+    "paper-cream_deep",
+    "olive_dusk",
+    "khaki",
+    "khaki_deep",
+    "khaki_pale",
+    "charcoal-plastic_pale",
+    "sand_cool",
+    "charcoal-plastic",
+    "olive_pale",
+    "olive",
+    "golden_cool",
+    "charcoal-plastic_deep",
+    "olive_deep",
+    "paper-cream_cool",
+    "khaki_cool",
+    "charcoal-plastic_cool",
+    "olive_cool",
+    "seafoam-grey_warm",
+    "seafoam-grey_dusk",
+    "seafoam-grey_deep",
+    "seafoam-grey",
+    "seafoam-grey_pale",
+    "mint_warm",
+    "mint_dusk",
+    "seafoam-grey_cool",
+    "mint",
+    "mint_deep",
+    "mint_pale",
+    "sky-teal_warm",
+    "sky-teal_dusk",
+    "mint_cool",
+    "sky-teal_pale",
+    "sky-teal_deep",
+    "sky-teal",
+    "sky-teal_cool",
+    "faded-denim_warm",
+    "faded-denim_dusk",
+    "faded-denim_pale",
+    "faded-denim",
+    "faded-denim_deep",
+    "faded-denim_cool",
+    "mall-mauve_warm",
+    "mall-mauve_dusk",
+    "mall-mauve",
+    "mall-mauve_pale",
+    "mall-mauve_deep",
+    "mall-mauve_cool",
+    "dusty-rose_warm",
+    "dusty-rose_dusk"
+  ],
+  "ordering_hash": "73ab57e1f85c8b7c",
+  "swatches": {
+    "paper-cream": {
+      "base": "paper-cream",
+      "drift": null,
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        242,
+        228,
+        204
+      ],
+      "hex": "#f2e4cc",
+      "index": 40
+    },
+    "paper-cream_warm": {
+      "base": "paper-cream",
+      "drift": "warm",
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        242,
+        223,
+        204
+      ],
+      "hex": "#f2dfcc",
+      "index": 24
+    },
+    "paper-cream_cool": {
+      "base": "paper-cream",
+      "drift": "cool",
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        242,
+        233,
+        204
+      ],
+      "hex": "#f2e9cc",
+      "index": 54
+    },
+    "paper-cream_dusk": {
+      "base": "paper-cream",
+      "drift": "dusk",
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        223,
+        206,
+        188
+      ],
+      "hex": "#dfcebc",
+      "index": 27
+    },
+    "paper-cream_pale": {
+      "base": "paper-cream",
+      "drift": "pale",
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        242,
+        230,
+        210
+      ],
+      "hex": "#f2e6d2",
+      "index": 39
+    },
+    "paper-cream_deep": {
+      "base": "paper-cream",
+      "drift": "deep",
+      "group": "core",
+      "role": "light base: walls, concrete, highlights, clouds",
+      "rgb8": [
+        227,
+        212,
+        186
+      ],
+      "hex": "#e3d4ba",
+      "index": 41
+    },
+    "sand": {
+      "base": "sand",
+      "drift": null,
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        217,
+        192,
+        163
+      ],
+      "hex": "#d9c0a3",
+      "index": 29
+    },
+    "sand_warm": {
+      "base": "sand",
+      "drift": "warm",
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        217,
+        185,
+        163
+      ],
+      "hex": "#d9b9a3",
+      "index": 16
+    },
+    "sand_cool": {
+      "base": "sand",
+      "drift": "cool",
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        217,
+        199,
+        163
+      ],
+      "hex": "#d9c7a3",
+      "index": 47
+    },
+    "sand_dusk": {
+      "base": "sand",
+      "drift": "dusk",
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        200,
+        172,
+        150
+      ],
+      "hex": "#c8ac96",
+      "index": 22
+    },
+    "sand_pale": {
+      "base": "sand",
+      "drift": "pale",
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        217,
+        196,
+        171
+      ],
+      "hex": "#d9c4ab",
+      "index": 30
+    },
+    "sand_deep": {
+      "base": "sand",
+      "drift": "deep",
+      "group": "core",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        204,
+        177,
+        146
+      ],
+      "hex": "#ccb192",
+      "index": 28
+    },
+    "khaki": {
+      "base": "khaki",
+      "drift": null,
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        194,
+        168,
+        120
+      ],
+      "hex": "#c2a878",
+      "index": 43
+    },
+    "khaki_warm": {
+      "base": "khaki",
+      "drift": "warm",
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        194,
+        158,
+        120
+      ],
+      "hex": "#c29e78",
+      "index": 25
+    },
+    "khaki_cool": {
+      "base": "khaki",
+      "drift": "cool",
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        194,
+        178,
+        120
+      ],
+      "hex": "#c2b278",
+      "index": 55
+    },
+    "khaki_dusk": {
+      "base": "khaki",
+      "drift": "dusk",
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        178,
+        148,
+        110
+      ],
+      "hex": "#b2946e",
+      "index": 31
+    },
+    "khaki_pale": {
+      "base": "khaki",
+      "drift": "pale",
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        194,
+        172,
+        131
+      ],
+      "hex": "#c2ac83",
+      "index": 45
+    },
+    "khaki_deep": {
+      "base": "khaki",
+      "drift": "deep",
+      "group": "core",
+      "role": "dry grass, secondary ground",
+      "rgb8": [
+        182,
+        154,
+        102
+      ],
+      "hex": "#b69a66",
+      "index": 44
+    },
+    "olive": {
+      "base": "olive",
+      "drift": null,
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        143,
+        122,
+        61
+      ],
+      "hex": "#8f7a3d",
+      "index": 50
+    },
+    "olive_warm": {
+      "base": "olive",
+      "drift": "warm",
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        143,
+        111,
+        61
+      ],
+      "hex": "#8f6f3d",
+      "index": 36
+    },
+    "olive_cool": {
+      "base": "olive",
+      "drift": "cool",
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        143,
+        133,
+        61
+      ],
+      "hex": "#8f853d",
+      "index": 57
+    },
+    "olive_dusk": {
+      "base": "olive",
+      "drift": "dusk",
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        132,
+        105,
+        56
+      ],
+      "hex": "#846938",
+      "index": 42
+    },
+    "olive_pale": {
+      "base": "olive",
+      "drift": "pale",
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        143,
+        125,
+        73
+      ],
+      "hex": "#8f7d49",
+      "index": 49
+    },
+    "olive_deep": {
+      "base": "olive",
+      "drift": "deep",
+      "group": "core",
+      "role": "lawn, foliage masses",
+      "rgb8": [
+        134,
+        112,
+        46
+      ],
+      "hex": "#86702e",
+      "index": 53
+    },
+    "sky-teal": {
+      "base": "sky-teal",
+      "drift": null,
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        63,
+        189,
+        179
+      ],
+      "hex": "#3fbdb3",
+      "index": 74
+    },
+    "sky-teal_warm": {
+      "base": "sky-teal",
+      "drift": "warm",
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        63,
+        189,
+        162
+      ],
+      "hex": "#3fbda2",
+      "index": 69
+    },
+    "sky-teal_cool": {
+      "base": "sky-teal",
+      "drift": "cool",
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        63,
+        182,
+        189
+      ],
+      "hex": "#3fb6bd",
+      "index": 75
+    },
+    "sky-teal_dusk": {
+      "base": "sky-teal",
+      "drift": "dusk",
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        58,
+        174,
+        153
+      ],
+      "hex": "#3aae99",
+      "index": 70
+    },
+    "sky-teal_pale": {
+      "base": "sky-teal",
+      "drift": "pale",
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        82,
+        189,
+        180
+      ],
+      "hex": "#52bdb4",
+      "index": 72
+    },
+    "sky-teal_deep": {
+      "base": "sky-teal",
+      "drift": "deep",
+      "group": "core",
+      "role": "the daytime sky; deep and slightly desaturated",
+      "rgb8": [
+        41,
+        178,
+        167
+      ],
+      "hex": "#29b2a7",
+      "index": 73
+    },
+    "terracotta": {
+      "base": "terracotta",
+      "drift": null,
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        176,
+        118,
+        74
+      ],
+      "hex": "#b0764a",
+      "index": 19
+    },
+    "terracotta_warm": {
+      "base": "terracotta",
+      "drift": "warm",
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        176,
+        104,
+        74
+      ],
+      "hex": "#b0684a",
+      "index": 14
+    },
+    "terracotta_cool": {
+      "base": "terracotta",
+      "drift": "cool",
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        176,
+        132,
+        74
+      ],
+      "hex": "#b0844a",
+      "index": 32
+    },
+    "terracotta_dusk": {
+      "base": "terracotta",
+      "drift": "dusk",
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        162,
+        99,
+        68
+      ],
+      "hex": "#a26344",
+      "index": 15
+    },
+    "terracotta_pale": {
+      "base": "terracotta",
+      "drift": "pale",
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        176,
+        127,
+        89
+      ],
+      "hex": "#b07f59",
+      "index": 21
+    },
+    "terracotta_deep": {
+      "base": "terracotta",
+      "drift": "deep",
+      "group": "core",
+      "role": "roofs, brick, furniture accents",
+      "rgb8": [
+        165,
+        103,
+        55
+      ],
+      "hex": "#a56737",
+      "index": 20
+    },
+    "rust": {
+      "base": "rust",
+      "drift": null,
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        201,
+        95,
+        51
+      ],
+      "hex": "#c95f33",
+      "index": 13
+    },
+    "rust_warm": {
+      "base": "rust",
+      "drift": "warm",
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        201,
+        75,
+        51
+      ],
+      "hex": "#c94b33",
+      "index": 5
+    },
+    "rust_cool": {
+      "base": "rust",
+      "drift": "cool",
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        201,
+        115,
+        51
+      ],
+      "hex": "#c97333",
+      "index": 18
+    },
+    "rust_dusk": {
+      "base": "rust",
+      "drift": "dusk",
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        185,
+        74,
+        47
+      ],
+      "hex": "#b94a2f",
+      "index": 7
+    },
+    "rust_pale": {
+      "base": "rust",
+      "drift": "pale",
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        201,
+        111,
+        74
+      ],
+      "hex": "#c96f4a",
+      "index": 12
+    },
+    "rust_deep": {
+      "base": "rust",
+      "drift": "deep",
+      "group": "core",
+      "role": "hot accents: mountains, the cop car's pop",
+      "rgb8": [
+        189,
+        74,
+        27
+      ],
+      "hex": "#bd4a1b",
+      "index": 11
+    },
+    "dusty-rose": {
+      "base": "dusty-rose",
+      "drift": null,
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        216,
+        168,
+        168
+      ],
+      "hex": "#d8a8a8",
+      "index": 1
+    },
+    "dusty-rose_warm": {
+      "base": "dusty-rose",
+      "drift": "warm",
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        216,
+        168,
+        174
+      ],
+      "hex": "#d8a8ae",
+      "index": 88
+    },
+    "dusty-rose_cool": {
+      "base": "dusty-rose",
+      "drift": "cool",
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        216,
+        174,
+        168
+      ],
+      "hex": "#d8aea8",
+      "index": 3
+    },
+    "dusty-rose_dusk": {
+      "base": "dusty-rose",
+      "drift": "dusk",
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        199,
+        155,
+        159
+      ],
+      "hex": "#c79b9f",
+      "index": 89
+    },
+    "dusty-rose_pale": {
+      "base": "dusty-rose",
+      "drift": "pale",
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        216,
+        175,
+        175
+      ],
+      "hex": "#d8afaf",
+      "index": 2
+    },
+    "dusty-rose_deep": {
+      "base": "dusty-rose",
+      "drift": "deep",
+      "group": "core",
+      "role": "sunset transition, distant warmth",
+      "rgb8": [
+        203,
+        151,
+        151
+      ],
+      "hex": "#cb9797",
+      "index": 0
+    },
+    "coral": {
+      "base": "coral",
+      "drift": null,
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        240,
+        160,
+        130
+      ],
+      "hex": "#f0a082",
+      "index": 9
+    },
+    "coral_warm": {
+      "base": "coral",
+      "drift": "warm",
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        240,
+        145,
+        130
+      ],
+      "hex": "#f09182",
+      "index": 4
+    },
+    "coral_cool": {
+      "base": "coral",
+      "drift": "cool",
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        240,
+        175,
+        130
+      ],
+      "hex": "#f0af82",
+      "index": 17
+    },
+    "coral_dusk": {
+      "base": "coral",
+      "drift": "dusk",
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        221,
+        137,
+        120
+      ],
+      "hex": "#dd8978",
+      "index": 6
+    },
+    "coral_pale": {
+      "base": "coral",
+      "drift": "pale",
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        240,
+        172,
+        146
+      ],
+      "hex": "#f0ac92",
+      "index": 10
+    },
+    "coral_deep": {
+      "base": "coral",
+      "drift": "deep",
+      "group": "core",
+      "role": "the sunset sky",
+      "rgb8": [
+        226,
+        139,
+        107
+      ],
+      "hex": "#e28b6b",
+      "index": 8
+    },
+    "golden": {
+      "base": "golden",
+      "drift": null,
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        238,
+        192,
+        120
+      ],
+      "hex": "#eec078",
+      "index": 38
+    },
+    "golden_warm": {
+      "base": "golden",
+      "drift": "warm",
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        238,
+        176,
+        120
+      ],
+      "hex": "#eeb078",
+      "index": 23
+    },
+    "golden_cool": {
+      "base": "golden",
+      "drift": "cool",
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        238,
+        208,
+        120
+      ],
+      "hex": "#eed078",
+      "index": 51
+    },
+    "golden_dusk": {
+      "base": "golden",
+      "drift": "dusk",
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        219,
+        166,
+        110
+      ],
+      "hex": "#dba66e",
+      "index": 26
+    },
+    "golden_pale": {
+      "base": "golden",
+      "drift": "pale",
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        238,
+        199,
+        138
+      ],
+      "hex": "#eec78a",
+      "index": 37
+    },
+    "golden_deep": {
+      "base": "golden",
+      "drift": "deep",
+      "group": "core",
+      "role": "sun disc, golden-hour wash",
+      "rgb8": [
+        224,
+        174,
+        96
+      ],
+      "hex": "#e0ae60",
+      "index": 35
+    },
+    "mint": {
+      "base": "mint",
+      "drift": null,
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        118,
+        231,
+        205
+      ],
+      "hex": "#76e7cd",
+      "index": 66
+    },
+    "mint_warm": {
+      "base": "mint",
+      "drift": "warm",
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        118,
+        231,
+        190
+      ],
+      "hex": "#76e7be",
+      "index": 63
+    },
+    "mint_cool": {
+      "base": "mint",
+      "drift": "cool",
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        118,
+        231,
+        220
+      ],
+      "hex": "#76e7dc",
+      "index": 71
+    },
+    "mint_dusk": {
+      "base": "mint",
+      "drift": "dusk",
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        109,
+        213,
+        178
+      ],
+      "hex": "#6dd5b2",
+      "index": 64
+    },
+    "mint_pale": {
+      "base": "mint",
+      "drift": "pale",
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        135,
+        231,
+        209
+      ],
+      "hex": "#87e7d1",
+      "index": 68
+    },
+    "mint_deep": {
+      "base": "mint",
+      "drift": "deep",
+      "group": "core",
+      "role": "reserved: the truck and the sweet tea",
+      "rgb8": [
+        95,
+        217,
+        189
+      ],
+      "hex": "#5fd9bd",
+      "index": 67
+    },
+    "charcoal-plastic": {
+      "base": "charcoal-plastic",
+      "drift": null,
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        66,
+        64,
+        59
+      ],
+      "hex": "#42403b",
+      "index": 48
+    },
+    "charcoal-plastic_warm": {
+      "base": "charcoal-plastic",
+      "drift": "warm",
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        66,
+        63,
+        59
+      ],
+      "hex": "#423f3b",
+      "index": 34
+    },
+    "charcoal-plastic_cool": {
+      "base": "charcoal-plastic",
+      "drift": "cool",
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        66,
+        65,
+        59
+      ],
+      "hex": "#42413b",
+      "index": 56
+    },
+    "charcoal-plastic_dusk": {
+      "base": "charcoal-plastic",
+      "drift": "dusk",
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        61,
+        58,
+        54
+      ],
+      "hex": "#3d3a36",
+      "index": 33
+    },
+    "charcoal-plastic_pale": {
+      "base": "charcoal-plastic",
+      "drift": "pale",
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        66,
+        64,
+        60
+      ],
+      "hex": "#42403c",
+      "index": 46
+    },
+    "charcoal-plastic_deep": {
+      "base": "charcoal-plastic",
+      "drift": "deep",
+      "group": "annex",
+      "role": "electronics, tires, the CRT, cop-car trim",
+      "rgb8": [
+        62,
+        60,
+        54
+      ],
+      "hex": "#3e3c36",
+      "index": 52
+    },
+    "faded-denim": {
+      "base": "faded-denim",
+      "drift": null,
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        125,
+        148,
+        168
+      ],
+      "hex": "#7d94a8",
+      "index": 79
+    },
+    "faded-denim_warm": {
+      "base": "faded-denim",
+      "drift": "warm",
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        125,
+        154,
+        168
+      ],
+      "hex": "#7d9aa8",
+      "index": 76
+    },
+    "faded-denim_cool": {
+      "base": "faded-denim",
+      "drift": "cool",
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        125,
+        142,
+        168
+      ],
+      "hex": "#7d8ea8",
+      "index": 81
+    },
+    "faded-denim_dusk": {
+      "base": "faded-denim",
+      "drift": "dusk",
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        115,
+        140,
+        155
+      ],
+      "hex": "#738c9b",
+      "index": 77
+    },
+    "faded-denim_pale": {
+      "base": "faded-denim",
+      "drift": "pale",
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        131,
+        151,
+        168
+      ],
+      "hex": "#8397a8",
+      "index": 78
+    },
+    "faded-denim_deep": {
+      "base": "faded-denim",
+      "drift": "deep",
+      "group": "annex",
+      "role": "the boy's baggies; denim anywhere",
+      "rgb8": [
+        111,
+        136,
+        158
+      ],
+      "hex": "#6f889e",
+      "index": 80
+    },
+    "mall-mauve": {
+      "base": "mall-mauve",
+      "drift": null,
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        169,
+        135,
+        148
+      ],
+      "hex": "#a98794",
+      "index": 84
+    },
+    "mall-mauve_warm": {
+      "base": "mall-mauve",
+      "drift": "warm",
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        169,
+        135,
+        153
+      ],
+      "hex": "#a98799",
+      "index": 82
+    },
+    "mall-mauve_cool": {
+      "base": "mall-mauve",
+      "drift": "cool",
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        169,
+        135,
+        143
+      ],
+      "hex": "#a9878f",
+      "index": 87
+    },
+    "mall-mauve_dusk": {
+      "base": "mall-mauve",
+      "drift": "dusk",
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        155,
+        124,
+        139
+      ],
+      "hex": "#9b7c8b",
+      "index": 83
+    },
+    "mall-mauve_pale": {
+      "base": "mall-mauve",
+      "drift": "pale",
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        169,
+        140,
+        151
+      ],
+      "hex": "#a98c97",
+      "index": 85
+    },
+    "mall-mauve_deep": {
+      "base": "mall-mauve",
+      "drift": "deep",
+      "group": "annex",
+      "role": "Mom's wardrobe, the afghan, the couch",
+      "rgb8": [
+        159,
+        122,
+        136
+      ],
+      "hex": "#9f7a88",
+      "index": 86
+    },
+    "seafoam-grey": {
+      "base": "seafoam-grey",
+      "drift": null,
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        157,
+        184,
+        172
+      ],
+      "hex": "#9db8ac",
+      "index": 61
+    },
+    "seafoam-grey_warm": {
+      "base": "seafoam-grey",
+      "drift": "warm",
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        157,
+        184,
+        168
+      ],
+      "hex": "#9db8a8",
+      "index": 58
+    },
+    "seafoam-grey_cool": {
+      "base": "seafoam-grey",
+      "drift": "cool",
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        157,
+        184,
+        176
+      ],
+      "hex": "#9db8b0",
+      "index": 65
+    },
+    "seafoam-grey_dusk": {
+      "base": "seafoam-grey",
+      "drift": "dusk",
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        144,
+        169,
+        156
+      ],
+      "hex": "#90a99c",
+      "index": 59
+    },
+    "seafoam-grey_pale": {
+      "base": "seafoam-grey",
+      "drift": "pale",
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        161,
+        184,
+        174
+      ],
+      "hex": "#a1b8ae",
+      "index": 62
+    },
+    "seafoam-grey_deep": {
+      "base": "seafoam-grey",
+      "drift": "deep",
+      "group": "annex",
+      "role": "90s kitchenware, a windbreaker",
+      "rgb8": [
+        144,
+        173,
+        160
+      ],
+      "hex": "#90ada0",
+      "index": 60
+    }
+  }
+}
