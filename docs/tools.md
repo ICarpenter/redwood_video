@@ -550,10 +550,14 @@ Three things worth knowing:
   ground (`-45,45,-32,45`). An overlapping slab is coplanar with `ground_yard`
   and z-fights, which swallows the yard, road, fence and treeline.
 
-`--facets=smooth` (smooth-shaded, 480 segments) is the default and the
-sculpted-clay read for Bigature Claymation; `--facets=hard` (flat-shaded, 96)
-is the cut-paper read for Mid-Century Print. The style is still open, so render
-both.
+`--facets=hard` (flat-shaded, 96 segments) is the **cut-paper read the locked
+style wants** — Mid-Century Print, settled 2026-08-05. `--facets=smooth`
+(smooth-shaded, 480) existed for the dead claymation candidate.
+
+⚠️ **The code default is still `smooth`** — i.e. the default no longer matches
+the film's style. Pass `--facets=hard` explicitly, or flip the default in
+`tools/skyline.py` (left unflipped deliberately: changing a tool default
+silently would re-render existing output differently).
 
 **`--facets` is not the smoothness control — `--sharp` is.** Switching to
 smooth shading alone makes the skyline *spikier*: 480 segments fully resolves
@@ -807,7 +811,7 @@ python3 tools/tilt_palette.py            # writes assets/materials/tilt_palette/
 ```
 
 Source of truth for the Mid-Century Print candidate's tilt-dab palette
-(`docs/treatment/style-midcentury-print.md`): 12 clock directions × 4 lean
+(`docs/treatment/style.md`): 12 clock directions × 4 lean
 tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
 tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
 12/1/…/11 o'clock; rows = whisper→strong), a 256×1 `tilt_lut.png`, a 32×32

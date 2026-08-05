@@ -7,7 +7,7 @@ independent axes — any colour with any tilt.
 
 This palette *offers* colours and says what each is for. It enforces nothing:
 the mint reservation and the post-1980 annex are art direction recorded in
-`docs/treatment/style-midcentury-print.md`, not constraints the tools police.
+`docs/treatment/style.md`, not constraints the tools police.
 
 ## Where these came from
 
@@ -121,7 +121,7 @@ _FAMILIES = [
                         "planting; DERIVED, see above"),
     ("mint", "#76e7cd", "RESERVED — the truck and the sweet tea, and nothing "
                         "else. Not a census colour: it is film canon from "
-                        "docs/treatment/style-midcentury-print.md, kept pale "
+                        "docs/treatment/style.md, kept pale "
                         "AND saturated so it stays distinct from both the "
                         "teal sky and the greyed annex. Shaded so the truck "
                         "can be painted; still spent nowhere else"),
@@ -288,7 +288,7 @@ def main(argv=None):
             "shades": "hue held constant; shadow hue belongs to the render",
             "guidance": (
                 "group/family/role say what a swatch is for. Nothing is "
-                "enforced — see docs/treatment/style-midcentury-print.md"
+                "enforced — see docs/treatment/style.md"
             ),
         },
         "shades": list(SHADES),

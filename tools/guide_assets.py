@@ -528,7 +528,7 @@ def build_tea_pitcher(c):
 
 
 def build_title_card(c):
-    """sq090's end card: a black field with a raised clay slab to letter on.
+    """sq090's end card: a black field with a raised slab to letter on.
 
     Deliberately oversized (4.0 x 2.25, wider than 16:9) so that from the one
     camera that ever sees it the black backing fills the frame edge to edge and

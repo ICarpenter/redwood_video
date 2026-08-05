@@ -45,10 +45,12 @@ interactive session and builds into the current scene without saving.
 
 Flags:
     --out=PATH        where to save (headless only; default skyline.blend)
-    --facets=smooth   smooth | hard. `smooth` is smooth-shaded and fine
-                      (sculpted clay, Bigature); `hard` is flat-shaded with
-                      coarse segments (cut-paper, Mid-Century Print). The style
-                      is still open, so build both and compare renders.
+    --facets=smooth   smooth | hard. `hard` is flat-shaded with coarse
+                      segments — the cut-paper read the LOCKED style wants
+                      (Mid-Century Print, 2026-08-05). `smooth` is smooth-
+                      shaded and fine; it served the dead claymation
+                      candidate. NOTE the default is still `smooth` and so
+                      no longer matches the film — pass --facets=hard.
                       NOTE: `smooth` alone makes the silhouette SPIKIER, not
                       smoother — see --sharp.
     --segments=N      angular samples per ring. Default 480 smooth / 96 hard.

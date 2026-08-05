@@ -2,7 +2,7 @@
 
 Turns the greybox house in `assets/envs/property/property.blend` into the
 real set: **the 1962 flat-roof desert-modern pavilion the setting canon
-demands** (`style.md` shared givens, developed in `style-midcentury-print.md`),
+demands** (setting canon and full treatment both in `style.md`),
 on the exact footprint the greybox already occupies. Site logic: `site.md`.
 Shot beats: `script.md`. Refs: `refs/house/`, plus
 `refs/styles/il_fullxfull.5572769945_bsf5.webp` — the house's self-image.
@@ -80,7 +80,7 @@ greybox; everything else is the flat-roof adaptation.
 
 - **Swamp cooler** on the house roof, NW quadrant (~`(−4, 3)`): 0.9 × 0.9 ×
   0.8 box on a low curb + duct. It is canon-flavored dilapidation
-  (`style-midcentury-print.md`) and it buys back silhouette lost with the
+  (`style.md`) and it buys back silhouette lost with the
   ridge.
 - **TV aerial** mast at the SE corner, ~1.8 above the deck: 1993 rural, thin
   silhouette interest in the wides.
@@ -183,34 +183,37 @@ overrides fight every tool in the repo.
 
 ## Surfaces & material zones
 
-Model now, shade later: the style is **not locked** (Bigature Claymation
-vs Mid-Century Print — the sq020-sh020 test frame decides). So the model
-carries clean, zoned material slots that both candidates can bind to.
-Geometry stays neutral: **no modeled siding grooves, no modeled tile** —
-both candidates draw surface pattern in the shader/paint layer (dabs or
-plaster), and modeled grooves would fight the print candidate's flatness.
+Model now, shade later. **The style is locked** (Mid-Century Print, the
+tilt-dab look — settled 2026-08-05; see `style.md`), so these slots bind to
+one treatment, not two. Geometry stays neutral: **no modeled siding grooves,
+no modeled tile** — surface pattern is drawn in the paint layer, and modeled
+grooves would fight the print's flatness.
 
-| slot | covers | Claymation (caste 2 earthy unless noted) | Mid-Century Print (core swatches only — annex is illegal on architecture) |
-|---|---|---|---|
-| `MAT_siding` | main wall cladding | troweled plaster, hand-finished, subtle patina | paper-cream, gentle dabs (tier by eye — no family rule), painted groove suggestion |
-| `MAT_fascia` | fascia bands, beam ends | painted plaster, chips at corners | paper-cream (lighter drift); the one plywood patch board in sand |
-| `MAT_block` | breeze-block, plinth course | adobe block | paper-cream w/ painted joints |
-| `MAT_roof_gravel` | roof decks | packed grit | sand/khaki |
-| `MAT_glass` | all panes | thin glass, existing alpha treatment | flat graphic fill + painted diagonal gleam (no raytrace, per style law) |
-| `MAT_frames` | window/door frames, tracks | painted wood | paper-cream drift |
-| `MAT_door_accent` | front door, garage door rails | chipped enamel (caste 3 — a manufactured slab) | terracotta/rust accent |
-| `MAT_deck` | porch slab, steps, stoop | smoothed concrete | paper-cream/sand |
-| `MAT_interior` | shell interior, ceiling, partition | painted plaster, light (headless-render lesson: never dark) | paper-cream |
-| `MAT_kitchen_tile` | counters, backsplash | glazed ceramic (caste 3) | dusty-rose |
-| `MAT_kitchen_cab` | cabinet faces | painted wood | paper-cream |
-| `MAT_terrazzo` | kitchen floor, entry | polished aggregate | paper-cream + painted fleck dots |
-| `MAT_metal_93` | swamp cooler, aerial, downspouts | diecast (caste 3), heaviest patina | charcoal-plastic legal (post-1980 objects) |
+Architecture uses **core MCM swatches only — the 1993 annex is illegal here**,
+because the annex reads as "added later" precisely because sky, terrain and
+architecture never wear it.
 
-Patina is content in both candidates: chips/yellowing (claymation) or
-misregistration/fade (print) on the built world only. The dilapidation
-menu (plywood fascia board, foil clerestory, swamp cooler) is modeled or
-placed geometry, style-independent. **Mint appears nowhere on this
-building, ever.**
+| slot | covers | treatment |
+|---|---|---|
+| `MAT_siding` | main wall cladding | paper-cream, gentle dabs (tier by eye — no family rule), painted groove suggestion |
+| `MAT_fascia` | fascia bands, beam ends | paper-cream (lighter drift); the one plywood patch board in sand |
+| `MAT_block` | breeze-block, plinth course | paper-cream w/ painted joints |
+| `MAT_roof_gravel` | roof decks | sand/khaki |
+| `MAT_glass` | all panes | flat graphic fill + painted diagonal gleam (no raytrace, per style law) |
+| `MAT_frames` | window/door frames, tracks | paper-cream drift |
+| `MAT_door_accent` | front door, garage door rails | terracotta/rust accent |
+| `MAT_deck` | porch slab, steps, stoop | paper-cream/sand |
+| `MAT_interior` | shell interior, ceiling, partition | paper-cream (headless-render lesson: never dark) |
+| `MAT_kitchen_tile` | counters, backsplash | dusty-rose |
+| `MAT_kitchen_cab` | cabinet faces | paper-cream |
+| `MAT_terrazzo` | kitchen floor, entry | paper-cream + painted fleck dots |
+| `MAT_metal_93` | swamp cooler, aerial, downspouts | charcoal-plastic — legal here, these are post-1980 objects |
+
+Patina is content: **print wear** — misregistered colour fills, sun-faded
+hues, paper-tone ghosting at edges — on the built world only. The
+dilapidation menu (plywood fascia board, foil clerestory, swamp cooler) is
+modeled or placed geometry rather than shading. **Mint appears nowhere on
+this building, ever** — it is reserved for the truck and the sweet tea.
 
 ## Modeling techniques
 
@@ -227,12 +230,12 @@ building, ever.**
   (screen door, casement leaf, back door leaf) are built here but *live*
   in `props.blend` via `guide_assets.py` conventions, hinge at origin.
 - Bevel modifier, weight-limited, ~1.5 cm — enough for a dab-lit or
-  clay-lit edge to catch, small enough to stay architectural.
+  dab-lit edge to catch, small enough to stay architectural.
 - Beam array via Array modifier off one beam; count/offset set to the
   porch-post module.
 - Budget: shell+roof+beams ≤ 20k tris; units 1–2k each; whole building
   ≤ 60k. Flat shading wants simple geometry — the blockout-economics note
-  in `style-midcentury-print.md` is the law here.
+  in `style.md` is the law here.
 - Keep greybox object names on 1:1 replacements (`house`, `garage`,
   `win_kitchen_north_*`, …) so nothing downstream that greps names breaks;
   new elements get the same lowercase_snake convention.

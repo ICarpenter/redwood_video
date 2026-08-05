@@ -81,7 +81,7 @@ GUIDES: list[GuideSpec] = [
     GuideSpec("santa_head", PROPS_FILE, "props", 0.60),
     # sq090's end card. A guide rather than a camera-parented mesh so the shot
     # cuts as layout like every other one, and so the lettering can be drawn
-    # over it in the drawing pass — the card is hand-sculpted clay in the end,
+    # over it in the drawing pass — the card is hand-painted in the end,
     # not type.
     GuideSpec("title_card", PROPS_FILE, "props", 2.25),
     # The last round of the film. A guide rather than a squib because

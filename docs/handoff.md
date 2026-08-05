@@ -6,9 +6,11 @@ Written 2026-07-20, updated 2026-08-03.
 ## What this is
 
 An animated music video for **`guns`** (`audio/track/guns.wav` — 4:15,
-141 BPM, 150 bars), produced end-to-end in Blender 5.1.2 with a stylized
-**claymation** look: bright colors, white-trash Americana, Spike & Mike
-energy. A heartland kid 3D-prints a machine gun, and by sundown has
+141 BPM, 150 bars), produced end-to-end in Blender 5.1.2 in the
+**Mid-Century Print** look — flat gouache shapes on hand-painted tilt dabs,
+no linework, big poster skies: bright colors, white-trash Americana, Spike &
+Mike energy. **Style locked 2026-08-05** (`treatment/style.md`); the
+claymation and toy-box candidates are dead and should not resurface. A heartland kid 3D-prints a machine gun, and by sundown has
 dragged his mom and the county sheriff into a three-way backyard war.
 50 shots. Solo production.
 
@@ -455,13 +457,17 @@ rejected. Fix the old animation rather than re-introducing `sheriff_eating`.
 - **Verse 2 gag density** — the script flags it as the hottest section
   with an explicit cut-first order (hubcap skeet → package football →
   flowerbed arm). The animatic arbitrates; don't cut on taste beforehand.
-- **Production design** — nothing designed yet beyond massing: siding,
-  porch clutter, junk, terrain, and the clay look itself.
+- **Production design** — the house is specced (`treatment/house.md`) and
+  every prop is catalogued with a target rung (`treatment/props.md`). Still
+  undesigned: siding detail, terrain undulation, and the surfacing pass.
 - **Rigged characters — DEFERRED, decided 2026-08-03.** Rigging faces, limbs
-  and fingers before a full-animation sweep was considered and put off, for
-  three reasons: the style is not locked (a claymation look wants REPLACEMENT
-  animation — swappable heads and hands, no face rig at all; a print or gouache
-  look wants something else again); the animatic has not finished its job while
+  and fingers before a full-animation sweep was considered and put off. Two of
+  the three original reasons still stand. (**The first — "the style is not
+  locked" — expired 2026-08-05.** Print won, and it wants limited animation:
+  strong holds, snappy transitions, painted smears on fast actions, and faces
+  carried by silhouette and pose rather than a face rig. That is *cheaper*
+  than what was deferred, so this is not a reason to start rigging.) The
+  remaining two: the animatic has not finished its job while
   13 scenes still play the wrong slice of themselves; and at animatic scale the
   boy's whole head is about thirty pixels, so fingers cannot read yet.
   The agreed order is: finish the timing sweep and the storytelling details →

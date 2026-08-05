@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tilt palette for the Mid-Century Print candidate — registry + generator.
 
-The tilt-dab shading system (docs/treatment/style-midcentury-print.md)
+The tilt-dab shading system (docs/treatment/style.md)
 paints gouache facets as tangent-space normal colors drawn from a fixed,
 film-wide palette: 12 clock directions x 4 lean tiers, plus flat. This
 module is the single source of truth for that palette — the swatch math
