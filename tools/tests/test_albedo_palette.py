@@ -57,6 +57,37 @@ class StructureTest(unittest.TestCase):
         for name, s in ap.swatches().items():
             self.assertTrue(s["role"].strip(), f"{name} has no role")
 
+    def test_the_palette_covers_the_named_production_needs(self):
+        """Things the film actually has to paint, asked for by name. A census
+        of poster art does not know about a sheriff or a cactus, so these are
+        carried deliberately and named in their roles."""
+        sw = ap.swatches()
+        for family, need in (
+            ("rust", "mountain"),
+            ("coral", "sunset"),
+            ("olive", "uniform"),
+            ("green", "plant"),
+            ("sage", "cact"),
+            ("sky", "sky"),
+        ):
+            self.assertIn(family, ap.FAMILIES, f"no {family} family")
+            role = sw[family]["role"].lower()
+            self.assertIn(need, role, f"{family} does not mention {need}")
+
+    def test_the_three_greens_are_distinguishable(self):
+        """olive (uniform, dry grass), green (foliage), sage (cacti) have to
+        be far enough apart in hue to be worth three families."""
+        hues = {f: hsv(ap.swatches()[f]["rgb8"])[0] * 360
+                for f in ("olive", "green", "sage")}
+        ordered = sorted(hues.values())
+        for a, b in zip(ordered, ordered[1:]):
+            self.assertGreater(b - a, 20.0, f"greens too close: {hues}")
+
+    def test_sky_is_lighter_than_blue(self):
+        """sky is the daytime dome; blue is denim and distance."""
+        self.assertGreater(hsv(ap.swatches()["sky"]["rgb8"])[2],
+                           hsv(ap.swatches()["blue"]["rgb8"])[2])
+
     def test_mint_survives_a_palette_rebuild(self):
         """Mint is film canon, not a census result — the truck and the sweet
         tea. A palette derived purely from clustering drops it, because the

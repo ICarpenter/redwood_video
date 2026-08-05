@@ -23,12 +23,18 @@ What the refs actually said, as a share of saturated pixels: orange 45%
 (mostly the tan/wood/skin band rather than true orange), red 17%, teal 11%,
 yellow 8%, blue 7%, pink 6%, magenta 3%, purple 2% — and **green 1.4%**.
 
-So green is the one family the references do not support. The lawn, the
-foliage and the sage 90s kitchen still need it, so it is derived rather than
-sampled: the greens below come from the desaturated sage that does appear
-(`#a8ceb5`, `#a1d0bc`, `#9eb29d`) and from the olive already in the
-treatment, not from a saturated green the refs never contained. Treat them as
-the least evidenced part of this palette.
+So green is the one region the references do not support, and the film needs
+three of them — the sheriff's olive-drab uniform, plants and lawn, and the
+grey-green of cacti and agave. They are derived rather than sampled: from the
+desaturated sage that does appear (`#a8ceb5`, `#a1d0bc`, `#9eb29d`) and from
+the olive already in the treatment, not from a saturated green the refs never
+contained. `olive`, `green` and `sage` are the least evidenced part of this
+palette; if anything here reads wrong on a lawn, start there.
+
+Four families exist for named production needs rather than census weight —
+`rust` (the mountains), `coral` (the sunset sky), `olive` (the uniform) and
+`sky` (the dome at its palest). A census of poster art has no opinion about a
+sheriff or a cactus.
 
 Stdlib only. Import it for the math; run it for the artifacts.
 """
@@ -105,20 +111,25 @@ _BOLD = [
 
 _FAMILIES = [
     ("red", "#c04a3c", "brick, roof tile, the cop car's pop"),
-    ("orange", "#dd9c55", "terracotta, rust, warm afternoon light"),
-    ("yellow", "#e8b74a", "golden hour, dry grass, kitchen enamel"),
-    ("green", "#8faa8c", "DERIVED, not sampled — lawn, foliage, sage 90s "
-                         "kitchenware; the refs carry almost no green"),
-    ("teal", "#3fbdb3", "the sky family; glass, the truck's world"),
-    ("blue", "#5e94ae", "denim, distance, shadowed sky"),
-    ("purple", "#7a6f92", "dusk, the 80s mauve, deep shadow mass"),
-    ("pink", "#e48e96", "dusty rose; wardrobe, the pink kitchen"),
+    ("rust", "#c65a2e", "the mountains, weathered metal, hot desert accents"),
+    ("coral", "#f4a886", "the sunset sky, distant warmth, low sun on stucco"),
+    ("orange", "#dd9c55", "terracotta, warm afternoon light, cardboard"),
+    ("yellow", "#e8b74a", "golden hour, kitchen enamel, signage"),
+    ("olive", "#6f7343", "the sheriff's uniform, dry grass, olive-drab kit"),
+    ("green", "#789c66", "plants, lawn, foliage masses — DERIVED, see above"),
+    ("sage", "#9db8ac", "cacti, agave, 90s kitchenware — grey-green desert "
+                        "planting; DERIVED, see above"),
     ("mint", "#76e7cd", "RESERVED — the truck and the sweet tea, and nothing "
                         "else. Not a census colour: it is film canon from "
                         "docs/treatment/style-midcentury-print.md, kept pale "
                         "AND saturated so it stays distinct from both the "
                         "teal sky and the greyed annex. Shaded so the truck "
                         "can be painted; still spent nowhere else"),
+    ("teal", "#3fbdb3", "the deep daytime sky, glass, appliance enamel"),
+    ("sky", "#8bd5e3", "the sky dome at its palest; hazy distance, clerestory"),
+    ("blue", "#5e94ae", "denim, distance, shadowed sky"),
+    ("purple", "#7a6f92", "dusk, the 80s mauve, deep shadow mass"),
+    ("pink", "#e48e96", "dusty rose; wardrobe, the pink kitchen"),
 ]
 
 FAMILIES = [name for name, _, _ in _FAMILIES]
@@ -270,8 +281,9 @@ def main(argv=None):
                 "31 images, 2.48M pixels, 2026-08-04"
             ),
             "green_caveat": (
-                "green is 1.4% of saturated pixels in the refs — the green "
-                "family is derived from sage, not sampled from a saturated green"
+                "green is 1.4% of saturated pixels in the refs. olive, green "
+                "and sage are derived from the desaturated sage that does "
+                "appear, not sampled from a saturated green"
             ),
             "shades": "hue held constant; shadow hue belongs to the render",
             "guidance": (
