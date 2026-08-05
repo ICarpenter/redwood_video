@@ -266,9 +266,26 @@ class DAB_OT_make_paintable(bpy.types.Operator):
 
         scene.redwood_dab_albedo_hash = albedo.ordering_hash
         scene.redwood_dab_tilt_hash = tilt.ordering_hash
+        set_paint_target(context, img)
         _apply_brush(context, dabpaint, scene.redwood_dab_albedo, scene.redwood_dab_tilt)
-        self.report({"INFO"}, f"{stem} paintable at {size}px")
+        self.report({"INFO"}, f"{stem} paintable at {size}px — canvas set")
         return {"FINISHED"}
+
+
+def set_paint_target(context, image):
+    """Point Texture Paint at the index map, in Single Image mode.
+
+    Without this the canvas stays on whatever was last painted — in a file
+    that already has texture work, that means strokes land on the *old* map
+    and the index map reads as untouched. Silent, and it looks like the
+    encoding is broken when nothing is.
+    """
+    settings = getattr(context.tool_settings, "image_paint", None)
+    if settings is None:
+        return False
+    settings.mode = "IMAGE"
+    settings.canvas = image
+    return settings.canvas is image
 
 
 def _apply_brush(context, dabpaint, albedo_index, tilt_index):
@@ -442,6 +459,19 @@ class VIEW3D_PT_redwood_dabpaint(bpy.types.Panel):
         scene = context.scene
         layout.operator(DAB_OT_make_paintable.bl_idname, icon="BRUSH_DATA")
         layout.prop(scene, "redwood_dab_resolution", text="Size")
+
+        # Say out loud what is being painted. A canvas left on some other
+        # image takes every stroke while the index map reads as untouched,
+        # which looks exactly like a broken encoding.
+        ip = getattr(context.tool_settings, "image_paint", None)
+        canvas = getattr(ip, "canvas", None) if ip else None
+        if canvas is None:
+            layout.label(text="no paint canvas — run Make Paintable", icon="ERROR")
+        elif not canvas.name.endswith("_dabindex.png"):
+            layout.label(text=f"canvas is {canvas.name},", icon="ERROR")
+            layout.label(text="not an index map — strokes will miss")
+        else:
+            layout.label(text=f"painting {canvas.name}", icon="CHECKMARK")
 
         for label, palette, stored, name_prop, op in (
             ("Albedo", albedo, scene.redwood_dab_albedo_hash,

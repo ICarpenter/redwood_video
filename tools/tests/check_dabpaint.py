@@ -156,6 +156,17 @@ def main():
           img.colorspace_settings.name == "Non-Color",
           img.colorspace_settings.name)
 
+    # Setup has to point Texture Paint *at* the index map. Leaving the canvas
+    # wherever it was sends every stroke to some other image while the index
+    # map reads as untouched — indistinguishable from a broken encoding.
+    bpy.context.view_layer.objects.active = obj
+    targeted = addon.set_paint_target(bpy.context, img)
+    check("setup points the paint canvas at the index map", targeted,
+          str(getattr(bpy.context.tool_settings.image_paint, "canvas", None)))
+    check("canvas is in Single Image mode",
+          bpy.context.tool_settings.image_paint.mode == "IMAGE",
+          bpy.context.tool_settings.image_paint.mode)
+
     mat = addon.build_material(obj, img, a_lut, t_lut, dabpaint)
     tex_nodes = [n for n in mat.node_tree.nodes if n.type == "TEX_IMAGE"]
     check("three image textures wired", len(tex_nodes) == 3, f"got {len(tex_nodes)}")
