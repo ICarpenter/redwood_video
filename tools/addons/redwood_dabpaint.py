@@ -304,6 +304,19 @@ def _apply_brush(context, dabpaint, albedo_index, tilt_index):
     brush.blend = "MIX"
     if hasattr(brush, "curve_preset"):
         brush.curve_preset = "CONSTANT"
+
+    # `use_unified_color` defaults to ON, and while it is on brush.color is
+    # simply ignored: every stroke lands in the tool header's colour whatever
+    # swatch was clicked, so all dabs share one index and the palette does
+    # nothing. Set both, so the encoding holds whichever way the flag sits.
+    #
+    # In Blender 5.1 this lives on the paint struct, not on tool_settings —
+    # tool_settings.unified_paint_settings is None there. Check both, because
+    # it has moved once already.
+    for owner in (settings, context.tool_settings):
+        unified = getattr(owner, "unified_paint_settings", None)
+        if unified is not None and hasattr(unified, "color"):
+            unified.color = colour
     return True
 
 

@@ -167,6 +167,28 @@ def main():
           bpy.context.tool_settings.image_paint.mode == "IMAGE",
           bpy.context.tool_settings.image_paint.mode)
 
+    # Setting a swatch has to reach whichever colour actually paints. With
+    # use_unified_color on, brush.color is ignored and every stroke lands in
+    # the tool header's colour regardless of the swatch clicked — silently.
+    bpy.ops.object.mode_set(mode="TEXTURE_PAINT")
+    if addon._apply_brush(bpy.context, dabpaint, 10, 5):
+        want = tuple(round(c, 6) for c in dabpaint.brush_color_for(10, 5))
+        ip = bpy.context.tool_settings.image_paint
+        got_brush = tuple(round(c, 6) for c in ip.brush.color[:3])
+        check("brush.color carries the index pair", got_brush == want, str(got_brush))
+
+        unified = ip.unified_paint_settings
+        check("the colour that actually paints is reachable",
+              unified is not None and hasattr(unified, "color"), str(unified))
+        if unified is not None and hasattr(unified, "color"):
+            got_unified = tuple(round(c, 6) for c in unified.color[:3])
+            check("unified paint colour carries it too — brush.color is "
+                  "ignored while use_unified_color is on",
+                  got_unified == want,
+                  f"{got_unified}, use_unified_color="
+                  f"{getattr(unified, 'use_unified_color', '?')}")
+    bpy.ops.object.mode_set(mode="OBJECT")
+
     mat = addon.build_material(obj, img, a_lut, t_lut, dabpaint)
     tex_nodes = [n for n in mat.node_tree.nodes if n.type == "TEX_IMAGE"]
     check("three image textures wired", len(tex_nodes) == 3, f"got {len(tex_nodes)}")
