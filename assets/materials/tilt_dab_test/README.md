@@ -1,7 +1,7 @@
 # Tilt-dab proof — mint C10
 
 Tablet-free validation of the tangent-space tilt-dab technique from
-`docs/treatment/style-midcentury-print.md`. Open `tilt_dab_test.blend`.
+`docs/treatment/style.md`. Open `tilt_dab_test.blend`.
 
 ## The headline finding — and the decision it forced
 
