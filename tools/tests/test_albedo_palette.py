@@ -1,12 +1,10 @@
-"""The albedo half of the dab palette.
+"""The albedo palette: neutrals, bold primaries, and shaded hue families.
 
-Colour swatches for the Mid-Century Print candidate: the treatment's core
-and annex bases, each with drift variants for dab-level colour variation.
-The palette offers options and says what they're for; nothing here enforces
-anything (see the treatment's palette section).
+Derived from a colour census of refs/styles/ and refs/pallete refs/ (60s and
+80s), 31 images, 2.48M pixels. The palette offers colours and says what each
+is for; nothing here enforces anything.
 """
 import colorsys
-import statistics
 import sys
 import unittest
 from pathlib import Path
@@ -16,146 +14,147 @@ import albedo_palette as ap
 import palette_common as pc
 
 
-def hue_of(rgb8):
-    r, g, b = (c / 255 for c in rgb8)
-    return colorsys.rgb_to_hsv(r, g, b)[0] * 360.0
+def hsv(rgb8):
+    return colorsys.rgb_to_hsv(*(c / 255 for c in rgb8))
 
 
-def sat_of(rgb8):
-    r, g, b = (c / 255 for c in rgb8)
-    return colorsys.rgb_to_hsv(r, g, b)[1]
+class StructureTest(unittest.TestCase):
+    def test_four_or_five_bold_primaries(self):
+        bold = [n for n, s in ap.swatches().items() if s["group"] == "bold"]
+        bases = {ap.swatches()[n]["family"] for n in bold}
+        self.assertGreaterEqual(len(bases), 4)
+        self.assertLessEqual(len(bases), 5)
 
+    def test_every_major_hue_family_is_present(self):
+        families = {s["family"] for s in ap.swatches().values()
+                    if s["group"] == "family"}
+        for expected in ("red", "orange", "yellow", "green",
+                         "teal", "blue", "purple", "pink"):
+            self.assertIn(expected, families)
 
-def value_of(rgb8):
-    r, g, b = (c / 255 for c in rgb8)
-    return colorsys.rgb_to_hsv(r, g, b)[2]
+    def test_every_family_carries_light_and_dark_shades(self):
+        by_family = {}
+        for name, s in ap.swatches().items():
+            if s["group"] == "family":
+                by_family.setdefault(s["family"], set()).add(s["shade"])
+        for family, shades in by_family.items():
+            self.assertEqual(shades, set(ap.SHADES), f"{family} has {shades}")
 
+    def test_neutrals_span_paper_to_ink(self):
+        neutrals = [s for s in ap.swatches().values() if s["group"] == "neutral"]
+        values = sorted(hsv(s["rgb8"])[2] for s in neutrals)
+        self.assertGreater(values[-1], 0.93, "no paper-white neutral")
+        self.assertLess(values[0], 0.20, "no near-black neutral")
 
-def signed_hue_delta(a, b):
-    """Shortest signed rotation from hue a to hue b, in degrees."""
-    return (b - a + 180.0) % 360.0 - 180.0
+    def test_palette_fits_the_lut(self):
+        self.assertLessEqual(len(ap.swatches()), pc.LUT_WIDTH)
 
+    def test_swatch_names_are_unique(self):
+        names = list(ap.swatches())
+        self.assertEqual(len(names), len(set(names)))
 
-class BasesTest(unittest.TestCase):
-    def test_eleven_core_bases_and_four_annex(self):
-        core = [b for b in ap.BASES.values() if b["group"] == "core"]
-        annex = [b for b in ap.BASES.values() if b["group"] == "annex"]
-        self.assertEqual(len(core), 11)
-        self.assertEqual(len(annex), 4)
+    def test_every_swatch_says_what_it_is_for(self):
+        for name, s in ap.swatches().items():
+            self.assertTrue(s["role"].strip(), f"{name} has no role")
 
-    def test_base_hexes_match_the_treatment(self):
-        # docs/treatment/style-midcentury-print.md palette tables. If the
-        # treatment retunes a swatch, this is the test that notices.
-        self.assertEqual(ap.BASES["paper-cream"]["hex"], "#f2e4cc")
-        self.assertEqual(ap.BASES["sky-teal"]["hex"], "#3fbdb3")
-        self.assertEqual(ap.BASES["mint"]["hex"], "#76e7cd")
-        self.assertEqual(ap.BASES["charcoal-plastic"]["hex"], "#42403b")
-        self.assertEqual(ap.BASES["mall-mauve"]["hex"], "#a98794")
-
-    def test_every_base_says_what_it_is_for(self):
-        for name, base in ap.BASES.items():
-            self.assertTrue(base["role"].strip(), f"{name} has no role text")
-
-
-class DriftTest(unittest.TestCase):
-    def test_each_base_carries_five_drifts_plus_itself(self):
+    def test_mint_survives_a_palette_rebuild(self):
+        """Mint is film canon, not a census result — the truck and the sweet
+        tea. A palette derived purely from clustering drops it, because the
+        refs contain no truck. It has to be carried deliberately."""
         sw = ap.swatches()
-        for name in ap.BASES:
-            variants = [k for k in sw if sw[k]["base"] == name]
-            self.assertEqual(len(variants), 6, f"{name} has {len(variants)}")
+        self.assertIn("mint", sw)
+        self.assertIn("reserved", sw["mint"]["role"].lower())
 
-    def test_ninety_swatches_total(self):
-        self.assertEqual(len(ap.swatches()), 90)
+    def test_mint_stays_distinct_from_the_teal_sky(self):
+        """The separation the treatment relies on: sky-teal is deep and
+        dusty, mint pale and saturated. If they converge, mint stops being
+        a signal."""
+        mint = hsv(ap.swatches()["mint"]["rgb8"])
+        teal = hsv(ap.swatches()["teal"]["rgb8"])
+        self.assertGreater(mint[2], teal[2], "mint is not paler than teal")
 
-    def test_hue_rotation_applies_the_same_delta_to_every_base(self):
-        """The reason drift is HSV and not an RGB multiply.
 
-        Measured 2026-08-04: an RGB multiply-cool swings paper-cream 174
-        degrees of hue into blue-grey, while other bases barely move. A hue
-        rotation moves every base by the same amount by construction, so
-        'cool' means one thing film-wide.
+class BoldnessTest(unittest.TestCase):
+    """The bold primaries are the rare saturated notes the refs spend
+    sparingly — a bold that is not actually saturated is not a bold."""
 
-        Near-neutral bases are excluded: hue is numerically unstable when
-        saturation approaches zero, so their delta is meaningless rather
-        than wrong.
-        """
-        sw = ap.swatches()
-        for drift, expected in (("warm", -8.0), ("cool", +8.0)):
-            deltas = []
-            for name, base in ap.BASES.items():
-                if sat_of(base["rgb8"]) < 0.15:
+    def test_bold_primaries_are_genuinely_saturated(self):
+        for name, s in ap.swatches().items():
+            if s["group"] == "bold" and s["shade"] == "base":
+                self.assertGreater(hsv(s["rgb8"])[1], 0.60, name)
+
+    def test_bold_teal_and_yellow_are_present(self):
+        """The two the census is loudest about: teal is 19.5% of all bold
+        pixels, yellow 9.3%."""
+        families = {s["family"] for s in ap.swatches().values()
+                    if s["group"] == "bold"}
+        self.assertIn("teal", families)
+        self.assertIn("yellow", families)
+
+    def test_neutrals_are_not_saturated(self):
+        """Near-blacks are exempt: at V below ~0.15 a one-byte channel
+        difference reads as high saturation while the colour is visually
+        black, so the number stops meaning anything."""
+        for name, s in ap.swatches().items():
+            if s["group"] == "neutral":
+                h, sat, v = hsv(s["rgb8"])
+                if v < 0.15:
                     continue
-                got = sw[f"{name}_{drift}"]["rgb8"]
-                deltas.append(signed_hue_delta(hue_of(base["rgb8"]), hue_of(got)))
-            self.assertGreater(len(deltas), 8, "too few saturated bases to judge")
-            for d in deltas:
-                self.assertAlmostEqual(d, expected, delta=2.0)
-            self.assertLess(statistics.pstdev(deltas), 1.0, f"{drift} is not uniform")
+                self.assertLess(sat, 0.35, f"{name} (V {v:.2f})")
 
-    def test_drifts_stay_inside_the_rgb_gamut(self):
+
+class ShadeRampTest(unittest.TestCase):
+    def test_shades_run_light_to_dark_without_ties(self):
+        for family in ap.FAMILIES:
+            values = [hsv(ap.swatches()[ap.swatch_name(family, sh)]["rgb8"])[2]
+                      for sh in ap.SHADES]
+            self.assertEqual(values, sorted(values, reverse=True),
+                             f"{family} shades are not monotonic: {values}")
+            self.assertEqual(len(set(values)), len(values),
+                             f"{family} has duplicate values")
+
+    def test_hue_stays_put_across_a_family(self):
+        """Shadow colour is the render's job — the global shadow tint shifts
+        hue at shading time. Baking a hue shift into the ramp would double it,
+        the same reason albedo carries no directional shading."""
+        for family in ap.FAMILIES:
+            hues = []
+            for sh in ap.SHADES:
+                h, s, v = hsv(ap.swatches()[ap.swatch_name(family, sh)]["rgb8"])
+                if s > 0.15:
+                    hues.append(h * 360)
+            spread = max(hues) - min(hues)
+            self.assertLess(spread, 12.0, f"{family} hue drifts {spread:.1f} deg")
+
+    def test_shades_stay_inside_the_gamut(self):
         for name, s in ap.swatches().items():
             for c in s["rgb8"]:
                 self.assertGreaterEqual(c, 0, name)
                 self.assertLessEqual(c, 255, name)
 
-    def test_pale_desaturates_and_deep_saturates(self):
-        sw = ap.swatches()
-        for name, base in ap.BASES.items():
-            if sat_of(base["rgb8"]) < 0.15:
-                continue
-            self.assertLess(sat_of(sw[f"{name}_pale"]["rgb8"]), sat_of(base["rgb8"]), name)
-            self.assertGreater(sat_of(sw[f"{name}_deep"]["rgb8"]), sat_of(base["rgb8"]), name)
-
-    def test_dusk_darkens(self):
-        sw = ap.swatches()
-        for name, base in ap.BASES.items():
-            self.assertLess(value_of(sw[f"{name}_dusk"]["rgb8"]), value_of(base["rgb8"]), name)
-
 
 class OrderingTest(unittest.TestCase):
-    """LUT position is what a painted pixel references, so order is data."""
-
-    def test_ordered_by_hue_then_value(self):
+    def test_ordering_covers_every_swatch_once(self):
         ordered = ap.ordered_names()
-        keys = [ap.sort_key(n) for n in ordered]
-        self.assertEqual(keys, sorted(keys))
+        self.assertEqual(sorted(ordered), sorted(ap.swatches()))
+        self.assertEqual(len(set(ordered)), len(ordered))
 
     def test_ordering_is_deterministic(self):
         self.assertEqual(ap.ordered_names(), ap.ordered_names())
 
-    def test_ordering_covers_every_swatch_exactly_once(self):
+    def test_a_family_occupies_a_contiguous_run_of_indices(self):
+        """Adjacent LUT indices should be near-neighbours in colour, so the
+        blended texel at an antialiased dab edge lands on a transitional
+        swatch. Scattering a family across the LUT breaks that."""
         ordered = ap.ordered_names()
-        self.assertEqual(len(ordered), len(ap.swatches()))
-        self.assertEqual(len(set(ordered)), len(ordered))
-
-    def test_neighbouring_indices_are_near_neighbours_in_colour(self):
-        """Antialiased dab edges blend two indices into a third. With a
-        similarity-ordered LUT that third entry is a transitional colour
-        rather than a stray one."""
         sw = ap.swatches()
-        ordered = ap.ordered_names()
-        jumps = [
-            abs(signed_hue_delta(hue_of(sw[a]["rgb8"]), hue_of(sw[b]["rgb8"])))
-            for a, b in zip(ordered, ordered[1:])
-            if sat_of(sw[a]["rgb8"]) >= 0.15 and sat_of(sw[b]["rgb8"]) >= 0.15
-        ]
-        self.assertLess(statistics.median(jumps), 15.0)
-
-    def test_palette_fits_the_lut(self):
-        self.assertLessEqual(len(ap.swatches()), pc.LUT_WIDTH)
-
-
-class NamingTest(unittest.TestCase):
-    def test_swatch_names_are_unique(self):
-        names = list(ap.swatches())
-        self.assertEqual(len(names), len(set(names)))
-
-    def test_a_base_keeps_its_own_bare_name(self):
-        sw = ap.swatches()
-        self.assertIn("terracotta", sw)
-        self.assertIn("terracotta_warm", sw)
-        self.assertEqual(sw["terracotta"]["drift"], None)
-        self.assertEqual(sw["terracotta_warm"]["drift"], "warm")
+        seen_runs = {}
+        for i, name in enumerate(ordered):
+            key = (sw[name]["group"], sw[name]["family"])
+            seen_runs.setdefault(key, []).append(i)
+        for key, idxs in seen_runs.items():
+            self.assertEqual(idxs, list(range(idxs[0], idxs[0] + len(idxs))),
+                             f"{key} is not contiguous: {idxs}")
 
 
 if __name__ == "__main__":

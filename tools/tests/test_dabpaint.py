@@ -87,7 +87,7 @@ class PaletteLoadingTest(unittest.TestCase):
         p = dabpaint.load_palette(self.path)
         mint = p.swatch("mint")
         self.assertEqual(mint["hex"], "#76e7cd")
-        self.assertEqual(mint["group"], "core")
+        self.assertEqual(mint["family"], "mint")
         self.assertIn("truck", mint["role"])
 
     def test_an_unknown_swatch_is_refused_by_name(self):

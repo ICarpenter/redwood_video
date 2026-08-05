@@ -1,1324 +1,1033 @@
 {
   "meta": {
     "colorspace": "sRGB \u2014 this palette is colour, unlike the tilt palette",
-    "drifts": "HSV shifts (hue deg, saturation factor, value factor)",
-    "guidance": "group/role say what a swatch is for. Nothing is enforced \u2014 see docs/treatment/style-midcentury-print.md",
-    "sheet_columns": [
-      "base",
-      "warm",
-      "cool",
-      "dusk",
-      "pale",
-      "deep"
-    ],
-    "sheet_rows": [
-      "paper-cream",
-      "sand",
-      "khaki",
-      "olive",
-      "sky-teal",
-      "terracotta",
-      "rust",
-      "dusty-rose",
-      "coral",
-      "golden",
-      "mint",
-      "charcoal-plastic",
-      "faded-denim",
-      "mall-mauve",
-      "seafoam-grey"
-    ]
+    "derived_from": "colour census of refs/styles/ + refs/pallete refs/{60s,80s}, 31 images, 2.48M pixels, 2026-08-04",
+    "green_caveat": "green is 1.4% of saturated pixels in the refs \u2014 the green family is derived from sage, not sampled from a saturated green",
+    "shades": "hue held constant; shadow hue belongs to the render",
+    "guidance": "group/family/role say what a swatch is for. Nothing is enforced \u2014 see docs/treatment/style-midcentury-print.md"
   },
-  "drifts": {
-    "warm": [
-      -8.0,
-      1.0,
-      1.0
-    ],
-    "cool": [
-      8.0,
-      1.0,
-      1.0
-    ],
-    "dusk": [
-      -6.0,
-      1.0,
-      0.92
-    ],
-    "pale": [
-      0.0,
-      0.85,
-      1.0
-    ],
-    "deep": [
-      0.0,
-      1.15,
-      0.94
-    ]
-  },
-  "ordering": [
-    "dusty-rose_deep",
-    "dusty-rose",
-    "dusty-rose_pale",
-    "dusty-rose_cool",
-    "coral_warm",
-    "rust_warm",
-    "coral_dusk",
-    "rust_dusk",
-    "coral_deep",
-    "coral",
-    "coral_pale",
-    "rust_deep",
-    "rust_pale",
-    "rust",
-    "terracotta_warm",
-    "terracotta_dusk",
-    "sand_warm",
-    "coral_cool",
-    "rust_cool",
-    "terracotta",
-    "terracotta_deep",
-    "terracotta_pale",
-    "sand_dusk",
-    "golden_warm",
-    "paper-cream_warm",
-    "khaki_warm",
-    "golden_dusk",
-    "paper-cream_dusk",
-    "sand_deep",
-    "sand",
-    "sand_pale",
-    "khaki_dusk",
-    "terracotta_cool",
-    "charcoal-plastic_dusk",
-    "charcoal-plastic_warm",
-    "golden_deep",
-    "olive_warm",
-    "golden_pale",
-    "golden",
-    "paper-cream_pale",
-    "paper-cream",
-    "paper-cream_deep",
-    "olive_dusk",
-    "khaki",
-    "khaki_deep",
-    "khaki_pale",
-    "charcoal-plastic_pale",
-    "sand_cool",
-    "charcoal-plastic",
-    "olive_pale",
-    "olive",
-    "golden_cool",
-    "charcoal-plastic_deep",
-    "olive_deep",
-    "paper-cream_cool",
-    "khaki_cool",
-    "charcoal-plastic_cool",
-    "olive_cool",
-    "seafoam-grey_warm",
-    "seafoam-grey_dusk",
-    "seafoam-grey_deep",
-    "seafoam-grey",
-    "seafoam-grey_pale",
-    "mint_warm",
-    "mint_dusk",
-    "seafoam-grey_cool",
-    "mint",
-    "mint_deep",
-    "mint_pale",
-    "sky-teal_warm",
-    "sky-teal_dusk",
-    "mint_cool",
-    "sky-teal_pale",
-    "sky-teal_deep",
-    "sky-teal",
-    "sky-teal_cool",
-    "faded-denim_warm",
-    "faded-denim_dusk",
-    "faded-denim_pale",
-    "faded-denim",
-    "faded-denim_deep",
-    "faded-denim_cool",
-    "mall-mauve_warm",
-    "mall-mauve_dusk",
-    "mall-mauve",
-    "mall-mauve_pale",
-    "mall-mauve_deep",
-    "mall-mauve_cool",
-    "dusty-rose_warm",
-    "dusty-rose_dusk"
+  "shades": [
+    "pale",
+    "light",
+    "base",
+    "dark",
+    "deep"
   ],
-  "ordering_hash": "73ab57e1f85c8b7c",
+  "bold": [
+    "teal",
+    "rose",
+    "yellow",
+    "red",
+    "magenta"
+  ],
+  "families": [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "teal",
+    "blue",
+    "purple",
+    "pink",
+    "mint"
+  ],
+  "ordering": [
+    "paper-white",
+    "paper-cream",
+    "cream",
+    "sand",
+    "tan",
+    "taupe",
+    "stone",
+    "slate",
+    "umber",
+    "ink",
+    "pitch",
+    "bold-teal_light",
+    "bold-teal",
+    "bold-teal_dark",
+    "bold-rose_light",
+    "bold-rose",
+    "bold-rose_dark",
+    "bold-yellow_light",
+    "bold-yellow",
+    "bold-yellow_dark",
+    "bold-red_light",
+    "bold-red",
+    "bold-red_dark",
+    "bold-magenta_light",
+    "bold-magenta",
+    "bold-magenta_dark",
+    "red_pale",
+    "red_light",
+    "red",
+    "red_dark",
+    "red_deep",
+    "orange_pale",
+    "orange_light",
+    "orange",
+    "orange_dark",
+    "orange_deep",
+    "yellow_pale",
+    "yellow_light",
+    "yellow",
+    "yellow_dark",
+    "yellow_deep",
+    "green_pale",
+    "green_light",
+    "green",
+    "green_dark",
+    "green_deep",
+    "teal_pale",
+    "teal_light",
+    "teal",
+    "teal_dark",
+    "teal_deep",
+    "blue_pale",
+    "blue_light",
+    "blue",
+    "blue_dark",
+    "blue_deep",
+    "purple_pale",
+    "purple_light",
+    "purple",
+    "purple_dark",
+    "purple_deep",
+    "pink_pale",
+    "pink_light",
+    "pink",
+    "pink_dark",
+    "pink_deep",
+    "mint_pale",
+    "mint_light",
+    "mint",
+    "mint_dark",
+    "mint_deep"
+  ],
+  "ordering_hash": "fcc33668ef4dadf8",
   "swatches": {
+    "paper-white": {
+      "group": "neutral",
+      "family": "paper-white",
+      "shade": "base",
+      "role": "the brightest paper; clouds, highlights",
+      "rgb8": [
+        250,
+        250,
+        249
+      ],
+      "hex": "#fafaf9",
+      "index": 0
+    },
     "paper-cream": {
-      "base": "paper-cream",
-      "drift": null,
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
+      "group": "neutral",
+      "family": "paper-cream",
+      "shade": "base",
+      "role": "the default light base: walls, concrete",
       "rgb8": [
-        242,
-        228,
-        204
+        240,
+        234,
+        224
       ],
-      "hex": "#f2e4cc",
-      "index": 40
+      "hex": "#f0eae0",
+      "index": 1
     },
-    "paper-cream_warm": {
-      "base": "paper-cream",
-      "drift": "warm",
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
+    "cream": {
+      "group": "neutral",
+      "family": "cream",
+      "shade": "base",
+      "role": "warmer paper; interior walls, skin base",
       "rgb8": [
-        242,
-        223,
-        204
+        235,
+        215,
+        197
       ],
-      "hex": "#f2dfcc",
-      "index": 24
-    },
-    "paper-cream_cool": {
-      "base": "paper-cream",
-      "drift": "cool",
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
-      "rgb8": [
-        242,
-        233,
-        204
-      ],
-      "hex": "#f2e9cc",
-      "index": 54
-    },
-    "paper-cream_dusk": {
-      "base": "paper-cream",
-      "drift": "dusk",
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
-      "rgb8": [
-        223,
-        206,
-        188
-      ],
-      "hex": "#dfcebc",
-      "index": 27
-    },
-    "paper-cream_pale": {
-      "base": "paper-cream",
-      "drift": "pale",
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
-      "rgb8": [
-        242,
-        230,
-        210
-      ],
-      "hex": "#f2e6d2",
-      "index": 39
-    },
-    "paper-cream_deep": {
-      "base": "paper-cream",
-      "drift": "deep",
-      "group": "core",
-      "role": "light base: walls, concrete, highlights, clouds",
-      "rgb8": [
-        227,
-        212,
-        186
-      ],
-      "hex": "#e3d4ba",
-      "index": 41
+      "hex": "#ebd7c5",
+      "index": 2
     },
     "sand": {
-      "base": "sand",
-      "drift": null,
-      "group": "core",
+      "group": "neutral",
+      "family": "sand",
+      "shade": "base",
       "role": "ground, road, mid-value neutrals",
       "rgb8": [
-        217,
-        192,
-        163
+        218,
+        195,
+        169
       ],
-      "hex": "#d9c0a3",
-      "index": 29
+      "hex": "#dac3a9",
+      "index": 3
     },
-    "sand_warm": {
-      "base": "sand",
-      "drift": "warm",
-      "group": "core",
-      "role": "ground, road, mid-value neutrals",
+    "tan": {
+      "group": "neutral",
+      "family": "tan",
+      "shade": "base",
+      "role": "dry earth, cardboard, secondary ground",
       "rgb8": [
-        217,
-        185,
-        163
+        199,
+        164,
+        132
       ],
-      "hex": "#d9b9a3",
+      "hex": "#c7a484",
+      "index": 4
+    },
+    "taupe": {
+      "group": "neutral",
+      "family": "taupe",
+      "shade": "base",
+      "role": "aged plaster, worn wood",
+      "rgb8": [
+        183,
+        166,
+        147
+      ],
+      "hex": "#b7a693",
+      "index": 5
+    },
+    "stone": {
+      "group": "neutral",
+      "family": "stone",
+      "shade": "base",
+      "role": "concrete in shadow, weathered grey",
+      "rgb8": [
+        138,
+        135,
+        130
+      ],
+      "hex": "#8a8782",
+      "index": 6
+    },
+    "slate": {
+      "group": "neutral",
+      "family": "slate",
+      "shade": "base",
+      "role": "the 80s mauve-grey; electronics, shadow mass",
+      "rgb8": [
+        107,
+        104,
+        117
+      ],
+      "hex": "#6b6875",
+      "index": 7
+    },
+    "umber": {
+      "group": "neutral",
+      "family": "umber",
+      "shade": "base",
+      "role": "dark wood, soil, deep structural darks \u2014 curated down from the census centre #72503c, which is too saturated to sit among neutrals",
+      "rgb8": [
+        106,
+        83,
+        70
+      ],
+      "hex": "#6a5346",
+      "index": 8
+    },
+    "ink": {
+      "group": "neutral",
+      "family": "ink",
+      "shade": "base",
+      "role": "near-black warm; tires, the CRT, line-weight mass",
+      "rgb8": [
+        55,
+        49,
+        52
+      ],
+      "hex": "#373134",
+      "index": 9
+    },
+    "pitch": {
+      "group": "neutral",
+      "family": "pitch",
+      "shade": "base",
+      "role": "the darkest note in the film; use sparingly",
+      "rgb8": [
+        22,
+        14,
+        15
+      ],
+      "hex": "#160e0f",
+      "index": 10
+    },
+    "bold-teal": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "base",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        10,
+        189,
+        180
+      ],
+      "hex": "#0abdb4",
+      "index": 12
+    },
+    "bold-teal_light": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "light",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        70,
+        219,
+        211
+      ],
+      "hex": "#46dbd3",
+      "index": 11
+    },
+    "bold-teal_dark": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "dark",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        0,
+        129,
+        122
+      ],
+      "hex": "#00817a",
+      "index": 13
+    },
+    "bold-rose": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "base",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        201,
+        59,
+        94
+      ],
+      "hex": "#c93b5e",
+      "index": 15
+    },
+    "bold-rose_light": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "light",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        225,
+        111,
+        139
+      ],
+      "hex": "#e16f8b",
+      "index": 14
+    },
+    "bold-rose_dark": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "dark",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        137,
+        32,
+        58
+      ],
+      "hex": "#89203a",
       "index": 16
     },
-    "sand_cool": {
-      "base": "sand",
-      "drift": "cool",
-      "group": "core",
-      "role": "ground, road, mid-value neutrals",
+    "bold-yellow": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "base",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
       "rgb8": [
-        217,
-        199,
-        163
+        250,
+        212,
+        19
       ],
-      "hex": "#d9c7a3",
-      "index": 47
+      "hex": "#fad413",
+      "index": 18
     },
-    "sand_dusk": {
-      "base": "sand",
-      "drift": "dusk",
-      "group": "core",
-      "role": "ground, road, mid-value neutrals",
+    "bold-yellow_light": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "light",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
       "rgb8": [
-        200,
-        172,
-        150
+        252,
+        225,
+        84
       ],
-      "hex": "#c8ac96",
-      "index": 22
+      "hex": "#fce154",
+      "index": 17
     },
-    "sand_pale": {
-      "base": "sand",
-      "drift": "pale",
-      "group": "core",
-      "role": "ground, road, mid-value neutrals",
+    "bold-yellow_dark": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "dark",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
       "rgb8": [
-        217,
-        196,
-        171
+        170,
+        142,
+        0
       ],
-      "hex": "#d9c4ab",
-      "index": 30
+      "hex": "#aa8e00",
+      "index": 19
     },
-    "sand_deep": {
-      "base": "sand",
-      "drift": "deep",
-      "group": "core",
-      "role": "ground, road, mid-value neutrals",
+    "bold-red": {
+      "group": "bold",
+      "family": "red",
+      "shade": "base",
+      "role": "the gouache vest red; hot accents, danger",
       "rgb8": [
-        204,
-        177,
-        146
+        197,
+        59,
+        48
       ],
-      "hex": "#ccb192",
-      "index": 28
+      "hex": "#c53b30",
+      "index": 21
     },
-    "khaki": {
-      "base": "khaki",
-      "drift": null,
-      "group": "core",
-      "role": "dry grass, secondary ground",
+    "bold-red_light": {
+      "group": "bold",
+      "family": "red",
+      "shade": "light",
+      "role": "the gouache vest red; hot accents, danger",
       "rgb8": [
-        194,
-        168,
-        120
-      ],
-      "hex": "#c2a878",
-      "index": 43
-    },
-    "khaki_warm": {
-      "base": "khaki",
-      "drift": "warm",
-      "group": "core",
-      "role": "dry grass, secondary ground",
-      "rgb8": [
-        194,
-        158,
-        120
-      ],
-      "hex": "#c29e78",
-      "index": 25
-    },
-    "khaki_cool": {
-      "base": "khaki",
-      "drift": "cool",
-      "group": "core",
-      "role": "dry grass, secondary ground",
-      "rgb8": [
-        194,
-        178,
-        120
-      ],
-      "hex": "#c2b278",
-      "index": 55
-    },
-    "khaki_dusk": {
-      "base": "khaki",
-      "drift": "dusk",
-      "group": "core",
-      "role": "dry grass, secondary ground",
-      "rgb8": [
-        178,
-        148,
-        110
-      ],
-      "hex": "#b2946e",
-      "index": 31
-    },
-    "khaki_pale": {
-      "base": "khaki",
-      "drift": "pale",
-      "group": "core",
-      "role": "dry grass, secondary ground",
-      "rgb8": [
-        194,
-        172,
-        131
-      ],
-      "hex": "#c2ac83",
-      "index": 45
-    },
-    "khaki_deep": {
-      "base": "khaki",
-      "drift": "deep",
-      "group": "core",
-      "role": "dry grass, secondary ground",
-      "rgb8": [
-        182,
-        154,
+        223,
+        111,
         102
       ],
-      "hex": "#b69a66",
-      "index": 44
+      "hex": "#df6f66",
+      "index": 20
     },
-    "olive": {
-      "base": "olive",
-      "drift": null,
-      "group": "core",
-      "role": "lawn, foliage masses",
-      "rgb8": [
-        143,
-        122,
-        61
-      ],
-      "hex": "#8f7a3d",
-      "index": 50
-    },
-    "olive_warm": {
-      "base": "olive",
-      "drift": "warm",
-      "group": "core",
-      "role": "lawn, foliage masses",
-      "rgb8": [
-        143,
-        111,
-        61
-      ],
-      "hex": "#8f6f3d",
-      "index": 36
-    },
-    "olive_cool": {
-      "base": "olive",
-      "drift": "cool",
-      "group": "core",
-      "role": "lawn, foliage masses",
-      "rgb8": [
-        143,
-        133,
-        61
-      ],
-      "hex": "#8f853d",
-      "index": 57
-    },
-    "olive_dusk": {
-      "base": "olive",
-      "drift": "dusk",
-      "group": "core",
-      "role": "lawn, foliage masses",
-      "rgb8": [
-        132,
-        105,
-        56
-      ],
-      "hex": "#846938",
-      "index": 42
-    },
-    "olive_pale": {
-      "base": "olive",
-      "drift": "pale",
-      "group": "core",
-      "role": "lawn, foliage masses",
-      "rgb8": [
-        143,
-        125,
-        73
-      ],
-      "hex": "#8f7d49",
-      "index": 49
-    },
-    "olive_deep": {
-      "base": "olive",
-      "drift": "deep",
-      "group": "core",
-      "role": "lawn, foliage masses",
+    "bold-red_dark": {
+      "group": "bold",
+      "family": "red",
+      "shade": "dark",
+      "role": "the gouache vest red; hot accents, danger",
       "rgb8": [
         134,
-        112,
-        46
+        33,
+        25
       ],
-      "hex": "#86702e",
-      "index": 53
+      "hex": "#862119",
+      "index": 22
     },
-    "sky-teal": {
-      "base": "sky-teal",
-      "drift": null,
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
+    "bold-magenta": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "base",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        246,
+        20,
+        128
+      ],
+      "hex": "#f61480",
+      "index": 24
+    },
+    "bold-magenta_light": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "light",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        250,
+        85,
+        164
+      ],
+      "hex": "#fa55a4",
+      "index": 23
+    },
+    "bold-magenta_dark": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "dark",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        167,
+        1,
+        81
+      ],
+      "hex": "#a70151",
+      "index": 25
+    },
+    "red_pale": {
+      "group": "family",
+      "family": "red",
+      "shade": "pale",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        237,
+        179,
+        172
+      ],
+      "hex": "#edb3ac",
+      "index": 26
+    },
+    "red_light": {
+      "group": "family",
+      "family": "red",
+      "shade": "light",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        217,
+        124,
+        113
+      ],
+      "hex": "#d97c71",
+      "index": 27
+    },
+    "red": {
+      "group": "family",
+      "family": "red",
+      "shade": "base",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        192,
+        74,
+        60
+      ],
+      "hex": "#c04a3c",
+      "index": 28
+    },
+    "red_dark": {
+      "group": "family",
+      "family": "red",
+      "shade": "dark",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        134,
+        45,
+        35
+      ],
+      "hex": "#862d23",
+      "index": 29
+    },
+    "red_deep": {
+      "group": "family",
+      "family": "red",
+      "shade": "deep",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        86,
+        26,
+        19
+      ],
+      "hex": "#561a13",
+      "index": 30
+    },
+    "orange_pale": {
+      "group": "family",
+      "family": "orange",
+      "shade": "pale",
+      "role": "terracotta, rust, warm afternoon light",
+      "rgb8": [
+        245,
+        217,
+        185
+      ],
+      "hex": "#f5d9b9",
+      "index": 31
+    },
+    "orange_light": {
+      "group": "family",
+      "family": "orange",
+      "shade": "light",
+      "role": "terracotta, rust, warm afternoon light",
+      "rgb8": [
+        235,
+        186,
+        134
+      ],
+      "hex": "#ebba86",
+      "index": 32
+    },
+    "orange": {
+      "group": "family",
+      "family": "orange",
+      "shade": "base",
+      "role": "terracotta, rust, warm afternoon light",
+      "rgb8": [
+        221,
+        156,
+        85
+      ],
+      "hex": "#dd9c55",
+      "index": 33
+    },
+    "orange_dark": {
+      "group": "family",
+      "family": "orange",
+      "shade": "dark",
+      "role": "terracotta, rust, warm afternoon light",
+      "rgb8": [
+        155,
+        106,
+        52
+      ],
+      "hex": "#9b6a34",
+      "index": 34
+    },
+    "orange_deep": {
+      "group": "family",
+      "family": "orange",
+      "shade": "deep",
+      "role": "terracotta, rust, warm afternoon light",
+      "rgb8": [
+        99,
+        66,
+        30
+      ],
+      "hex": "#63421e",
+      "index": 35
+    },
+    "yellow_pale": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "pale",
+      "role": "golden hour, dry grass, kitchen enamel",
+      "rgb8": [
+        249,
+        228,
+        181
+      ],
+      "hex": "#f9e4b5",
+      "index": 36
+    },
+    "yellow_light": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "light",
+      "role": "golden hour, dry grass, kitchen enamel",
+      "rgb8": [
+        241,
+        206,
+        126
+      ],
+      "hex": "#f1ce7e",
+      "index": 37
+    },
+    "yellow": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "base",
+      "role": "golden hour, dry grass, kitchen enamel",
+      "rgb8": [
+        232,
+        183,
+        74
+      ],
+      "hex": "#e8b74a",
+      "index": 38
+    },
+    "yellow_dark": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "dark",
+      "role": "golden hour, dry grass, kitchen enamel",
+      "rgb8": [
+        162,
+        125,
+        43
+      ],
+      "hex": "#a27d2b",
+      "index": 39
+    },
+    "yellow_deep": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "deep",
+      "role": "golden hour, dry grass, kitchen enamel",
+      "rgb8": [
+        104,
+        79,
+        23
+      ],
+      "hex": "#684f17",
+      "index": 40
+    },
+    "green_pale": {
+      "group": "family",
+      "family": "green",
+      "shade": "pale",
+      "role": "DERIVED, not sampled \u2014 lawn, foliage, sage 90s kitchenware; the refs carry almost no green",
+      "rgb8": [
+        217,
+        231,
+        215
+      ],
+      "hex": "#d9e7d7",
+      "index": 41
+    },
+    "green_light": {
+      "group": "family",
+      "family": "green",
+      "shade": "light",
+      "role": "DERIVED, not sampled \u2014 lawn, foliage, sage 90s kitchenware; the refs carry almost no green",
+      "rgb8": [
+        181,
+        204,
+        179
+      ],
+      "hex": "#b5ccb3",
+      "index": 42
+    },
+    "green": {
+      "group": "family",
+      "family": "green",
+      "shade": "base",
+      "role": "DERIVED, not sampled \u2014 lawn, foliage, sage 90s kitchenware; the refs carry almost no green",
+      "rgb8": [
+        143,
+        170,
+        140
+      ],
+      "hex": "#8faa8c",
+      "index": 43
+    },
+    "green_dark": {
+      "group": "family",
+      "family": "green",
+      "shade": "dark",
+      "role": "DERIVED, not sampled \u2014 lawn, foliage, sage 90s kitchenware; the refs carry almost no green",
+      "rgb8": [
+        99,
+        119,
+        96
+      ],
+      "hex": "#637760",
+      "index": 44
+    },
+    "green_deep": {
+      "group": "family",
+      "family": "green",
+      "shade": "deep",
+      "role": "DERIVED, not sampled \u2014 lawn, foliage, sage 90s kitchenware; the refs carry almost no green",
+      "rgb8": [
+        63,
+        76,
+        61
+      ],
+      "hex": "#3f4c3d",
+      "index": 45
+    },
+    "teal_pale": {
+      "group": "family",
+      "family": "teal",
+      "shade": "pale",
+      "role": "the sky family; glass, the truck's world",
+      "rgb8": [
+        173,
+        237,
+        232
+      ],
+      "hex": "#adede8",
+      "index": 46
+    },
+    "teal_light": {
+      "group": "family",
+      "family": "teal",
+      "shade": "light",
+      "role": "the sky family; glass, the truck's world",
+      "rgb8": [
+        115,
+        215,
+        207
+      ],
+      "hex": "#73d7cf",
+      "index": 47
+    },
+    "teal": {
+      "group": "family",
+      "family": "teal",
+      "shade": "base",
+      "role": "the sky family; glass, the truck's world",
       "rgb8": [
         63,
         189,
         179
       ],
       "hex": "#3fbdb3",
-      "index": 74
+      "index": 48
     },
-    "sky-teal_warm": {
-      "base": "sky-teal",
-      "drift": "warm",
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
+    "teal_dark": {
+      "group": "family",
+      "family": "teal",
+      "shade": "dark",
+      "role": "the sky family; glass, the truck's world",
       "rgb8": [
-        63,
-        189,
-        162
-      ],
-      "hex": "#3fbda2",
-      "index": 69
-    },
-    "sky-teal_cool": {
-      "base": "sky-teal",
-      "drift": "cool",
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
-      "rgb8": [
-        63,
-        182,
-        189
-      ],
-      "hex": "#3fb6bd",
-      "index": 75
-    },
-    "sky-teal_dusk": {
-      "base": "sky-teal",
-      "drift": "dusk",
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
-      "rgb8": [
-        58,
-        174,
-        153
-      ],
-      "hex": "#3aae99",
-      "index": 70
-    },
-    "sky-teal_pale": {
-      "base": "sky-teal",
-      "drift": "pale",
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
-      "rgb8": [
-        82,
-        189,
-        180
-      ],
-      "hex": "#52bdb4",
-      "index": 72
-    },
-    "sky-teal_deep": {
-      "base": "sky-teal",
-      "drift": "deep",
-      "group": "core",
-      "role": "the daytime sky; deep and slightly desaturated",
-      "rgb8": [
-        41,
-        178,
-        167
-      ],
-      "hex": "#29b2a7",
-      "index": 73
-    },
-    "terracotta": {
-      "base": "terracotta",
-      "drift": null,
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
-      "rgb8": [
-        176,
-        118,
-        74
-      ],
-      "hex": "#b0764a",
-      "index": 19
-    },
-    "terracotta_warm": {
-      "base": "terracotta",
-      "drift": "warm",
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
-      "rgb8": [
-        176,
-        104,
-        74
-      ],
-      "hex": "#b0684a",
-      "index": 14
-    },
-    "terracotta_cool": {
-      "base": "terracotta",
-      "drift": "cool",
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
-      "rgb8": [
-        176,
+        37,
         132,
-        74
+        125
       ],
-      "hex": "#b0844a",
-      "index": 32
+      "hex": "#25847d",
+      "index": 49
     },
-    "terracotta_dusk": {
-      "base": "terracotta",
-      "drift": "dusk",
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
+    "teal_deep": {
+      "group": "family",
+      "family": "teal",
+      "shade": "deep",
+      "role": "the sky family; glass, the truck's world",
       "rgb8": [
-        162,
-        99,
-        68
+        20,
+        85,
+        80
       ],
-      "hex": "#a26344",
-      "index": 15
+      "hex": "#145550",
+      "index": 50
     },
-    "terracotta_pale": {
-      "base": "terracotta",
-      "drift": "pale",
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
+    "blue_pale": {
+      "group": "family",
+      "family": "blue",
+      "shade": "pale",
+      "role": "denim, distance, shadowed sky",
       "rgb8": [
-        176,
-        127,
-        89
+        190,
+        218,
+        232
       ],
-      "hex": "#b07f59",
-      "index": 21
-    },
-    "terracotta_deep": {
-      "base": "terracotta",
-      "drift": "deep",
-      "group": "core",
-      "role": "roofs, brick, furniture accents",
-      "rgb8": [
-        165,
-        103,
-        55
-      ],
-      "hex": "#a56737",
-      "index": 20
-    },
-    "rust": {
-      "base": "rust",
-      "drift": null,
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        201,
-        95,
-        51
-      ],
-      "hex": "#c95f33",
-      "index": 13
-    },
-    "rust_warm": {
-      "base": "rust",
-      "drift": "warm",
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        201,
-        75,
-        51
-      ],
-      "hex": "#c94b33",
-      "index": 5
-    },
-    "rust_cool": {
-      "base": "rust",
-      "drift": "cool",
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        201,
-        115,
-        51
-      ],
-      "hex": "#c97333",
-      "index": 18
-    },
-    "rust_dusk": {
-      "base": "rust",
-      "drift": "dusk",
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        185,
-        74,
-        47
-      ],
-      "hex": "#b94a2f",
-      "index": 7
-    },
-    "rust_pale": {
-      "base": "rust",
-      "drift": "pale",
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        201,
-        111,
-        74
-      ],
-      "hex": "#c96f4a",
-      "index": 12
-    },
-    "rust_deep": {
-      "base": "rust",
-      "drift": "deep",
-      "group": "core",
-      "role": "hot accents: mountains, the cop car's pop",
-      "rgb8": [
-        189,
-        74,
-        27
-      ],
-      "hex": "#bd4a1b",
-      "index": 11
-    },
-    "dusty-rose": {
-      "base": "dusty-rose",
-      "drift": null,
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        216,
-        168,
-        168
-      ],
-      "hex": "#d8a8a8",
-      "index": 1
-    },
-    "dusty-rose_warm": {
-      "base": "dusty-rose",
-      "drift": "warm",
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        216,
-        168,
-        174
-      ],
-      "hex": "#d8a8ae",
-      "index": 88
-    },
-    "dusty-rose_cool": {
-      "base": "dusty-rose",
-      "drift": "cool",
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        216,
-        174,
-        168
-      ],
-      "hex": "#d8aea8",
-      "index": 3
-    },
-    "dusty-rose_dusk": {
-      "base": "dusty-rose",
-      "drift": "dusk",
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        199,
-        155,
-        159
-      ],
-      "hex": "#c79b9f",
-      "index": 89
-    },
-    "dusty-rose_pale": {
-      "base": "dusty-rose",
-      "drift": "pale",
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        216,
-        175,
-        175
-      ],
-      "hex": "#d8afaf",
-      "index": 2
-    },
-    "dusty-rose_deep": {
-      "base": "dusty-rose",
-      "drift": "deep",
-      "group": "core",
-      "role": "sunset transition, distant warmth",
-      "rgb8": [
-        203,
-        151,
-        151
-      ],
-      "hex": "#cb9797",
-      "index": 0
-    },
-    "coral": {
-      "base": "coral",
-      "drift": null,
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        240,
-        160,
-        130
-      ],
-      "hex": "#f0a082",
-      "index": 9
-    },
-    "coral_warm": {
-      "base": "coral",
-      "drift": "warm",
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        240,
-        145,
-        130
-      ],
-      "hex": "#f09182",
-      "index": 4
-    },
-    "coral_cool": {
-      "base": "coral",
-      "drift": "cool",
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        240,
-        175,
-        130
-      ],
-      "hex": "#f0af82",
-      "index": 17
-    },
-    "coral_dusk": {
-      "base": "coral",
-      "drift": "dusk",
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        221,
-        137,
-        120
-      ],
-      "hex": "#dd8978",
-      "index": 6
-    },
-    "coral_pale": {
-      "base": "coral",
-      "drift": "pale",
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        240,
-        172,
-        146
-      ],
-      "hex": "#f0ac92",
-      "index": 10
-    },
-    "coral_deep": {
-      "base": "coral",
-      "drift": "deep",
-      "group": "core",
-      "role": "the sunset sky",
-      "rgb8": [
-        226,
-        139,
-        107
-      ],
-      "hex": "#e28b6b",
-      "index": 8
-    },
-    "golden": {
-      "base": "golden",
-      "drift": null,
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
-      "rgb8": [
-        238,
-        192,
-        120
-      ],
-      "hex": "#eec078",
-      "index": 38
-    },
-    "golden_warm": {
-      "base": "golden",
-      "drift": "warm",
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
-      "rgb8": [
-        238,
-        176,
-        120
-      ],
-      "hex": "#eeb078",
-      "index": 23
-    },
-    "golden_cool": {
-      "base": "golden",
-      "drift": "cool",
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
-      "rgb8": [
-        238,
-        208,
-        120
-      ],
-      "hex": "#eed078",
+      "hex": "#bedae8",
       "index": 51
     },
-    "golden_dusk": {
-      "base": "golden",
-      "drift": "dusk",
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
+    "blue_light": {
+      "group": "family",
+      "family": "blue",
+      "shade": "light",
+      "role": "denim, distance, shadowed sky",
       "rgb8": [
-        219,
-        166,
-        110
+        140,
+        185,
+        206
       ],
-      "hex": "#dba66e",
-      "index": 26
+      "hex": "#8cb9ce",
+      "index": 52
     },
-    "golden_pale": {
-      "base": "golden",
-      "drift": "pale",
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
+    "blue": {
+      "group": "family",
+      "family": "blue",
+      "shade": "base",
+      "role": "denim, distance, shadowed sky",
       "rgb8": [
-        238,
-        199,
-        138
+        94,
+        148,
+        174
       ],
-      "hex": "#eec78a",
-      "index": 37
+      "hex": "#5e94ae",
+      "index": 53
     },
-    "golden_deep": {
-      "base": "golden",
-      "drift": "deep",
-      "group": "core",
-      "role": "sun disc, golden-hour wash",
+    "blue_dark": {
+      "group": "family",
+      "family": "blue",
+      "shade": "dark",
+      "role": "denim, distance, shadowed sky",
       "rgb8": [
-        224,
-        174,
-        96
+        61,
+        102,
+        122
       ],
-      "hex": "#e0ae60",
-      "index": 35
+      "hex": "#3d667a",
+      "index": 54
+    },
+    "blue_deep": {
+      "group": "family",
+      "family": "blue",
+      "shade": "deep",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        37,
+        65,
+        78
+      ],
+      "hex": "#25414e",
+      "index": 55
+    },
+    "purple_pale": {
+      "group": "family",
+      "family": "purple",
+      "shade": "pale",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        210,
+        203,
+        224
+      ],
+      "hex": "#d2cbe0",
+      "index": 56
+    },
+    "purple_light": {
+      "group": "family",
+      "family": "purple",
+      "shade": "light",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        168,
+        158,
+        190
+      ],
+      "hex": "#a89ebe",
+      "index": 57
+    },
+    "purple": {
+      "group": "family",
+      "family": "purple",
+      "shade": "base",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        122,
+        111,
+        146
+      ],
+      "hex": "#7a6f92",
+      "index": 58
+    },
+    "purple_dark": {
+      "group": "family",
+      "family": "purple",
+      "shade": "dark",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        84,
+        76,
+        102
+      ],
+      "hex": "#544c66",
+      "index": 59
+    },
+    "purple_deep": {
+      "group": "family",
+      "family": "purple",
+      "shade": "deep",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        53,
+        48,
+        66
+      ],
+      "hex": "#353042",
+      "index": 60
+    },
+    "pink_pale": {
+      "group": "family",
+      "family": "pink",
+      "shade": "pale",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        247,
+        210,
+        214
+      ],
+      "hex": "#f7d2d6",
+      "index": 61
+    },
+    "pink_light": {
+      "group": "family",
+      "family": "pink",
+      "shade": "light",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        239,
+        176,
+        182
+      ],
+      "hex": "#efb0b6",
+      "index": 62
+    },
+    "pink": {
+      "group": "family",
+      "family": "pink",
+      "shade": "base",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        228,
+        142,
+        150
+      ],
+      "hex": "#e48e96",
+      "index": 63
+    },
+    "pink_dark": {
+      "group": "family",
+      "family": "pink",
+      "shade": "dark",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        160,
+        95,
+        101
+      ],
+      "hex": "#a05f65",
+      "index": 64
+    },
+    "pink_deep": {
+      "group": "family",
+      "family": "pink",
+      "shade": "deep",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        103,
+        58,
+        63
+      ],
+      "hex": "#673a3f",
+      "index": 65
+    },
+    "mint_pale": {
+      "group": "family",
+      "family": "mint",
+      "shade": "pale",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        200,
+        248,
+        237
+      ],
+      "hex": "#c8f8ed",
+      "index": 66
+    },
+    "mint_light": {
+      "group": "family",
+      "family": "mint",
+      "shade": "light",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        158,
+        241,
+        222
+      ],
+      "hex": "#9ef1de",
+      "index": 67
     },
     "mint": {
-      "base": "mint",
-      "drift": null,
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
+      "group": "family",
+      "family": "mint",
+      "shade": "base",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
       "rgb8": [
         118,
         231,
         205
       ],
       "hex": "#76e7cd",
-      "index": 66
-    },
-    "mint_warm": {
-      "base": "mint",
-      "drift": "warm",
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
-      "rgb8": [
-        118,
-        231,
-        190
-      ],
-      "hex": "#76e7be",
-      "index": 63
-    },
-    "mint_cool": {
-      "base": "mint",
-      "drift": "cool",
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
-      "rgb8": [
-        118,
-        231,
-        220
-      ],
-      "hex": "#76e7dc",
-      "index": 71
-    },
-    "mint_dusk": {
-      "base": "mint",
-      "drift": "dusk",
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
-      "rgb8": [
-        109,
-        213,
-        178
-      ],
-      "hex": "#6dd5b2",
-      "index": 64
-    },
-    "mint_pale": {
-      "base": "mint",
-      "drift": "pale",
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
-      "rgb8": [
-        135,
-        231,
-        209
-      ],
-      "hex": "#87e7d1",
       "index": 68
     },
+    "mint_dark": {
+      "group": "family",
+      "family": "mint",
+      "shade": "dark",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        76,
+        162,
+        142
+      ],
+      "hex": "#4ca28e",
+      "index": 69
+    },
     "mint_deep": {
-      "base": "mint",
-      "drift": "deep",
-      "group": "core",
-      "role": "reserved: the truck and the sweet tea",
+      "group": "family",
+      "family": "mint",
+      "shade": "deep",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
       "rgb8": [
-        95,
-        217,
-        189
+        46,
+        104,
+        91
       ],
-      "hex": "#5fd9bd",
-      "index": 67
-    },
-    "charcoal-plastic": {
-      "base": "charcoal-plastic",
-      "drift": null,
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        66,
-        64,
-        59
-      ],
-      "hex": "#42403b",
-      "index": 48
-    },
-    "charcoal-plastic_warm": {
-      "base": "charcoal-plastic",
-      "drift": "warm",
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        66,
-        63,
-        59
-      ],
-      "hex": "#423f3b",
-      "index": 34
-    },
-    "charcoal-plastic_cool": {
-      "base": "charcoal-plastic",
-      "drift": "cool",
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        66,
-        65,
-        59
-      ],
-      "hex": "#42413b",
-      "index": 56
-    },
-    "charcoal-plastic_dusk": {
-      "base": "charcoal-plastic",
-      "drift": "dusk",
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        61,
-        58,
-        54
-      ],
-      "hex": "#3d3a36",
-      "index": 33
-    },
-    "charcoal-plastic_pale": {
-      "base": "charcoal-plastic",
-      "drift": "pale",
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        66,
-        64,
-        60
-      ],
-      "hex": "#42403c",
-      "index": 46
-    },
-    "charcoal-plastic_deep": {
-      "base": "charcoal-plastic",
-      "drift": "deep",
-      "group": "annex",
-      "role": "electronics, tires, the CRT, cop-car trim",
-      "rgb8": [
-        62,
-        60,
-        54
-      ],
-      "hex": "#3e3c36",
-      "index": 52
-    },
-    "faded-denim": {
-      "base": "faded-denim",
-      "drift": null,
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        125,
-        148,
-        168
-      ],
-      "hex": "#7d94a8",
-      "index": 79
-    },
-    "faded-denim_warm": {
-      "base": "faded-denim",
-      "drift": "warm",
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        125,
-        154,
-        168
-      ],
-      "hex": "#7d9aa8",
-      "index": 76
-    },
-    "faded-denim_cool": {
-      "base": "faded-denim",
-      "drift": "cool",
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        125,
-        142,
-        168
-      ],
-      "hex": "#7d8ea8",
-      "index": 81
-    },
-    "faded-denim_dusk": {
-      "base": "faded-denim",
-      "drift": "dusk",
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        115,
-        140,
-        155
-      ],
-      "hex": "#738c9b",
-      "index": 77
-    },
-    "faded-denim_pale": {
-      "base": "faded-denim",
-      "drift": "pale",
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        131,
-        151,
-        168
-      ],
-      "hex": "#8397a8",
-      "index": 78
-    },
-    "faded-denim_deep": {
-      "base": "faded-denim",
-      "drift": "deep",
-      "group": "annex",
-      "role": "the boy's baggies; denim anywhere",
-      "rgb8": [
-        111,
-        136,
-        158
-      ],
-      "hex": "#6f889e",
-      "index": 80
-    },
-    "mall-mauve": {
-      "base": "mall-mauve",
-      "drift": null,
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        169,
-        135,
-        148
-      ],
-      "hex": "#a98794",
-      "index": 84
-    },
-    "mall-mauve_warm": {
-      "base": "mall-mauve",
-      "drift": "warm",
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        169,
-        135,
-        153
-      ],
-      "hex": "#a98799",
-      "index": 82
-    },
-    "mall-mauve_cool": {
-      "base": "mall-mauve",
-      "drift": "cool",
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        169,
-        135,
-        143
-      ],
-      "hex": "#a9878f",
-      "index": 87
-    },
-    "mall-mauve_dusk": {
-      "base": "mall-mauve",
-      "drift": "dusk",
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        155,
-        124,
-        139
-      ],
-      "hex": "#9b7c8b",
-      "index": 83
-    },
-    "mall-mauve_pale": {
-      "base": "mall-mauve",
-      "drift": "pale",
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        169,
-        140,
-        151
-      ],
-      "hex": "#a98c97",
-      "index": 85
-    },
-    "mall-mauve_deep": {
-      "base": "mall-mauve",
-      "drift": "deep",
-      "group": "annex",
-      "role": "Mom's wardrobe, the afghan, the couch",
-      "rgb8": [
-        159,
-        122,
-        136
-      ],
-      "hex": "#9f7a88",
-      "index": 86
-    },
-    "seafoam-grey": {
-      "base": "seafoam-grey",
-      "drift": null,
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        157,
-        184,
-        172
-      ],
-      "hex": "#9db8ac",
-      "index": 61
-    },
-    "seafoam-grey_warm": {
-      "base": "seafoam-grey",
-      "drift": "warm",
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        157,
-        184,
-        168
-      ],
-      "hex": "#9db8a8",
-      "index": 58
-    },
-    "seafoam-grey_cool": {
-      "base": "seafoam-grey",
-      "drift": "cool",
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        157,
-        184,
-        176
-      ],
-      "hex": "#9db8b0",
-      "index": 65
-    },
-    "seafoam-grey_dusk": {
-      "base": "seafoam-grey",
-      "drift": "dusk",
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        144,
-        169,
-        156
-      ],
-      "hex": "#90a99c",
-      "index": 59
-    },
-    "seafoam-grey_pale": {
-      "base": "seafoam-grey",
-      "drift": "pale",
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        161,
-        184,
-        174
-      ],
-      "hex": "#a1b8ae",
-      "index": 62
-    },
-    "seafoam-grey_deep": {
-      "base": "seafoam-grey",
-      "drift": "deep",
-      "group": "annex",
-      "role": "90s kitchenware, a windbreaker",
-      "rgb8": [
-        144,
-        173,
-        160
-      ],
-      "hex": "#90ada0",
-      "index": 60
+      "hex": "#2e685b",
+      "index": 70
     }
   }
 }

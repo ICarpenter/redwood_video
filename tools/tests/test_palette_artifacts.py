@@ -137,7 +137,7 @@ class GeneratorOutputTest(unittest.TestCase):
 
     def test_albedo_generator_emits_all_four(self):
         payload = self._check(ap, "albedo_palette", "albedo_lut.png")
-        self.assertEqual(len(payload["ordering"]), 90)
+        self.assertEqual(len(payload["ordering"]), len(ap.swatches()))
 
     def test_tilt_generator_emits_all_four(self):
         payload = self._check(tp, "tilt_palette", "tilt_lut.png")
