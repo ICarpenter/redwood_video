@@ -55,7 +55,7 @@ in along it; a drainage **ditch** runs the length of the west shoulder
 (y ≈ −17…−14) — that's what he spins into. A **culvert** carries the
 driveway across it, and the mailbox marks the crossing.
 
-**HOUSE + GARAGE (centre).** House 12×9 m, gable roof, front porch facing
+**HOUSE + GARAGE (centre).** House 12×9 m, flat roof with deep fascia (see house.md), front porch facing
 the road (Mom fires from here in the final shot). The garage is attached on
 the far side from the road and is a **passthrough**: a front door onto the
 driveway/road and a rear door onto the backyard. This is the spatial engine
@@ -111,9 +111,9 @@ room, every story beat, no contrivance.
 
 | Element | Position | Notes |
 |---------|----------|-------|
-| House | x −7…5, y −4…5 | walls 3.2, ridge 5.2 |
+| House | x −7…5, y −4…5 | walls 3.2, flat roof, fascia to 3.6 |
 | Garage | x −13…−7, y −3…3 | **passthrough** — front door (road, y −3) + rear door (backyard, y +3) |
-| Front porch | x −5…1, y −6.4…−4 | Mom's firing position, final shot |
+| Front porch | x −5…1, y −6.4…−4 | the delivery lands here; sq010's door-slap and step-jump |
 | Kitchen windows | **west** wall x 1.4…4.2 · **north** wall y 1.6…4.2 | the two sightlines; both open double casements |
 | Road centre | y ≈ −20 | the escape route |
 | Ditch / crash | y −17…−14, crash ≈ x +10 | trench with culvert at driveway |
@@ -127,9 +127,10 @@ room, every story beat, no contrivance.
 
 ## Status
 
-Greybox massing, throwaway. Not yet designed: architectural character
-(porch clutter, siding, roof pitch, junk), terrain undulation, the clay
-look, interiors (the house is a shell: kitchen open across the whole west half, white walls, back door onto the stoop). Preview cameras
+The house's architectural character is designed and built — see `house.md`
+for the flat-roof MCM design (fascia, beams, casements, breeze-block,
+roofscape junk, kitchen interior across the west half, back door onto the
+stoop). Not yet designed: terrain undulation and the clay look. Preview cameras
 `cam_site`, `cam_intro`, `cam_backyard`, `cam_kitchen`, `cam_road`,
 `cam_sidecorridor` live in the file, outside the linkable `property`
 collection.
