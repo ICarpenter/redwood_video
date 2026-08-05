@@ -818,6 +818,18 @@ def revert():
     print("reverted: greybox restored into property")
 
 
+def purge_greybox():
+    gb = bpy.data.collections.get(GREYBOX_COLL)
+    if gb is None:
+        sys.exit("no _greybox to purge")
+    for ob in list(gb.objects):
+        bpy.data.objects.remove(ob, do_unlink=True)
+    bpy.data.collections.remove(gb)
+    for _ in range(3):
+        bpy.ops.outliner.orphans_purge(do_recursive=True)
+    print("greybox purged")
+
+
 KEEPERS = {
     "ground_far", "ground_yard", "ground_roadside", "road", "ditch_floor",
     "ditch_wall_e", "ditch_wall_w", "culvert", "driveway", "mailbox",
@@ -841,6 +853,9 @@ if __name__ == "__main__":
         bpy.ops.wm.save_mainfile()
     if "--revert" in argv:
         revert()
+        bpy.ops.wm.save_mainfile()
+    if "--purge-greybox" in argv:
+        purge_greybox()
         bpy.ops.wm.save_mainfile()
     if "--check" in argv:
         run_checks()
