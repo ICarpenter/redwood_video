@@ -497,15 +497,22 @@ Done:
   terrain / grass / diecast / characters tier table is deleted — tier is
   a freeform choice at the brush. Its last home is a vestigial field in
   `tilt_palette.json`.
-- **Dab painter designed, 2026-08-04** —
-  `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`
-  (index-map + LUT, undo correct by construction). Approved, not yet
-  built.
+- **Dab painter built and painting, 2026-08-04** —
+  `tools/addons/redwood_dabpaint.py`, designed in
+  `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`. One
+  stroke sets both channels; undo is correct by construction because
+  there is only ever one image. `tools/albedo_palette.py` ships with it:
+  15 bases x 5 drifts, 90 swatches. Confirmed working in the UI on a
+  plane in `tilt_dab_test.blend`.
 
 Next, in order:
 
-1. **Build the dab painter** from the design doc, plus
-   `tools/albedo_palette.py`. Not blocked on the tablet.
+1. **Settle the albedo palette.** The 90 swatches are a first guess made
+   to get the machinery working. Near-neutral bases (charcoal-plastic,
+   seafoam-grey) produce six near-identical drifts, and warm/cool only
+   mean what they say near the neutral axis. Cheap to change *now* —
+   nothing is painted, and reordering the palette repaints every existing
+   dab once something is.
 2. **Paint one asset** — the truck or the Santa — with the painter, to
    feel the workflow on a real surface. Watch for index fringing at dab
    boundaries early rather than late. Blocked on the tablet.

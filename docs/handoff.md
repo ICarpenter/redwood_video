@@ -278,6 +278,21 @@ still line up.
 - **Storypencil does not work on Blender 5.x** (upstream rewrite pending).
   Layout scenes are plain camera + Grease Pencil scenes; our conform does
   the assembly.
+- **`brush.color` is ignored while `use_unified_color` is on — and it is on
+  by default.** Painting uses the unified colour instead, so a script that
+  sets `brush.color` changes nothing and every stroke lands in whatever
+  colour the tool header already held. Set both. Cost a full debugging pass
+  on the dab painter, where it presented as "every dab is black whatever
+  swatch I click".
+  - In Blender 5.1 these live on the **paint struct**:
+    `tool_settings.image_paint.unified_paint_settings`.
+    `tool_settings.unified_paint_settings` is `None`. It has moved once, so
+    check both.
+- **`--factory-startup` ships a cube at the origin.** A headless check that
+  adds a plane at the origin and renders will render *the cube*, giving a
+  constant result for every input — which reads exactly like a broken
+  shader. `bpy.ops.wm.read_factory_settings(use_empty=True)` first.
+- **The render engine is `BLENDER_EEVEE` in 5.1**, not `BLENDER_EEVEE_NEXT`.
 - `SequenceEditor.sequences` → **`.strips`** (use a `hasattr` fallback).
 - `strips.new_effect()` takes **`length=`**, not `frame_end=`.
 - `action.fcurves` is **gone** — actions are slotted. Note that

@@ -1,6 +1,11 @@
 # Tilt-dab painter add-on — design
 
-**Date:** 2026-08-04 · **Branch:** animatic-sq060-sq090 · **Status:** approved, ready to plan
+**Date:** 2026-08-04 · **Branch:** animatic-sq060-sq090 · **Status:** BUILT
+2026-08-04 — `tools/addons/redwood_dabpaint.py`, confirmed painting in the UI.
+Two Blender traps found on the way in and recorded in `docs/handoff.md`:
+`brush.color` is ignored while `use_unified_color` is on (and it defaults on),
+and `--factory-startup` ships a cube at the origin that a headless render will
+photograph instead of your test geometry.
 
 ## Problem
 

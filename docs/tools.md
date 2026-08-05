@@ -441,6 +441,187 @@ Three things worth knowing:
   pose of the second leaf of a pair is a **reflection**, and no Euler rotation
   produces one.
 
+### `tools/basin.py` — the mountain backdrop (this is the one in use)
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/basin.py -- [--ring=1600] [--height=660] [--erode=90] [--bands=N]
+```
+
+Builds the `basin` collection — one baked mesh at `property/site/basin`: a 4 km
+eroded landscape with the middle held flat, so the property sits in a basin
+ringed by mountains standing over the house on every side (W 13.9°, E 13.6°,
+N 12.6°, S 15.8°, against the 11.3° the house subtends).
+
+**Requires the World Blender Basics 2025 asset library** at
+`~/blender/add-ons/World Blender Basics 2025/`. That is an *asset library*, not
+an add-on — 145 geometry-node groups in one blend, registered under
+Preferences → File Paths → Asset Libraries. Its **hydraulic erosion** is the
+whole reason for the dependency: drainage channels, carved ridgelines and
+alluvial fans that nothing hand-authored matches. `skyline.py`'s rings were
+cheap and controllable but the silhouettes were invented, and invented
+ridgelines read as invented.
+
+Five things worth knowing:
+
+- **Baked to mesh on purpose.** Leaving the geometry nodes live would drag all
+  198 World Blender node groups into `property.blend`, which is linked into
+  every layout scene, for a backdrop that never changes. The tool tracks
+  exactly which node groups it appended and deletes those — *not* a blanket
+  `orphans_purge`, which run inside `property.blend` collects that file's own
+  data too. They are also asset-marked, so they carry fake users and a plain
+  purge leaves all 48 (11 MB) behind.
+- **The tool only clears the scene in a fresh unsaved session.** Doing it
+  unconditionally deleted the property and all twelve cameras the first time it
+  was run inside `property.blend`.
+- **Shading is by HEIGHT then DISTANCE, and replaces World Blender's.**
+  `Landscape to Object` bakes its own photoreal rock/dirt material into slot 0
+  and assigns every face to it, so the material must be *replaced*, not
+  appended. Height decides ground-vs-mountain (distance alone painted the
+  desert floor plum right up to the fence); distance then hazes the mountains
+  along the film's palette ramp, which is what gives the refs their near-dark
+  to far-pale layering. `--bands=N` swaps the smooth gradient for hard poster
+  bands.
+- **Peak height is a framing constraint, not a taste one.** At `--ring 1250`
+  over a 3 km field the peaks subtended 15.7°, past the 15° half-FOV of the
+  45 mm intro camera, so they filled frame edge to edge with no sky. Too low
+  and they duck under the house's 11.3°. ~13–14° is the window.
+- **The mask reads backwards.** `Radial gradient mask` with `Min=1, Max=0`
+  masks the noise *out* at the centre. Verified empirically.
+
+Cost: 160k verts, about 5 s to build.
+
+> **Re-running this tool DESTROYS the hand-decimated basin.** The `basin` in
+> `property.blend` has been decimated by hand to ~6,500 faces (from 160,000) —
+> which cost nothing structurally: the pad is still exactly z=0, the hole is
+> still open, and all four sides still clear the house (13.3/13.2/12.2/15.1°).
+> It also reads *better*, since the broader ridgelines suit the poster style.
+> The tool deliberately has no decimate step, because the shape is still being
+> tweaked by hand. So `basin.py` is an additive **re-generate**, not a refresh:
+> it drops a fresh 160k-vert mesh in and the decimation is gone. Duplicate the
+> object first, or re-decimate after.
+
+### `tools/skyline.py` — procedural ridge rings (superseded)
+
+> **Not in use.** Kept because it is dependency-free and 4,336 verts against
+> `basin.py`'s 160,000, so it is still the right answer if the backdrop ever
+> needs to be cheap or perfectly art-directable. Its `skyline` collection was
+> removed from `property.blend`; re-run the tool to get it back. Notes below
+> still apply.
+
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/skyline.py -- [--facets=hard|smooth] [--rings=r,h;r,h] [--report]
+```
+
+Builds the `skyline` collection — three concentric ridge rings plus the flat
+desert floor. Lives at `property/site/skyline`, so it links into every layout
+scene. **4,336 verts** at the default smooth facets (880 at `--facets=hard`);
+the real-DEM version it replaced was 476,000.
+
+The refs settle the design (`refs/styles/il_fullxfull.5572769945_bsf5`,
+`il_570xN.5698411872_362y`): mountains sitting *right behind* the house and
+standing above the roofline on every side, in big faceted planes with strong
+near-dark/far-pale separation. That is a theatre backdrop with parallax, not
+geography — so the silhouette is the design surface, not an output.
+
+Each ridge's crest height is a 1D function of **angle**:
+
+- Noise is sampled around a circle, so it is periodic in θ for free and the
+  ring always closes.
+- `1 - |noise|` makes *ridged* noise — creases become peaks. Plain noise gives
+  rolling blobs, which is not what the refs show.
+- `--sharp` shapes the peaks (see below); `--floor` stops the ridge
+  ever dropping to the horizon and opening a sky gap.
+- Colours sample the film's own palette ramp (`refs/palette.scss`), so the
+  backdrop is on-palette by construction.
+
+Three things worth knowing:
+
+- **Ridges must ASCEND with distance** — near low, far tall (10.4° / 12.3° /
+  15.0° by default). Giving them equal angular height collapses all three into
+  one flat slab. That is exactly how the first version failed.
+- **Do not size the ridge to clear the treeline.** The backyard canopies (8.7 m
+  at 21 m) subtend 18.7°, more than any sane mountain; chasing that number
+  overshot the top of a 32 mm frame and rendered a saturated magenta wall. The
+  house (11.3°) is the thing to clear. `--report` prints the check.
+- **The ground is a frame, not a slab** — same `--hole` rect as the set's own
+  ground (`-45,45,-32,45`). An overlapping slab is coplanar with `ground_yard`
+  and z-fights, which swallows the yard, road, fence and treeline.
+
+`--facets=smooth` (smooth-shaded, 480 segments) is the default and the
+sculpted-clay read for Bigature Claymation; `--facets=hard` (flat-shaded, 96)
+is the cut-paper read for Mid-Century Print. The style is still open, so render
+both.
+
+**`--facets` is not the smoothness control — `--sharp` is.** Switching to
+smooth shading alone makes the skyline *spikier*: 480 segments fully resolves
+the ridged noise, where 96 was quietly smoothing it by undersampling. Defaults
+are `--sharp=1.1 --octaves=3`; 1.6 / 4 gives alpine spikes, and
+`--sharp=0.85 --octaves=2 --floor=0.40` gives broad dune-like swells that stop
+reading as mountains.
+
+### `tools/terrain.py` — background terrain from real elevation data (superseded)
+
+> **Not in use.** Kept because it works and the machinery is reusable, but the
+> real Palm Springs DEM was the wrong instrument for this film — see
+> `skyline.py` above. Its `terrain_dem` object was removed from
+> `property.blend`; re-run this tool if you ever want it back.
+
+
+```sh
+"$BLENDER" --background --factory-startup --python-exit-code 1 \
+    --python tools/terrain.py -- [--out=<path>] [--undulation=0.25] [--step=120]
+```
+
+Builds a `terrain` collection — the desert floor and the mountain horizon
+around the property. **Writes a separate `assets/envs/property/terrain.blend`
+and never opens `property.blend`**, which is hand-maintained and frequently
+dirty or open in a GUI session. Link or append the collection when it looks
+right. Opened in Blender's Text Editor instead, it detects the interactive
+session and builds into the current scene without saving.
+
+The west horizon is not set dressing: the film's **final image** is the run
+into the sunset, "into the treeline and the desert and mountains beyond"
+(`docs/treatment/script.md`). So the terrain comes from a real DEM — Palm
+Springs, which is the literal canon (`style.md` calls the house "a 1962 Palm
+Springs fantasy"). Anchored at 33.8147, −116.4800: Coachella Valley floor at
+109 m, on San Jacinto Peak's exact latitude so the 3302 m summit sits **due
+west, dead centre in the last shot**. That anchor was measured, not eyeballed —
+from the town edge the wall starts climbing 1 km out and buries the "desert
+beyond"; from here the floor stays flat for 4 km before it rises.
+
+Elevation comes from AWS Terrain Tiles (the old Mapzen set — public, no API
+key), decoded with Blender's own image loader, which is bit-exact against a
+reference zlib PNG decoder and far faster than unfiltering Paeth scanlines in
+Python. Tiles cache under `.cache/dem/` (gitignored).
+
+Four things worth knowing:
+
+- **Real-world west must land on film +Y.** `--bearing` picks which compass
+  bearing points along +Y (default 270). The mapping is a proper rotation with
+  determinant +1, so the landscape is never mirrored.
+- **The far field must be prefiltered, not just interpolated.** 120 m mesh
+  steps against a 31.8 m DEM is 3.8× undersampled, and interpolation does not
+  fix aliasing — the signal has to be low-passed before it is decimated. A mip
+  pyramid with radius-driven LOD does that; the LOD is smoothed across the grid
+  tiers so no ring appears around the set.
+- **The near-set roll is honest noise, not data.** A 30 m DEM cannot resolve
+  metre-scale ground undulation on a flat alluvial fan. `--undulation` is
+  art-directed fbm with a fixed seed (so the ground never shuffles underneath
+  blocking already staged on it), and `--fine-step` must stay well under
+  `--roll` or it aliases.
+- **Streaks on the valley floor are real desert washes**, not an artifact:
+  ~6 m of relief across a 1.2 km span at 1.9% slope, in a tier that
+  *over*samples the DEM.
+
+Everything is blocked in world space at z=0, so the tool prints the new ground
+height under every position in `site.md` — the re-grounding cost is visible up
+front rather than discovered in a render. `--flat` (default 15 m) keeps the
+house, garage and porch pad dead flat and true; `--keep-flat` disables the roll
+entirely.
+
 ### `tools/fire_rig.py` — make a linked gun fireable
 
 ```sh
@@ -629,20 +810,83 @@ Source of truth for the Mid-Century Print candidate's tilt-dab palette
 (`docs/treatment/style-midcentury-print.md`): 12 clock directions × 4 lean
 tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
 tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
-12/1/…/11 o'clock; rows = whisper→strong) and a JSON sidecar with every
-swatch's normal/RGB/hex. Stdlib only; importable — the dab painter reads its
-math from here. Retuning tiers/directions and rerunning never invalidates
-painted work (old swatches stay valid, new ones interleave).
+12/1/…/11 o'clock; rows = whisper→strong), a 256×1 `tilt_lut.png`, a 32×32
+icon per swatch, and a JSON sidecar with every swatch's normal/RGB/hex plus
+its LUT index. Stdlib only; importable — the dab painter reads its math from
+here. Retuning tiers/directions and rerunning never invalidates painted work.
 
-- The JSON's `families` field is **vestigial**. Per-family tier legality
-  (`diecast = whisper`, `characters = whisper+soft`, …) was dropped
-  2026-08-04 — any tier is legal on any surface. Nothing reads the field;
-  it goes on the next revision of this tool.
+- Any tier is available on any surface. The per-family tier table this tool
+  used to emit was dropped 2026-08-04 along with the rule itself.
 - The sheet is **data, not color**: load as Non-Color when sampling.
   Blender's color-picker hex field assumes sRGB and the eyedropper samples
   display-transformed pixels — both silently corrupt the normal encoding.
-  Pick swatches from a real Blender palette built from the JSON's `rgb8`
-  values, or let the dab painter set the brush colour for you.
+  Let the dab painter set the brush colour for you.
+- **Append swatches, never reorder them.** A painted texel is an index into
+  the LUT, so reordering repaints every existing dab. The JSON carries an
+  `ordering_hash` and the add-on warns when it moves.
+
+### `tools/albedo_palette.py` — the colour half of the dab palette
+
+```sh
+python3 tools/albedo_palette.py          # writes assets/materials/albedo_palette/
+```
+
+Mirrors `tilt_palette.py` for colour: 15 bases from the treatment's two
+palette tables (11 core + 4 annex), each with five drift variants —
+`warm`/`cool` (±8° hue), `dusk` (−6°, ×0.92 value), `pale` (×0.85 sat),
+`deep` (×1.15 sat, ×0.94 value) — for 90 swatches. Emits the same four
+artifacts.
+
+Drift is an HSV shift, not an RGB blend: measured 2026-08-04, an RGB
+multiply-cool swings paper-cream 174° of hue into blue-grey while other bases
+barely move, whereas a hue rotation moves every base by the same amount.
+
+Swatches carry `group` and `role` text so the picker can show what each is
+for. **Nothing is enforced** — the mint reservation and the post-1980 annex
+are art direction, not constraints the tools police.
+
+Ordered by hue then value, so an antialiased dab edge — which blends two
+indices into a third — lands on a transitional swatch rather than a stray one.
+
+### `tools/palette_common.py` — the index-encoding core (not run directly)
+
+Shared by both generators and the add-on, stdlib and bpy-free. Owns the
+round-trip (index → brush channel → 8-bit texel → index, exact for all 256),
+the LUT addressing that lands each index on its texel centre, the ordering
+hash, the PNG writer, and the artifact emitters. An off-by-one here makes
+every dab in the film the wrong swatch, so it is the most heavily tested
+module in `tools/`.
+
+### `tools/dabpaint.py` — dab painter decisions (not run directly)
+
+The bpy-free half of the add-on, the way `guides.py` sits under
+`redwood_guides.py`: asset naming, brush encoding, palette loading, ordering
+drift detection, and the image specs the setup run re-applies.
+
+### `tools/addons/redwood_dabpaint.py` — paint colour and facet in one stroke
+
+`View3D > Sidebar > Redwood > Dab Paint`. Enable it with a file inside the
+project saved, so the project root is findable.
+
+Pick an albedo swatch and a tilt swatch, then paint. Both land in one native
+brush stroke, because the painted image is not colour: it stores
+`R = albedo index`, `G = tilt index`, and the two film-wide LUTs resolve
+them. One image means **Blender's own undo is the only undo** — one Ctrl+Z
+takes back a dab in both channels and nothing can desync. Nothing runs during
+a stroke; the add-on's only job while you paint is having set `brush.color`
+when you clicked a swatch.
+
+- **Make Paintable** creates or heals the index map, both LUT links, and the
+  material. Idempotent, like `make_layout` — re-run it to fix a drifted
+  colorspace or interpolation, both of which fail silently.
+- **Bake to PNG** resolves the index map through both LUTs into ordinary
+  `<asset>_albedo.png` / `<asset>_tilt.png`, for another tool or a final
+  render. The index map stays authoritative; baking does not alter the
+  material.
+- Keep the brush **hard-edged**: a dab is one flat facet. Soft falloff blends
+  indices at the edge, which decode as unrelated swatches.
+- Verified end to end by `tools/tests/check_dabpaint.py` — writes index *i*,
+  renders, and asserts the pixel is swatch *i*.
 
 ### `tools/encode_delivery.sh` — final masters
 

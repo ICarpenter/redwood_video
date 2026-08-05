@@ -11,6 +11,9 @@ shots/**/playblast/
 # python
 __pycache__/
 
+# downloaded elevation tiles (tools/terrain.py)
+.cache/
+
 # macOS
 .DS_Store
 

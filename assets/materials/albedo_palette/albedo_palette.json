@@ -1,0 +1,1388 @@
+{
+  "meta": {
+    "colorspace": "sRGB \u2014 this palette is colour, unlike the tilt palette",
+    "derived_from": "colour census of refs/styles/ + refs/pallete refs/{60s,80s}, 31 images, 2.48M pixels, 2026-08-04",
+    "green_caveat": "green is 1.4% of saturated pixels in the refs. olive, green and sage are derived from the desaturated sage that does appear, not sampled from a saturated green",
+    "shades": "hue held constant; shadow hue belongs to the render",
+    "guidance": "group/family/role say what a swatch is for. Nothing is enforced \u2014 see docs/treatment/style-midcentury-print.md"
+  },
+  "shades": [
+    "pale",
+    "light",
+    "base",
+    "dark",
+    "deep"
+  ],
+  "bold": [
+    "teal",
+    "rose",
+    "yellow",
+    "red",
+    "magenta"
+  ],
+  "families": [
+    "red",
+    "rust",
+    "coral",
+    "orange",
+    "yellow",
+    "olive",
+    "green",
+    "sage",
+    "mint",
+    "teal",
+    "sky",
+    "blue",
+    "purple",
+    "pink"
+  ],
+  "ordering": [
+    "paper-white",
+    "paper-cream",
+    "cream",
+    "sand",
+    "tan",
+    "taupe",
+    "stone",
+    "slate",
+    "umber",
+    "ink",
+    "pitch",
+    "bold-teal_light",
+    "bold-teal",
+    "bold-teal_dark",
+    "bold-rose_light",
+    "bold-rose",
+    "bold-rose_dark",
+    "bold-yellow_light",
+    "bold-yellow",
+    "bold-yellow_dark",
+    "bold-red_light",
+    "bold-red",
+    "bold-red_dark",
+    "bold-magenta_light",
+    "bold-magenta",
+    "bold-magenta_dark",
+    "red_pale",
+    "red_light",
+    "red",
+    "red_dark",
+    "red_deep",
+    "rust_pale",
+    "rust_light",
+    "rust",
+    "rust_dark",
+    "rust_deep",
+    "coral_pale",
+    "coral_light",
+    "coral",
+    "coral_dark",
+    "coral_deep",
+    "orange_pale",
+    "orange_light",
+    "orange",
+    "orange_dark",
+    "orange_deep",
+    "yellow_pale",
+    "yellow_light",
+    "yellow",
+    "yellow_dark",
+    "yellow_deep",
+    "olive_pale",
+    "olive_light",
+    "olive",
+    "olive_dark",
+    "olive_deep",
+    "green_pale",
+    "green_light",
+    "green",
+    "green_dark",
+    "green_deep",
+    "sage_pale",
+    "sage_light",
+    "sage",
+    "sage_dark",
+    "sage_deep",
+    "mint_pale",
+    "mint_light",
+    "mint",
+    "mint_dark",
+    "mint_deep",
+    "teal_pale",
+    "teal_light",
+    "teal",
+    "teal_dark",
+    "teal_deep",
+    "sky_pale",
+    "sky_light",
+    "sky",
+    "sky_dark",
+    "sky_deep",
+    "blue_pale",
+    "blue_light",
+    "blue",
+    "blue_dark",
+    "blue_deep",
+    "purple_pale",
+    "purple_light",
+    "purple",
+    "purple_dark",
+    "purple_deep",
+    "pink_pale",
+    "pink_light",
+    "pink",
+    "pink_dark",
+    "pink_deep"
+  ],
+  "ordering_hash": "59bf1ce510f9dfbf",
+  "swatches": {
+    "paper-white": {
+      "group": "neutral",
+      "family": "paper-white",
+      "shade": "base",
+      "role": "the brightest paper; clouds, highlights",
+      "rgb8": [
+        250,
+        250,
+        249
+      ],
+      "hex": "#fafaf9",
+      "index": 0
+    },
+    "paper-cream": {
+      "group": "neutral",
+      "family": "paper-cream",
+      "shade": "base",
+      "role": "the default light base: walls, concrete",
+      "rgb8": [
+        240,
+        234,
+        224
+      ],
+      "hex": "#f0eae0",
+      "index": 1
+    },
+    "cream": {
+      "group": "neutral",
+      "family": "cream",
+      "shade": "base",
+      "role": "warmer paper; interior walls, skin base",
+      "rgb8": [
+        235,
+        215,
+        197
+      ],
+      "hex": "#ebd7c5",
+      "index": 2
+    },
+    "sand": {
+      "group": "neutral",
+      "family": "sand",
+      "shade": "base",
+      "role": "ground, road, mid-value neutrals",
+      "rgb8": [
+        218,
+        195,
+        169
+      ],
+      "hex": "#dac3a9",
+      "index": 3
+    },
+    "tan": {
+      "group": "neutral",
+      "family": "tan",
+      "shade": "base",
+      "role": "dry earth, cardboard, secondary ground",
+      "rgb8": [
+        199,
+        164,
+        132
+      ],
+      "hex": "#c7a484",
+      "index": 4
+    },
+    "taupe": {
+      "group": "neutral",
+      "family": "taupe",
+      "shade": "base",
+      "role": "aged plaster, worn wood",
+      "rgb8": [
+        183,
+        166,
+        147
+      ],
+      "hex": "#b7a693",
+      "index": 5
+    },
+    "stone": {
+      "group": "neutral",
+      "family": "stone",
+      "shade": "base",
+      "role": "concrete in shadow, weathered grey",
+      "rgb8": [
+        138,
+        135,
+        130
+      ],
+      "hex": "#8a8782",
+      "index": 6
+    },
+    "slate": {
+      "group": "neutral",
+      "family": "slate",
+      "shade": "base",
+      "role": "the 80s mauve-grey; electronics, shadow mass",
+      "rgb8": [
+        107,
+        104,
+        117
+      ],
+      "hex": "#6b6875",
+      "index": 7
+    },
+    "umber": {
+      "group": "neutral",
+      "family": "umber",
+      "shade": "base",
+      "role": "dark wood, soil, deep structural darks \u2014 curated down from the census centre #72503c, which is too saturated to sit among neutrals",
+      "rgb8": [
+        106,
+        83,
+        70
+      ],
+      "hex": "#6a5346",
+      "index": 8
+    },
+    "ink": {
+      "group": "neutral",
+      "family": "ink",
+      "shade": "base",
+      "role": "near-black warm; tires, the CRT, line-weight mass",
+      "rgb8": [
+        55,
+        49,
+        52
+      ],
+      "hex": "#373134",
+      "index": 9
+    },
+    "pitch": {
+      "group": "neutral",
+      "family": "pitch",
+      "shade": "base",
+      "role": "the darkest note in the film; use sparingly",
+      "rgb8": [
+        22,
+        14,
+        15
+      ],
+      "hex": "#160e0f",
+      "index": 10
+    },
+    "bold-teal": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "base",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        10,
+        189,
+        180
+      ],
+      "hex": "#0abdb4",
+      "index": 12
+    },
+    "bold-teal_light": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "light",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        70,
+        219,
+        211
+      ],
+      "hex": "#46dbd3",
+      "index": 11
+    },
+    "bold-teal_dark": {
+      "group": "bold",
+      "family": "teal",
+      "shade": "dark",
+      "role": "19.5% of all bold pixels \u2014 the MCM signature: the daytime sky, the 60s poster, appliance enamel",
+      "rgb8": [
+        0,
+        129,
+        122
+      ],
+      "hex": "#00817a",
+      "index": 13
+    },
+    "bold-rose": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "base",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        201,
+        59,
+        94
+      ],
+      "hex": "#c93b5e",
+      "index": 15
+    },
+    "bold-rose_light": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "light",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        225,
+        111,
+        139
+      ],
+      "hex": "#e16f8b",
+      "index": 14
+    },
+    "bold-rose_dark": {
+      "group": "bold",
+      "family": "rose",
+      "shade": "dark",
+      "role": "12.4% \u2014 the 80s raspberry; Mom's world. The census centre #c3506b is the dusty version (S 0.59) and reads muted beside the other four, so this is pushed to bold strength, short of the hot #f2236d",
+      "rgb8": [
+        137,
+        32,
+        58
+      ],
+      "hex": "#89203a",
+      "index": 16
+    },
+    "bold-yellow": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "base",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
+      "rgb8": [
+        250,
+        212,
+        19
+      ],
+      "hex": "#fad413",
+      "index": 18
+    },
+    "bold-yellow_light": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "light",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
+      "rgb8": [
+        252,
+        225,
+        84
+      ],
+      "hex": "#fce154",
+      "index": 17
+    },
+    "bold-yellow_dark": {
+      "group": "bold",
+      "family": "yellow",
+      "shade": "dark",
+      "role": "9.3% \u2014 the sun disc, the yellow car, signage",
+      "rgb8": [
+        170,
+        142,
+        0
+      ],
+      "hex": "#aa8e00",
+      "index": 19
+    },
+    "bold-red": {
+      "group": "bold",
+      "family": "red",
+      "shade": "base",
+      "role": "the gouache vest red; hot accents, danger",
+      "rgb8": [
+        197,
+        59,
+        48
+      ],
+      "hex": "#c53b30",
+      "index": 21
+    },
+    "bold-red_light": {
+      "group": "bold",
+      "family": "red",
+      "shade": "light",
+      "role": "the gouache vest red; hot accents, danger",
+      "rgb8": [
+        223,
+        111,
+        102
+      ],
+      "hex": "#df6f66",
+      "index": 20
+    },
+    "bold-red_dark": {
+      "group": "bold",
+      "family": "red",
+      "shade": "dark",
+      "role": "the gouache vest red; hot accents, danger",
+      "rgb8": [
+        134,
+        33,
+        25
+      ],
+      "hex": "#862119",
+      "index": 22
+    },
+    "bold-magenta": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "base",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        246,
+        20,
+        128
+      ],
+      "hex": "#f61480",
+      "index": 24
+    },
+    "bold-magenta_light": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "light",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        250,
+        85,
+        164
+      ],
+      "hex": "#fa55a4",
+      "index": 23
+    },
+    "bold-magenta_dark": {
+      "group": "bold",
+      "family": "magenta",
+      "shade": "dark",
+      "role": "the 80s note at full voltage; use once a scene",
+      "rgb8": [
+        167,
+        1,
+        81
+      ],
+      "hex": "#a70151",
+      "index": 25
+    },
+    "red_pale": {
+      "group": "family",
+      "family": "red",
+      "shade": "pale",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        237,
+        179,
+        172
+      ],
+      "hex": "#edb3ac",
+      "index": 26
+    },
+    "red_light": {
+      "group": "family",
+      "family": "red",
+      "shade": "light",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        217,
+        124,
+        113
+      ],
+      "hex": "#d97c71",
+      "index": 27
+    },
+    "red": {
+      "group": "family",
+      "family": "red",
+      "shade": "base",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        192,
+        74,
+        60
+      ],
+      "hex": "#c04a3c",
+      "index": 28
+    },
+    "red_dark": {
+      "group": "family",
+      "family": "red",
+      "shade": "dark",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        134,
+        45,
+        35
+      ],
+      "hex": "#862d23",
+      "index": 29
+    },
+    "red_deep": {
+      "group": "family",
+      "family": "red",
+      "shade": "deep",
+      "role": "brick, roof tile, the cop car's pop",
+      "rgb8": [
+        86,
+        26,
+        19
+      ],
+      "hex": "#561a13",
+      "index": 30
+    },
+    "rust_pale": {
+      "group": "family",
+      "family": "rust",
+      "shade": "pale",
+      "role": "the mountains, weathered metal, hot desert accents",
+      "rgb8": [
+        239,
+        187,
+        166
+      ],
+      "hex": "#efbba6",
+      "index": 31
+    },
+    "rust_light": {
+      "group": "family",
+      "family": "rust",
+      "shade": "light",
+      "role": "the mountains, weathered metal, hot desert accents",
+      "rgb8": [
+        221,
+        136,
+        102
+      ],
+      "hex": "#dd8866",
+      "index": 32
+    },
+    "rust": {
+      "group": "family",
+      "family": "rust",
+      "shade": "base",
+      "role": "the mountains, weathered metal, hot desert accents",
+      "rgb8": [
+        198,
+        90,
+        46
+      ],
+      "hex": "#c65a2e",
+      "index": 33
+    },
+    "rust_dark": {
+      "group": "family",
+      "family": "rust",
+      "shade": "dark",
+      "role": "the mountains, weathered metal, hot desert accents",
+      "rgb8": [
+        139,
+        57,
+        24
+      ],
+      "hex": "#8b3918",
+      "index": 34
+    },
+    "rust_deep": {
+      "group": "family",
+      "family": "rust",
+      "shade": "deep",
+      "role": "the mountains, weathered metal, hot desert accents",
+      "rgb8": [
+        89,
+        34,
+        11
+      ],
+      "hex": "#59220b",
+      "index": 35
+    },
+    "coral_pale": {
+      "group": "family",
+      "family": "coral",
+      "shade": "pale",
+      "role": "the sunset sky, distant warmth, low sun on stucco",
+      "rgb8": [
+        252,
+        221,
+        206
+      ],
+      "hex": "#fcddce",
+      "index": 36
+    },
+    "coral_light": {
+      "group": "family",
+      "family": "coral",
+      "shade": "light",
+      "role": "the sunset sky, distant warmth, low sun on stucco",
+      "rgb8": [
+        248,
+        194,
+        170
+      ],
+      "hex": "#f8c2aa",
+      "index": 37
+    },
+    "coral": {
+      "group": "family",
+      "family": "coral",
+      "shade": "base",
+      "role": "the sunset sky, distant warmth, low sun on stucco",
+      "rgb8": [
+        244,
+        168,
+        134
+      ],
+      "hex": "#f4a886",
+      "index": 38
+    },
+    "coral_dark": {
+      "group": "family",
+      "family": "coral",
+      "shade": "dark",
+      "role": "the sunset sky, distant warmth, low sun on stucco",
+      "rgb8": [
+        171,
+        113,
+        88
+      ],
+      "hex": "#ab7158",
+      "index": 39
+    },
+    "coral_deep": {
+      "group": "family",
+      "family": "coral",
+      "shade": "deep",
+      "role": "the sunset sky, distant warmth, low sun on stucco",
+      "rgb8": [
+        110,
+        71,
+        53
+      ],
+      "hex": "#6e4735",
+      "index": 40
+    },
+    "orange_pale": {
+      "group": "family",
+      "family": "orange",
+      "shade": "pale",
+      "role": "terracotta, warm afternoon light, cardboard",
+      "rgb8": [
+        245,
+        217,
+        185
+      ],
+      "hex": "#f5d9b9",
+      "index": 41
+    },
+    "orange_light": {
+      "group": "family",
+      "family": "orange",
+      "shade": "light",
+      "role": "terracotta, warm afternoon light, cardboard",
+      "rgb8": [
+        235,
+        186,
+        134
+      ],
+      "hex": "#ebba86",
+      "index": 42
+    },
+    "orange": {
+      "group": "family",
+      "family": "orange",
+      "shade": "base",
+      "role": "terracotta, warm afternoon light, cardboard",
+      "rgb8": [
+        221,
+        156,
+        85
+      ],
+      "hex": "#dd9c55",
+      "index": 43
+    },
+    "orange_dark": {
+      "group": "family",
+      "family": "orange",
+      "shade": "dark",
+      "role": "terracotta, warm afternoon light, cardboard",
+      "rgb8": [
+        155,
+        106,
+        52
+      ],
+      "hex": "#9b6a34",
+      "index": 44
+    },
+    "orange_deep": {
+      "group": "family",
+      "family": "orange",
+      "shade": "deep",
+      "role": "terracotta, warm afternoon light, cardboard",
+      "rgb8": [
+        99,
+        66,
+        30
+      ],
+      "hex": "#63421e",
+      "index": 45
+    },
+    "yellow_pale": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "pale",
+      "role": "golden hour, kitchen enamel, signage",
+      "rgb8": [
+        249,
+        228,
+        181
+      ],
+      "hex": "#f9e4b5",
+      "index": 46
+    },
+    "yellow_light": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "light",
+      "role": "golden hour, kitchen enamel, signage",
+      "rgb8": [
+        241,
+        206,
+        126
+      ],
+      "hex": "#f1ce7e",
+      "index": 47
+    },
+    "yellow": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "base",
+      "role": "golden hour, kitchen enamel, signage",
+      "rgb8": [
+        232,
+        183,
+        74
+      ],
+      "hex": "#e8b74a",
+      "index": 48
+    },
+    "yellow_dark": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "dark",
+      "role": "golden hour, kitchen enamel, signage",
+      "rgb8": [
+        162,
+        125,
+        43
+      ],
+      "hex": "#a27d2b",
+      "index": 49
+    },
+    "yellow_deep": {
+      "group": "family",
+      "family": "yellow",
+      "shade": "deep",
+      "role": "golden hour, kitchen enamel, signage",
+      "rgb8": [
+        104,
+        79,
+        23
+      ],
+      "hex": "#684f17",
+      "index": 50
+    },
+    "olive_pale": {
+      "group": "family",
+      "family": "olive",
+      "shade": "pale",
+      "role": "the sheriff's uniform, dry grass, olive-drab kit",
+      "rgb8": [
+        213,
+        216,
+        180
+      ],
+      "hex": "#d5d8b4",
+      "index": 51
+    },
+    "olive_light": {
+      "group": "family",
+      "family": "olive",
+      "shade": "light",
+      "role": "the sheriff's uniform, dry grass, olive-drab kit",
+      "rgb8": [
+        167,
+        171,
+        121
+      ],
+      "hex": "#a7ab79",
+      "index": 52
+    },
+    "olive": {
+      "group": "family",
+      "family": "olive",
+      "shade": "base",
+      "role": "the sheriff's uniform, dry grass, olive-drab kit",
+      "rgb8": [
+        111,
+        115,
+        67
+      ],
+      "hex": "#6f7343",
+      "index": 53
+    },
+    "olive_dark": {
+      "group": "family",
+      "family": "olive",
+      "shade": "dark",
+      "role": "the sheriff's uniform, dry grass, olive-drab kit",
+      "rgb8": [
+        77,
+        80,
+        44
+      ],
+      "hex": "#4d502c",
+      "index": 54
+    },
+    "olive_deep": {
+      "group": "family",
+      "family": "olive",
+      "shade": "deep",
+      "role": "the sheriff's uniform, dry grass, olive-drab kit",
+      "rgb8": [
+        50,
+        52,
+        27
+      ],
+      "hex": "#32341b",
+      "index": 55
+    },
+    "green_pale": {
+      "group": "family",
+      "family": "green",
+      "shade": "pale",
+      "role": "plants, lawn, foliage masses \u2014 DERIVED, see above",
+      "rgb8": [
+        206,
+        227,
+        196
+      ],
+      "hex": "#cee3c4",
+      "index": 56
+    },
+    "green_light": {
+      "group": "family",
+      "family": "green",
+      "shade": "light",
+      "role": "plants, lawn, foliage masses \u2014 DERIVED, see above",
+      "rgb8": [
+        164,
+        196,
+        148
+      ],
+      "hex": "#a4c494",
+      "index": 57
+    },
+    "green": {
+      "group": "family",
+      "family": "green",
+      "shade": "base",
+      "role": "plants, lawn, foliage masses \u2014 DERIVED, see above",
+      "rgb8": [
+        120,
+        156,
+        102
+      ],
+      "hex": "#789c66",
+      "index": 58
+    },
+    "green_dark": {
+      "group": "family",
+      "family": "green",
+      "shade": "dark",
+      "role": "plants, lawn, foliage masses \u2014 DERIVED, see above",
+      "rgb8": [
+        82,
+        109,
+        68
+      ],
+      "hex": "#526d44",
+      "index": 59
+    },
+    "green_deep": {
+      "group": "family",
+      "family": "green",
+      "shade": "deep",
+      "role": "plants, lawn, foliage masses \u2014 DERIVED, see above",
+      "rgb8": [
+        52,
+        70,
+        42
+      ],
+      "hex": "#34462a",
+      "index": 60
+    },
+    "sage_pale": {
+      "group": "family",
+      "family": "sage",
+      "shade": "pale",
+      "role": "cacti, agave, 90s kitchenware \u2014 grey-green desert planting; DERIVED, see above",
+      "rgb8": [
+        221,
+        235,
+        229
+      ],
+      "hex": "#ddebe5",
+      "index": 61
+    },
+    "sage_light": {
+      "group": "family",
+      "family": "sage",
+      "shade": "light",
+      "role": "cacti, agave, 90s kitchenware \u2014 grey-green desert planting; DERIVED, see above",
+      "rgb8": [
+        191,
+        212,
+        203
+      ],
+      "hex": "#bfd4cb",
+      "index": 62
+    },
+    "sage": {
+      "group": "family",
+      "family": "sage",
+      "shade": "base",
+      "role": "cacti, agave, 90s kitchenware \u2014 grey-green desert planting; DERIVED, see above",
+      "rgb8": [
+        157,
+        184,
+        172
+      ],
+      "hex": "#9db8ac",
+      "index": 63
+    },
+    "sage_dark": {
+      "group": "family",
+      "family": "sage",
+      "shade": "dark",
+      "role": "cacti, agave, 90s kitchenware \u2014 grey-green desert planting; DERIVED, see above",
+      "rgb8": [
+        108,
+        129,
+        120
+      ],
+      "hex": "#6c8178",
+      "index": 64
+    },
+    "sage_deep": {
+      "group": "family",
+      "family": "sage",
+      "shade": "deep",
+      "role": "cacti, agave, 90s kitchenware \u2014 grey-green desert planting; DERIVED, see above",
+      "rgb8": [
+        69,
+        83,
+        77
+      ],
+      "hex": "#45534d",
+      "index": 65
+    },
+    "mint_pale": {
+      "group": "family",
+      "family": "mint",
+      "shade": "pale",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        200,
+        248,
+        237
+      ],
+      "hex": "#c8f8ed",
+      "index": 66
+    },
+    "mint_light": {
+      "group": "family",
+      "family": "mint",
+      "shade": "light",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        158,
+        241,
+        222
+      ],
+      "hex": "#9ef1de",
+      "index": 67
+    },
+    "mint": {
+      "group": "family",
+      "family": "mint",
+      "shade": "base",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        118,
+        231,
+        205
+      ],
+      "hex": "#76e7cd",
+      "index": 68
+    },
+    "mint_dark": {
+      "group": "family",
+      "family": "mint",
+      "shade": "dark",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        76,
+        162,
+        142
+      ],
+      "hex": "#4ca28e",
+      "index": 69
+    },
+    "mint_deep": {
+      "group": "family",
+      "family": "mint",
+      "shade": "deep",
+      "role": "RESERVED \u2014 the truck and the sweet tea, and nothing else. Not a census colour: it is film canon from docs/treatment/style-midcentury-print.md, kept pale AND saturated so it stays distinct from both the teal sky and the greyed annex. Shaded so the truck can be painted; still spent nowhere else",
+      "rgb8": [
+        46,
+        104,
+        91
+      ],
+      "hex": "#2e685b",
+      "index": 70
+    },
+    "teal_pale": {
+      "group": "family",
+      "family": "teal",
+      "shade": "pale",
+      "role": "the deep daytime sky, glass, appliance enamel",
+      "rgb8": [
+        173,
+        237,
+        232
+      ],
+      "hex": "#adede8",
+      "index": 71
+    },
+    "teal_light": {
+      "group": "family",
+      "family": "teal",
+      "shade": "light",
+      "role": "the deep daytime sky, glass, appliance enamel",
+      "rgb8": [
+        115,
+        215,
+        207
+      ],
+      "hex": "#73d7cf",
+      "index": 72
+    },
+    "teal": {
+      "group": "family",
+      "family": "teal",
+      "shade": "base",
+      "role": "the deep daytime sky, glass, appliance enamel",
+      "rgb8": [
+        63,
+        189,
+        179
+      ],
+      "hex": "#3fbdb3",
+      "index": 73
+    },
+    "teal_dark": {
+      "group": "family",
+      "family": "teal",
+      "shade": "dark",
+      "role": "the deep daytime sky, glass, appliance enamel",
+      "rgb8": [
+        37,
+        132,
+        125
+      ],
+      "hex": "#25847d",
+      "index": 74
+    },
+    "teal_deep": {
+      "group": "family",
+      "family": "teal",
+      "shade": "deep",
+      "role": "the deep daytime sky, glass, appliance enamel",
+      "rgb8": [
+        20,
+        85,
+        80
+      ],
+      "hex": "#145550",
+      "index": 75
+    },
+    "sky_pale": {
+      "group": "family",
+      "family": "sky",
+      "shade": "pale",
+      "role": "the sky dome at its palest; hazy distance, clerestory",
+      "rgb8": [
+        209,
+        241,
+        247
+      ],
+      "hex": "#d1f1f7",
+      "index": 76
+    },
+    "sky_light": {
+      "group": "family",
+      "family": "sky",
+      "shade": "light",
+      "role": "the sky dome at its palest; hazy distance, clerestory",
+      "rgb8": [
+        174,
+        228,
+        238
+      ],
+      "hex": "#aee4ee",
+      "index": 77
+    },
+    "sky": {
+      "group": "family",
+      "family": "sky",
+      "shade": "base",
+      "role": "the sky dome at its palest; hazy distance, clerestory",
+      "rgb8": [
+        139,
+        213,
+        227
+      ],
+      "hex": "#8bd5e3",
+      "index": 78
+    },
+    "sky_dark": {
+      "group": "family",
+      "family": "sky",
+      "shade": "dark",
+      "role": "the sky dome at its palest; hazy distance, clerestory",
+      "rgb8": [
+        92,
+        148,
+        159
+      ],
+      "hex": "#5c949f",
+      "index": 79
+    },
+    "sky_deep": {
+      "group": "family",
+      "family": "sky",
+      "shade": "deep",
+      "role": "the sky dome at its palest; hazy distance, clerestory",
+      "rgb8": [
+        57,
+        95,
+        102
+      ],
+      "hex": "#395f66",
+      "index": 80
+    },
+    "blue_pale": {
+      "group": "family",
+      "family": "blue",
+      "shade": "pale",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        190,
+        218,
+        232
+      ],
+      "hex": "#bedae8",
+      "index": 81
+    },
+    "blue_light": {
+      "group": "family",
+      "family": "blue",
+      "shade": "light",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        140,
+        185,
+        206
+      ],
+      "hex": "#8cb9ce",
+      "index": 82
+    },
+    "blue": {
+      "group": "family",
+      "family": "blue",
+      "shade": "base",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        94,
+        148,
+        174
+      ],
+      "hex": "#5e94ae",
+      "index": 83
+    },
+    "blue_dark": {
+      "group": "family",
+      "family": "blue",
+      "shade": "dark",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        61,
+        102,
+        122
+      ],
+      "hex": "#3d667a",
+      "index": 84
+    },
+    "blue_deep": {
+      "group": "family",
+      "family": "blue",
+      "shade": "deep",
+      "role": "denim, distance, shadowed sky",
+      "rgb8": [
+        37,
+        65,
+        78
+      ],
+      "hex": "#25414e",
+      "index": 85
+    },
+    "purple_pale": {
+      "group": "family",
+      "family": "purple",
+      "shade": "pale",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        210,
+        203,
+        224
+      ],
+      "hex": "#d2cbe0",
+      "index": 86
+    },
+    "purple_light": {
+      "group": "family",
+      "family": "purple",
+      "shade": "light",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        168,
+        158,
+        190
+      ],
+      "hex": "#a89ebe",
+      "index": 87
+    },
+    "purple": {
+      "group": "family",
+      "family": "purple",
+      "shade": "base",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        122,
+        111,
+        146
+      ],
+      "hex": "#7a6f92",
+      "index": 88
+    },
+    "purple_dark": {
+      "group": "family",
+      "family": "purple",
+      "shade": "dark",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        84,
+        76,
+        102
+      ],
+      "hex": "#544c66",
+      "index": 89
+    },
+    "purple_deep": {
+      "group": "family",
+      "family": "purple",
+      "shade": "deep",
+      "role": "dusk, the 80s mauve, deep shadow mass",
+      "rgb8": [
+        53,
+        48,
+        66
+      ],
+      "hex": "#353042",
+      "index": 90
+    },
+    "pink_pale": {
+      "group": "family",
+      "family": "pink",
+      "shade": "pale",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        247,
+        210,
+        214
+      ],
+      "hex": "#f7d2d6",
+      "index": 91
+    },
+    "pink_light": {
+      "group": "family",
+      "family": "pink",
+      "shade": "light",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        239,
+        176,
+        182
+      ],
+      "hex": "#efb0b6",
+      "index": 92
+    },
+    "pink": {
+      "group": "family",
+      "family": "pink",
+      "shade": "base",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        228,
+        142,
+        150
+      ],
+      "hex": "#e48e96",
+      "index": 93
+    },
+    "pink_dark": {
+      "group": "family",
+      "family": "pink",
+      "shade": "dark",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        160,
+        95,
+        101
+      ],
+      "hex": "#a05f65",
+      "index": 94
+    },
+    "pink_deep": {
+      "group": "family",
+      "family": "pink",
+      "shade": "deep",
+      "role": "dusty rose; wardrobe, the pink kitchen",
+      "rgb8": [
+        103,
+        58,
+        63
+      ],
+      "hex": "#673a3f",
+      "index": 95
+    }
+  }
+}
