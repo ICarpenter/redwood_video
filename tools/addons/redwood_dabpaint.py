@@ -291,9 +291,15 @@ def _apply_brush(context, dabpaint, albedo_index, tilt_index):
 
 
 class _SetSwatch(bpy.types.Operator):
-    bl_options = {"REGISTER", "UNDO"}
-    swatch: bpy.props.StringProperty()
+    """Shared behaviour for the two swatch pickers.
 
+    `swatch` is declared on each concrete subclass rather than here, so
+    registration never depends on `__annotations__` being found through the
+    MRO — that lookup is a Python-version-sensitive footgun, and the failure
+    would be a silently dead panel rather than an error.
+    """
+
+    bl_options = {"REGISTER", "UNDO"}
     channel = None  # "albedo" | "tilt"
 
     def execute(self, context):
@@ -327,12 +333,14 @@ class DAB_OT_set_albedo(_SetSwatch):
     bl_idname = "redwood.dab_set_albedo"
     bl_label = "Set Albedo Swatch"
     channel = "albedo"
+    swatch: bpy.props.StringProperty()
 
 
 class DAB_OT_set_tilt(_SetSwatch):
     bl_idname = "redwood.dab_set_tilt"
     bl_label = "Set Tilt Swatch"
     channel = "tilt"
+    swatch: bpy.props.StringProperty()
 
 
 class DAB_OT_bake(bpy.types.Operator):

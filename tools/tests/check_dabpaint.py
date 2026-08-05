@@ -103,6 +103,13 @@ def main():
         check("selection lives on the Scene so it participates in undo",
               hasattr(bpy.types.Scene, "redwood_dab_albedo")
               and hasattr(bpy.types.Scene, "redwood_dab_tilt"))
+        # The panel passes the swatch name through the operator, so if that
+        # property fails to register every click silently does nothing.
+        # Ask the *operator's* RNA — a class's own bl_rna does not report
+        # operator properties and reads as an empty dead panel when it is fine.
+        for op in ("dab_set_albedo", "dab_set_tilt"):
+            props = getattr(bpy.ops.redwood, op).get_rna_type().properties.keys()
+            check(f"{op} takes a swatch name", "swatch" in props, str(list(props)))
 
     albedo = dabpaint.load_palette(
         ROOT / "assets/materials/albedo_palette/albedo_palette.json"
