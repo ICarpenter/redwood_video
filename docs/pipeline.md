@@ -40,10 +40,13 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
   metadata — `export_shot.py` exports what a layout scene actually contains
   and never reads this column.
 - Shots LINK, never append, either shape; rig animation via library overrides.
-- Clay materials: `assets/materials/clay_library.blend` (Clay Doh-derived,
-  palette-matched — built during look-dev).
-- Polyhaven assets: fine. AI text-to-3D / Sketchfab: blockouts only, resculpt
-  into the clay style before a shot renders.
+- Look materials: `assets/materials/` — `tilt_palette/` (direction × lean
+  swatches), `albedo_palette/` (the MCM families), `tilt_dab_test/` (the
+  proving file). The shader is `MCM_Toon`; see `treatment/style.md`.
+- Polyhaven assets: fine. AI text-to-3D / Sketchfab / purchased models:
+  blockouts only — retopo and repaint into the print look before a shot
+  renders. Nothing bought or generated ships at hero grade; see
+  `treatment/props.md` for the rung ladder.
 
 ## Layout
 - The property is **linked at identity** (world origin, ground at `z=0`) in

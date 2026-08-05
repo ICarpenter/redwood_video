@@ -48,19 +48,19 @@ picture and the song.
 | 010 | 18–22 | 736–899 | 6.8s | The machine gun prints like soft-serve — one continuous extrusion the boy snaps off. Bells and whistles are LITERAL: he flicks the tiny bell — ding. ♪ "the product's movin'" as it plops off the bed. |
 | 020 | 22–26 | 900–1062 | 6.8s | He picks the gun up off the garage floor and comes up with it slaps the "NOT A TOY" sticker on and then draws a bead on three separate things — garage junk the yard the mailbox holding each one — before the big swing round to his LEFT. |
 | 030 | 26–29 | 1063–1185 | 5.1s | He brings the gun up onto his shoulder and starts play-shooting the Santa — six jerks he makes himself no muzzle flash he is going "pew". Then MOM'S SHADOW falls across him — full villain silhouette — and he freezes mid-aim. |
-| 040 | 29–32 | 1186–1307 | 5.1s | Reveal: hairspray helmet, shoulder pads, oven mitts, sweetest face in the county — finger wagging. ♪ wags on beats; the clay gun barrel DROOPS a little more with each wag, scolded. The warning lands: do NOT shoot the Santa. |
+| 040 | 29–32 | 1186–1307 | 5.1s | Reveal: hairspray helmet, shoulder pads, oven mitts, sweetest face in the county — finger wagging. ♪ wags on beats. **A CHARACTER MOMENT not a gag** (2026-08-05): Mom is permissive and has exactly one sharp line and this is where we learn it. Her face and the physical business between the two of them carry it — she is not angry she is *serious* and he knows the difference. **No prop animates in this shot.** The warning lands: do NOT shoot the Santa. |
 | 044 | 32–33 | 1308–1348 | 1.7s | HARD CUT — CLOSE UP on the vintage Santa by the garage's back door: duct-tape repairs, mismatched paint. It has survived incidents before. **THE SETUP** (and it's already parked in the eventual line of fire). |
 | 046 | 33–34 | 1349–1389 | 1.7s | REACTION — the boy's eyes flick from Mom to the Santa and back. He heard her. He is also, visibly, doing arithmetic. |
-| 050 | 34–36 | 1390–1471 | 3.4s | Printer again: human-sized action figure slides out — discount-Americana visage (off-brand wrestler / mullet commando energy). |
+| 050 | 34–36 | 1390–1471 | 3.4s | Printer again: human-sized action figure slides out — discount-Americana visage (off-brand wrestler / mullet commando energy). **The set is five** (locked 2026-08-05, full designs in `props.md` §8): the **Barbarian** (flexing at nobody), the **Soldier** (dumbass, helmet askew), the **Space Captain** (medals he awarded himself), the **Champion** (sore-winner wrestler), the **Frontier Marshal** (noble squint, over a parking dispute). Each takes a hero trope and reveals the inner asshole. |
 | 060 | 36–38 | 1472–1552 | 3.4s | Boy hauls it out the garage's REAR door into the backyard, past the Santa at the threshold; more figures under his arm. |
 
 ## sq030 — CHORUS 1 · bars 38–46 · frames 1553–1878 · 13.6s
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 38–40 | 1553–1634 | 3.4s | Firing squad reveal: one figure posed mid-friendly-wave, one already holding a tiny white flag, one blindfolded with a cigarette. ♪ "Who got the bag?" |
+| 010 | 38–40 | 1553–1634 | 3.4s | Firing squad reveal: one figure posed mid-friendly-wave, one already holding a tiny white flag, one blindfolded with a cigarette. ♪ "Who got the bag?" **Poses assigned 2026-08-05:** the **Captain** waves (of course he does), the **Champion** holds the white flag and hates it, the **Soldier** is blindfolded with the cigarette and has not worked out why. The **Barbarian** and the **Marshal** just stand there being smug — they anchor either end of the line, and the hat gives the best silhouette read at 15 m. |
 | 020 | 40–42 | 1635–1716 | 3.4s | Boy squares up, cocks it, savors it. ♪ "Who is your plug?" |
-| 030 | 42–46 | 1717–1878 | 6.8s | **OBLITERATION.** Heads pop left-to-right in beat order like a xylophone run across "I got the guns." Clay everywhere. [IF TIME: one arm arcs into Mom's flower pot.] |
+| 030 | 42–46 | 1717–1878 | 6.8s | **OBLITERATION.** Heads pop left-to-right in beat order like a xylophone run across "I got the guns." **Paint everywhere** — each pop bursts into a wet splat with a starburst stamp over it. [IF TIME: one arm arcs into Mom's flower pot.] |
 
 ## sq040 — VERSE 2 · bars 46–64 · frames 1879–2614 · 30.7s — HOTTEST SECTION
 
@@ -78,18 +78,18 @@ gets moved back a bar, `verse_2_intro` becomes 3 bars and this note is stale.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 46–47 | 1879–1920 | 1.8s | Carnage continues; a figure's head balloons and bursts, molten Play-Doh. |
+| 010 | 46–47 | 1879–1920 | 1.8s | Carnage continues; a figure's head balloons and bursts into pooling molten pigment. |
 | 020 | 47–49 | 1921–2002 | 3.4s | Kitchen window: Mom admires his thoroughness, winces at his aim. [IF TIME: absentmindedly waters the new arm in the flower pot.] |
 | 030 | 49–50 | 2003–2043 | 1.7s | Sheriff's cruiser ambles down the rural road. Wide, unhurried, nothing wrong yet. ♪ "when a law man keeps a knockin'." |
 | 035 | 50–52 | 2044–2124 | 3.4s | INTERIOR: he's driving with his knee, two-handing an egg salad sandwich, pure bliss. The sandwich is the point — establish how much it matters before it is threatened. |
-| 040 | 52–53 | 2125–2165 | 1.7s | PANG — a stray ricochet blows the back tire. ♪ blowout on the beat. |
+| 040 | 52–53 | 2125–2165 | 1.7s | PANG — a stray round **comes straight down the open garage passthrough** — in the rear door out the front across the driveway — and blows the cruiser's **FRONT LEFT** tire. All the physics then works: the round hits his left flank he veers LEFT and that is the ditch side. ♪ blowout on the beat. (Trajectory settled 2026-08-05 — was a bounce off the old truck; the tunnel is better because `sq010-sh045` already showed the audience that sightline with the road at the far end. Tire was "back" here and in `story.md`; `shotlist.csv` had front left and wins. He drives NORTH so left is WEST is the ditch — and he drives *into* the line of fire so it lands on the front axle. Full geometry in `site.md`.) |
 | 042 | 53–54 | 2166–2206 | 1.7s | INTERIOR REACTION — the car is already going and he does not care: both hands go to the SANDWICH. Priorities, established. |
 | 044 | 54–55 | 2207–2247 | 1.7s | Cut back outside: the cruiser slews into the drainage ditch, hubcap flying off, and coasts to a final rest just past the house. |
 | 050 | 55–57 | 2248–2329 | 3.4s | [FIRST CUT IF TIGHT] Boy still shredding; the cruiser's hubcap rolls all the way into the yard — he skeet-blasts it without looking. |
 | 060 | 57–58 | 2330–2369 | 1.7s | Sheriff climbs carefully out the window — the door falls off AFTER. **BUTT CRACK DEBUT (runner 1/3).** |
 | 062 | 58–59 | 2370–2410 | 1.7s | His head pops up over the lip of the trench like a gopher — hat and all — and stops dead. |
-| 064 | 59–60 | 2411–2451 | 1.7s | REVERSE on his eyeline: a blasted-off action-figure head drops in from the yard, bounces twice on the grass and rolls to a stop facing him. |
-| 066 | 60–64 | 2452–2614 | 6.8s | Back on the sheriff. A shudder runs through him, his back arches, and the camera SNAPS in to his face as he mouths it: "…Danny?" ♪ the zoom hits on the beat. |
+| 064 | 59–60 | 2411–2451 | 1.7s | REVERSE on his eyeline: a blasted-off action-figure head drops in from the yard, bounces twice on the grass and rolls to a stop facing him. **It is THE SOLDIER's head** (figure 2 of 5 — see `props.md` §8): mullet-commando, dumbass, and at this size and this angle it could be a man. That head is the one hero-grade face in the set. |
+| 066 | 60–64 | 2452–2614 | 6.8s | Back on the sheriff. A shudder runs through him, his back arches, and the camera SNAPS in to his face as he mouths it: "…Danny?" ♪ the zoom hits on the beat. **Danny is HIS dead — a man from his war, nothing to do with this family** (settled 2026-08-05). The sheriff has no connection to the boy or his mother and never has. A toy face knocked his lid off; that is the whole of it. |
 
 ## sq050 — CHORUS 2 · bars 64–74 · frames 2615–3023 · 17.0s
 
@@ -101,29 +101,29 @@ plays through the chorus hit rather than waiting for it.
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 64–68 | 2615–2777 | 6.8s | War flashback — two seconds of sepia clay 'Nam, triggered by Danny. Face puckers into the salty marine mug. ♪ "Who got the bag?" |
+| 010 | 64–68 | 2615–2777 | 6.8s | War flashback — two seconds of sepia 'Nam, triggered by Danny. Face puckers into the salty marine mug. ♪ "Who got the bag?" |
 | 020 | 68–70 | 2778–2858 | 3.4s | Comically large gun out; determined army crawl. **A butterfly lands on the crack (runner 2/3).** |
 | 030 | 70–71 | 2859–2911 | 2.2s | Window POV — Mom sees: disheveled armed man creeping along her house. |
 | 035 | 71–72 | 2912–2940 | 1.2s | REVERSE through the glass onto her face. The sweetness drains out of it. She has already decided. |
-| 040 | 72–74 | 2941–3023 | 3.5s | From BEHIND her: she opens the gun cabinet beside the window, draws Rosco, SPINS to camera and racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." |
+| 040 | 72–74 | 2941–3023 | 3.5s | From BEHIND her: she opens the gun cabinet beside the window, draws Rosco, SPINS to camera and racks the slide with her TEETH (oven mitts). ♪ rack lands on "I got the guns." **It is the PANTRY, and the arsenal is in it** (resolves the prose/table split, 2026-08-05) — **LIVE LAUGH LOAD** on a sign mounted to the *inside face of the door*, so it swings toward camera as she opens it. Shot from behind her, a wall-flat sign would be masked by her body; on the door it plays. Needs a blocking test before the cabinet builds past L1 — see `props.md` §9. |
 
 ## sq060 — SOLO · bars 74–86 · frames 3024–3513 · 20.4s — THE SETPIECE
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 74–77 | 3024–3146 | 5.1s | **THREE-WAY FIREFIGHT.** The boy breaks across the yard under fire and dives; the sheriff tracks him the whole way, firing. ♪ gunfire phrases with the guitar. |
-| 012 | 77–79 | 3147–3227 | 3.4s | The instant the boy hits the dirt — REAR on Mom, planted on the back stoop, blasting away at the sheriff. She has been the third gun all along. |
+| 010 | 74–77 | 3024–3146 | 5.1s | **THREE-WAY FIREFIGHT.** The boy breaks across the yard under fire and dives; the sheriff tracks him the whole way, firing. ♪ gunfire phrases with the guitar. **The yard takes it (confirmed IN, 2026-08-05 — these were prose-only until now): lawn flamingos beheaded one per beat, a garden gnome taking cover behind the birdbath, the clothesline ventilated.** The scenery does the suffering; nobody gets hurt. |
+| 012 | 77–79 | 3147–3227 | 3.4s | The instant the boy hits the dirt — REAR on Mom, planted on the back stoop, blasting away at the sheriff. She has been the third gun all along. **Her floral Sunday dress takes a hit on the line and her aim shifts with genuine personal offence** — same woman as sq020-sh040: permissive right up to the one thing she actually cares about, and then not. |
 | 014 | 79–82 | 3228–3350 | 5.1s | Back on the sheriff, camera looking WEST past him toward the house. **Mom is visible 20 m down the lens behind him, Rosco up, returning fire through the kitchen's north window** — muzzle flash after muzzle flash out of his flank. He is still firing north at the boy when he registers it, and swings the gun onto the house. The swing rakes straight across the propane BBQ. |
 | 020 | 82–84 | 3351–3431 | 3.4s | The spray rakes the propane BBQ. Hiss. **All three freeze — one shared "oh no" look across the yard.** |
-| 030 | 84–86 | 3432–3513 | 3.4s | **MUSHROOM CLOUD** — for exactly one frame it resolves into a bald eagle. Everyone blasted off their feet, slow-mo clay pinwheel. ♪ detonation on the solo's final accent. |
+| 030 | 84–86 | 3432–3513 | 3.4s | **MUSHROOM CLOUD** — for exactly one frame it resolves into a bald eagle. Everyone blasted off their feet, slow-mo pinwheel trailing wet paint. ♪ detonation on the solo's final accent. |
 
 ## sq070 — VERSE 3 · bars 86–102 · frames 3514–4166 · 27.2s
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
 | 010 | 86–89 | 3514–3636 | 5.1s | AERIAL hover over the charred backyard — scorched grass the flattened clothesline the boy flat on his back out on the middle of it. **Mom comes out through the kitchen window she has been shooting out of all firefight — over the sill and straight down the yard to her son.** She is the only thing moving. Quiet under the verse. (No blast column: it swallowed the frame at any size that read. The sheriff is 10.8 m north of the boy and cannot be held here as well as the back door — he is sh020's shot.) |
-| 020 | 89–92 | 3637–3758 | 5.1s | OVER THE SHERIFF'S SHOULDER. He props himself up on the grass and — a twitch of recognition — finally sees who he has been trading fire with. A boy. And his mother. This was never a war. ♪ "the kid are lying in a slump." (Noodle-gun gag CUT 2026-08-02 — diecast can't droop under `style.md`'s physics law.) |
-| 030 | 92–96 | 3759–3922 | 6.8s | REVERSE onto him past Mom and the boy. He gets up and crosses to them — and **she works out who he is**: head up off her son, freeze, a double-take, and it lands. THEN the mangled hat comes off in apology and it goes out of her — she is still laughing when we cut. All good fun after all. |
+| 020 | 89–92 | 3637–3758 | 5.1s | OVER THE SHERIFF'S SHOULDER. He props himself up on the grass and — a twitch of recognition — finally sees who he has been trading fire with. A boy. And his mother. This was never a war. ♪ "the kid are lying in a slump." (Noodle-gun gag CUT 2026-08-02. Its original reason — "diecast can't droop" — rested on `style.md`'s physics law which went **TBD 2026-08-05**; the cut still stands on its own merits and is not reopened here.) |
+| 030 | 92–96 | 3759–3922 | 6.8s | REVERSE onto him past Mom and the boy. He gets up and crosses to them — and **she works out who he is**: head up off her son, freeze, a double-take, and it lands. THEN the mangled hat comes off in apology and it goes out of her — she is still laughing when we cut. All good fun after all. **What she recognises (2026-08-05): the SHERIFF. Not a friend — an elected official she voted for.** He does not know this family and never did. The horror is all hers: she has spent the afternoon in a gunfight with the county sheriff. That is why it collapses into laughing. |
 | 040 | 96–99 | 3923–4044 | 5.1s | Tight on the sweet-tea pitcher — the only pristine object in the wreckage — then PUSH OUT to reveal a table set up in the charred yard facing the garage: the sheriff sitting screen-left Mom centre-left handing him a glass the boy on the right. |
 | 050 | 99–102 | 4045–4166 | 5.1s | REVERSE out of the garage: the charred Santa fills the foreground the tea tableau small beyond him. He slumps over — and his head pops off and rolls out across the grass toward them. **THE PAYOFF.** |
 
@@ -133,14 +133,14 @@ plays through the chorus hit rather than waiting for it.
 |----|------|--------|-----|------|
 | 010 | 102–104 | 4167–4247 | 3.4s | Mom's face goes final boss. She takes BOTH guns off the tea table — his and the boy's — and comes up dual-wielding, oven mitts still on. Push in onto her face. ♪ "Who got the bag?" |
 | 020 | 104–105 | 4248–4288 | 1.7s | Two-shot square onto the two and a half metres between them — **with Mom planted dead centre between them dual-wielding**. Boy and sheriff exchange ONE look past her. She does not move. That is the beat. |
-| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt WEST past the table and straight up the yard for the back fence his chair going over behind him clay divots exploding at their heels. She barely has to turn — they run right past her. ♪ the hook changes owners — SHE'S "got the guns" now. |
+| 030 | 105–107 | 4289–4370 | 3.4s | She unloads; they bolt WEST past the table and straight up the yard for the back fence his chair going over behind him wet paint divots exploding at their heels. She barely has to turn — they run right past her. ♪ the hook changes owners — SHE'S "got the guns" now. |
 | 040 | 107–111 | 4371–4534 | 6.8s | **FINAL IMAGE:** wide up the yard from just behind Mom — the two of them running away west into the sunset under heavy fire out of our own eyeline divots chasing them across the grass and rounds banging off the fence. **The boy OVERTAKES him at ~4405 and vaults the fence first at 4450; the sheriff is still short of it and gets over at 4478 one-handed (runner 3/3).** They go into the treeline and the desert and mountains beyond. ♪ song dies dead on bar 111's hit — **SMASH TO BLACK** with it. |
 
 ## sq090 — TAIL (audio only) · bars 111–~117 · frames 4535–~4780 · ~10.2s
 
 | sh | bars | frames | dur | shot |
 |----|------|--------|-----|------|
-| 010 | 111–~117 | 4535–~4780 | ~10.2s | Black. Hand-sculpted clay title card settles out of an overshoot… holds… and takes one last stray bullet hole at 4700. Fade with the ring-out — exact out-point picked in the edit. |
+| 010 | 111–~117 | 4535–~4780 | ~10.2s | Black. Hand-painted title card settles out of an overshoot… holds… and takes one last stray round at 4700 — the hole lands as a wet splat, the last unauthorized pigment in the film. Fade with the ring-out — exact out-point picked in the edit. |
 
 ## Tally & density notes
 

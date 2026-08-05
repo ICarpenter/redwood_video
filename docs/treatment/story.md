@@ -1,5 +1,15 @@
 # guns — story treatment (draft 1)
 
+> **⚠️ HISTORICAL — the author's near-verbatim draft, kept as a record.**
+> Two things in it are superseded and are NOT to be worked from:
+> **(1) the style.** Where this reads "claymation" / "molten Play-Doh" /
+> "claymation parts and pieces", the film is **Mid-Century Print** — flat
+> gouache, and the carnage is **wet paint**, not clay (locked 2026-08-05,
+> `style.md`). **(2) the tire** — "back tire" here, front left everywhere
+> live (`script.md`, `site.md`).
+> Live docs: `script.md` (shot-by-shot) · `guns-script.md` (prose) ·
+> `site.md` · `house.md` · `props.md` · `style.md`.
+
 **Logline:** A kid in the heartland 3D-prints a machine gun and some
 human-sized action figures to shoot, and by sundown has accidentally
 dragged his mom and the county sheriff into a three-way backyard war —
