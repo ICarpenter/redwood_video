@@ -51,8 +51,8 @@ there's a tiny bell and a whistle mounted on it, and he flicks the bell —
 lazy beads on the garage junk, the yard, the mailbox.
 
 A shadow falls over him — a full villain silhouette. He freezes mid-aim.
-The reveal: it's Mom. Hairspray helmet, shoulder pads, oven mitts, the
-sweetest face in the county, wagging one finger. It is played straight — she
+The reveal: it's Mom. Curly bob, shoulder pads, the sweetest face in the
+county, wagging one bare finger. It is played straight — she
 is permissive to a fault and this is the one line she has, and the beat lives
 entirely in her face and in how the two of them deal with each other. She is
 not angry; she is *serious*, and he knows the difference. She pans a look
@@ -107,8 +107,8 @@ gun. He drops into a determined army crawl along the side of the house; a
 butterfly lands on the butt crack. Through the window, Mom sees him now — a
 disheveled armed man creeping along her wall. The framed **LIVE LAUGH
 LOAD** on the wall flips around to reveal a hidden arsenal. She pulls her
-own pistol and — oven mitts still on — racks the slide with her *teeth*,
-right on *"I got the guns."*
+own pistol and racks the slide one-handed — bare fingers, painted nails,
+no effort at all — right on *"I got the guns."*
 
 ## SOLO
 *Instrumental. The setpiece. No lyric to serve — pure escalation.*
@@ -151,7 +151,7 @@ toward camera… and tips over dead.
 is what you want"*
 
 Mom's face goes final boss. She picks up *both* their guns — dual-wield,
-oven mitts still on — on *"Who got the bag?"* The boy and the sheriff
+bare hands — on *"Who got the bag?"* The boy and the sheriff
 exchange one look. She opens fire; they bolt, wet paint divots exploding at their
 heels. The hook has changed owners — *she's* got the guns now.
 
