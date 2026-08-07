@@ -1,35 +1,56 @@
 # redwood_video — handoff
 
 State of the project for anyone (or any future session) picking it up cold.
-Written 2026-07-20, updated 2026-08-03.
+Written 2026-07-20, updated 2026-08-06.
 
 ## What this is
 
 An animated music video for **`guns`** (`audio/track/guns.wav` — 4:15,
 141 BPM, 150 bars), produced end-to-end in Blender 5.1.2 in the
-**Mid-Century Print** look — flat gouache shapes on hand-painted tilt dabs,
-no linework, big poster skies: bright colors, white-trash Americana, Spike &
-Mike energy. **Style locked 2026-08-05** (`treatment/style.md`); the
-claymation and toy-box candidates are dead and should not resurface. A heartland kid 3D-prints a machine gun, and by sundown has
-dragged his mom and the county sheriff into a three-way backyard war.
-50 shots. Solo production.
+**Mid-Century Print** look — flat gouache shapes, no linework, big poster
+skies: bright colors, white-trash Americana, Spike & Mike energy. **Style
+locked 2026-08-05** (`treatment/style.md`); the claymation and toy-box
+candidates are dead and should not resurface. A heartland kid 3D-prints a
+machine gun, and by sundown has dragged his mom and the county sheriff into a
+three-way backyard war. 50 shots. Solo production.
+
+**The look is locked; the mechanism that renders it is not.** Hand-painted
+tilt dabs were the answer from 2026-08-04 to 2026-08-06 and are now parked —
+see *The dab painter is parked* below. Anything in `style.md`, `tools.md` or
+`README.md` that describes the film as being made *of* tilt dabs is
+describing an approach that is back in R&D. The picture those docs describe
+is still the target.
 
 Read next, in order: `treatment/story.md` (what happens),
 `treatment/script.md` (shot by shot, frame-locked), `treatment/site.md`
 (where everything is), `pipeline.md` (conventions), `tools.md` (the
 machinery), `layout.md` (the layout & drawing workflow).
 
+`concept/` (added 2026-08-06) is what everyone looks like — four characters,
+six locations and the hero props, each image shipped with the prompt that made
+it. It is not pipeline: nothing in `tools/` reads it and no layout scene links
+it. `treatment/style.md` stays canon; concept art is allowed to argue with the
+doc, and when it wins the doc gets updated.
+
 ## Where we are
 
-Written 2026-07-20, status updated 2026-08-03.
+Written 2026-07-20, status updated 2026-08-06.
 
 | Phase | Status |
 |-------|--------|
 | 1. Ideation | done |
 | 2. Writing — story, script, lyrics, sections | done |
 | 3. Layout / animatic | **BLOCKED END TO END — all 50 shots, frames 1–4780. Undrawn.** |
-| 4. Asset production | greybox — property shell, 34 guides, 2 mini-sets, squib FX |
+| 3b. Character & location design | **done as concept art 2026-08-05/06** — `concept/`, four characters, six locations, the L3 props |
+| 4. Asset production | greybox — property shell, 34 guides, 2 mini-sets, squib FX. **The boy is now being modelled for real.** |
+| 4b. The painterly look | **R&D, restarted 2026-08-06** — no mechanism chosen |
 | 5–9. Animation → delivery | not started (pipeline built and validated end-to-end) |
+
+**Two tracks run in parallel from 2026-08-06** and they are deliberately
+independent: the boy (model → texture → rig → animation development) and the
+painterly render (brushes, layering, materials). Neither blocks the other —
+the boy can be built and rigged while the surfacing question is open, and the
+render tests do not need a finished character to run on. See *Next actions*.
 
 The film is watchable now: `edit/edit.blend` cuts the track, 9 section
 markers and 50 live layout strips — no slugs left. Nothing is rendered yet, so
@@ -47,6 +68,64 @@ timing, because of the bug in the next section.
 Blocked 2026-08-03 in this order: `sq070`–`sq090` (the aftermath, the ending
 and the title card), then a performance pass over seven `sq010`/`sq020` shots,
 then the sheriff's introduction and crash (`sq040_sh030`–`sh066`).
+
+---
+
+## The dab painter is parked — Ian's call, 2026-08-06
+
+**Painting normals as colour is fighting Blender's setup, and we fought it
+hard for three days to find that out.** The tilt-dab mechanism — an artist
+paints two index maps, one indexing an albedo swatch and one indexing a facet
+normal, and the shader decodes them — is set aside. The *look* it was serving
+is untouched and still locked.
+
+What the tests established, in the order it hurt:
+
+1. **Indices are not colours, so every antialiasing feature in the stack is an
+   enemy rather than a convenience.** Halfway between albedo index 40 and index
+   30 is index 35, an unrelated swatch — measured over the shipping palette the
+   median step between adjacent indices is deltaE 19, and twenty of ninety-five
+   adjacent pairs exceed deltaE 30. A soft edge does not fade; it sprays
+   strays.
+2. **Three Blender defaults manufacture grey** — `use_interpolation`,
+   `filter_size`, and sRGB on an image assigned through the UI. All three are
+   fixable and the fix is recorded in the gotchas below, but it means every
+   image, texture and brush in the film has to be de-defaulted by hand or the
+   map corrupts silently.
+3. **Brush mask textures cannot be assigned by script, and the refusal is
+   silent** — brushes are linked assets in 5.x. That makes each brush a manual
+   UI step, and the plan wanted a set of them.
+4. **None of it can be verified headlessly.** `bpy.ops.paint.image_paint.poll()`
+   fails in `--background`, so every check needs a human to make a stroke and a
+   script to read the result back. No CI, no regression test on the one path
+   that can be wrong quietly.
+
+Any one of these is survivable. Together they mean the artist fights the tool
+on every stroke of a 50-shot film, which is the wrong place to be spending
+the effort.
+
+**What is kept.** The two palettes and their LUTs (`tools/albedo_palette.py`,
+`tools/tilt_palette.py`) — the colour and facet thinking is good and outlives
+the painting mechanism. The gotchas in *Blender 5.1.2 gotchas already paid
+for* — they are true Blender facts and cost real days. And
+`assets/materials/tilt_dab_test/` as the record of the test.
+
+**What stays in the tree but is not the plan.** The committed dab painter
+from PR #12 — `tools/dabpaint.py`, `tools/addons/redwood_dabpaint.py`,
+`tools/tests/check_dabpaint.py` — still works and is not deleted. Do not build
+on it without asking.
+
+**What was deliberately never committed** (left in the working tree on
+`style-lock`, 2026-08-06): `tools/dabbrushes.py`, `tools/build_dab_brushes.py`,
+`assets/materials/brushes/`, the brush-mask test runners under `tools/tests/`
+(`check_dab_brushes.py`, `check_stamp_hardness.py`, `load_test_masks.py`,
+`clear_index_map.py`, `test_dabbrushes.py`), the stamp-hardness additions to
+`dabpaint.py`/`test_dabpaint.py`, and the `tilt_dab_test.blend` edits. If the
+approach is ever revived, that is where the unfinished half is.
+
+**What replaces it: nothing yet.** Painterly rendering is open R&D from
+2026-08-06 — brushes, layering, materials — and no mechanism has been chosen.
+See *Open decisions*.
 
 ---
 
@@ -290,6 +369,40 @@ still line up.
     `tool_settings.image_paint.unified_paint_settings`.
     `tool_settings.unified_paint_settings` is `None`. It has moved once, so
     check both.
+- **A brush mask texture manufactures grey unless you turn off three
+  defaults — and for the dab painter grey means the wrong swatch.** Blender
+  ships `use_interpolation=True` and `filter_size=1.0` on an image texture,
+  and an image assigned through the UI comes in as **sRGB**. Stamping a 512px
+  mask at a 39px brush size downsamples it 13:1, and the filter invents a
+  grey ramp around the shape — which lands in the index map as a ramp of
+  *unrelated* swatches (measured: a teal dab fringed in `pitch #160e0f` and
+  `stone #8a8782`). Set `use_interpolation=False`, `filter_size=0.1`,
+  `extension='CLIP'`, and the image to **Non-Color**; the same mask then
+  stamps hard and index-exact. Proven both ways 2026-08-05 with
+  `tools/tests/check_stamp_hardness.py` — BLENDED with the defaults, HARD
+  after. `tools/tests/load_test_masks.py` hardens whatever texture the brush
+  is carrying.
+  - Consequence for the look: **bristle-gap brush masks are viable** — a mask
+    can carry the hand-painted mess without smearing what it stamps. That
+    finding survives the parking of the dab painter and applies to any
+    painting approach that follows.
+- **Paint brushes are LINKED assets in 5.x, so ID pointers on them cannot be
+  set by script — and the refusal is silent.** The active brush comes from
+  Blender's `essentials_brushes-*.blend` asset library
+  (`brush.library` is set, `is_library_indirect` is True), and a linked
+  datablock may not point at a local one. `brush.mask_texture = tex` raises
+  nothing and reads back `None`. Established 2026-08-05 while wiring up the
+  dab brush masks.
+  - **Scalars still stick** — `brush.color`, `brush.strength` — which is why
+    the dab painter's add-on works at all. It is specifically pointers to
+    other datablocks (textures) that are blocked.
+  - The obvious workarounds do not help: `ImagePaint.brush` is **read-only**
+    (so you cannot swap in `brush.copy()`), and `bpy.ops.brush.asset_activate`
+    wants an indexed asset path that a fresh session does not have.
+  - **Assign brush textures by hand in the UI** (Properties ▸ Tool ▸ Brush
+    Settings ▸ Texture Mask), or work from a brush already made local in the
+    .blend. Any script touching brush textures must **read the value back**
+    and report — assuming the write landed is how this one hid.
 - **`--factory-startup` ships a cube at the origin.** A headless check that
   adds a plane at the origin and renders will render *the cube*, giving a
   constant result for every input — which reads exactly like a broken
@@ -397,17 +510,19 @@ touched it — regenerate instead.
 
 ## Repo state
 
-- Everything through PR #9 (`property-passthrough`: garage passthrough,
-  `edit/edit.blend` tracked in LFS, first 5 shots blocked out) is merged.
-  `main` is current.
-- This branch, `camera-driven-layout`, implements the refactor this doc
-  describes — property static at the origin, camera as the sole framing
-  authority, blocking in world space, shot files an on-demand export — and
-  has not yet been opened as a PR.
+- Everything through **PR #12** (the dab painter, the albedo palette, the
+  mountain basin) is merged into `origin/main`. Local `main` may sit one merge
+  commit behind — fast-forward before branching off it.
+- The current branch is **`style-lock`**: the style lock and props catalogue
+  (`c0bb4ff`), then the concept-art drop and the character canon it moved
+  (`cb05dd2`). Not yet a PR. It also carries the **uncommitted dab-brush
+  work** listed in *The dab painter is parked* — anyone switching branches
+  should expect it in the working tree, and it is not meant to be committed.
 - Merged branches that can be deleted: `scaffold`, `track-and-beatmap`,
   `ideation`, `boards`, `envs`, `boards-guide-blockout`,
-  `property-passthrough`. `board-sunrise` is kept deliberately — see "PRs
-  so far" below.
+  `property-passthrough`, `camera-driven-layout`, `animatic-sq060-sq090`,
+  `dab-painter`. `board-sunrise` is kept deliberately — see "PRs so far"
+  below.
 
 ## The garage passthrough
 
@@ -457,28 +572,88 @@ rejected. Fix the old animation rather than re-introducing `sheriff_eating`.
 - **Verse 2 gag density** — the script flags it as the hottest section
   with an explicit cut-first order (hubcap skeet → package football →
   flowerbed arm). The animatic arbitrates; don't cut on taste beforehand.
-- **Production design** — the house is specced (`treatment/house.md`) and
-  every prop is catalogued with a target rung (`treatment/props.md`). Still
-  undesigned: siding detail, terrain undulation, and the surfacing pass.
-- **Rigged characters — DEFERRED, decided 2026-08-03.** Rigging faces, limbs
-  and fingers before a full-animation sweep was considered and put off. Two of
-  the three original reasons still stand. (**The first — "the style is not
-  locked" — expired 2026-08-05.** Print won, and it wants limited animation:
-  strong holds, snappy transitions, painted smears on fast actions, and faces
-  carried by silhouette and pose rather than a face rig. That is *cheaper*
-  than what was deferred, so this is not a reason to start rigging.) The
-  remaining two: the animatic has not finished its job while
-  13 scenes still play the wrong slice of themselves; and at animatic scale the
-  boy's whole head is about thirty pixels, so fingers cannot read yet.
-  The agreed order is: finish the timing sweep and the storytelling details →
-  watch it end to end and cut → lock the style and design the characters →
-  THEN rig against locked designs and do the full sweep.
-  If one thing gets pulled forward, make it **heads that turn independently of
-  the body** — a head guide on a neck empty, no rig. That is the biggest
-  readability win going (recognition beats, eyelines, the "Danny?" shudder)
-  and it is cheap. Before faces, before fingers.
+- **Production design** — the house is specced (`treatment/house.md`), every
+  prop is catalogued with a target rung (`treatment/props.md`), and as of
+  2026-08-06 the four characters, six locations and the L3 hero props all have
+  concept sheets in `concept/`. Still undesigned: siding detail, terrain
+  undulation, and the surfacing pass — which is now the same open question as
+  the painterly render, below.
+- **How the painterly look is actually rendered — OPEN, restarted
+  2026-08-06.** Tilt dabs were the answer and are parked; nothing has replaced
+  them. The R&D track is brushes, layering and materials, and it should be
+  judged the way everything else here is judged: render a frame and look at
+  it. Constraints that survive from `style.md` regardless of mechanism — flat
+  matte shapes, no linework, no banding, subtle patina, print wear on the
+  built world and clean registration on people.
+- **`big_pistol` vs the M14** — `guns-script.md` gives the sheriff *"a
+  comically large gun"* at `sq050-sh020`, and `props.md` §9 now also gives him
+  an M14. `props.md` recommends letting the M14 *be* the comically large gun,
+  which collapses `nam_rifle` into it as well. Nothing in the script has been
+  rewritten pending the call.
+- **Doc drift to clean up when the guns settle:** `props.md` §9 still says
+  Rosco is "racked with teeth" in two places. The teeth-rack was retired
+  2026-08-06 with the oven mitts (`script.md` `sq050-sh040`, `style.md`
+  § Characters, `guns-script.md`), so those two lines are stale — left alone
+  deliberately rather than swept, since §9 is mid-revision.
+- **Rigged characters — the 2026-08-03 deferral is LIFTED for the boy,
+  2026-08-06.** That decision's agreed order was: finish the timing sweep →
+  watch it and cut → lock the style and design the characters → THEN rig
+  against locked designs. The style locked 2026-08-05 and the characters are
+  designed as of 2026-08-06, so the gate the deferral was waiting on is open,
+  and the boy goes model → texture → rig → animation development now. Mom and
+  the sheriff stay guides until he proves the path.
+  Two things from that decision still govern, and neither is a reason to
+  wait: **print wants limited animation** — strong holds, snappy transitions,
+  painted smears on fast actions, and faces carried by silhouette and pose
+  rather than a face rig, so build the rig for *that* and not for a full FACS
+  face; and the **animatic still has 13 scenes playing the wrong slice of
+  themselves**, which is a debt against the edit, not against the boy. The
+  cheap readability win named there — **heads that turn independently of the
+  body**, a head guide on a neck empty, no rig — is still the right move for
+  Mom and the sheriff while they remain guides.
 
 ## Next actions
+
+**Two tracks, in parallel, from 2026-08-06.** They do not block each other and
+they are not competing for the same decision — A produces a character, B
+decides how anything gets surfaced. The animatic debts at the bottom are still
+real and still owed; they are simply not what is being worked.
+
+### Track A — the boy, end to end
+
+1. **Model him.** `concept/boy/boy_modelsheet.png` is canon for the wardrobe
+   (one solid black shoe mass, low collar, no white midsole); the hands, grips,
+   shoe and foot sheets are the sculpting plates. `cast.blend` already carries
+   all of it as image empties in `boy_modeling`, measured to true scale, so
+   sculpt against the file rather than re-importing.
+2. **Texture him** — but keep it cheap to redo. This is exactly where track B
+   lands, so UVs and material assignment should assume the surfacing answer
+   will change under them at least once.
+3. **Rig for limited animation.** Strong holds, snappy transitions, painted
+   smears on fast actions. Faces carry on silhouette, pose and the mouth
+   chart, not a FACS rig — `concept/boy/boy_mouth_chart.png` is the actual
+   vocabulary to build shapes against, and the eighteen expressions are keyed
+   to shots that exist.
+4. **Animation development on one real shot**, not on a turntable. Pick one
+   that exercises a hold, a hand and a face — `sq010-sh050` is a whole shot of
+   the devious grin and is the obvious candidate — and take it to the quality
+   the film needs, so the rig is judged by a frame from the film.
+
+### Track B — the painterly render
+
+1. **Nothing is chosen.** Brushes, layering, materials — all open. Start from
+   the look `style.md` describes, not from the mechanism it currently names.
+2. **Test on geometry that already exists** — the property greybox, a guide, a
+   prop. Track B must not wait on the boy.
+3. **Render a frame and look at it.** Same rule as everything else here; the
+   tilt-dab approach passed a lot of arithmetic on its way to being parked.
+4. **Put any candidate through the four questions that killed tilt dabs**
+   before committing to it: does antialiasing turn its data into garbage; can
+   it be verified headlessly; does it need per-datablock manual UI setup that
+   cannot be scripted; and does the artist fight it on every stroke, fifty
+   shots long. See *The dab painter is parked*.
+
+### Still owed on the animatic — not being worked
 
 1. **Sweep the 13 remaining retimed scenes.** Until that is done the film
    cannot be honestly watched — a third of the gags are playing the wrong
@@ -490,15 +665,12 @@ rejected. Fix the old animation rather than re-introducing `sheriff_eating`.
 3. **Watch it end to end** and cut for time. The blocking tier is complete, so
    for the first time the whole film is arbitrable: verse 2's gag density, the
    `[IF TIME]` shots, and whether any beat is holding too long.
-4. **Draw the film.** A rough scribble pass over all 50 layout scenes first,
-   polish later — blocking and drawing both render together, always, so there
-   is nothing to re-run afterward. This is the long pole.
+4. **Draw the animatic.** A rough scribble pass over all 50 layout scenes —
+   blocking and drawing both render together, always, so there is nothing to
+   re-run afterward.
 5. **Firm durations after the watch**, then move statuses `scripted →
    boarded` (all 50 rows still say `scripted`, including the blocked ones —
    the column has never been maintained, so do it in one pass or not at all).
-6. **Lock the style, then design pass** on the property and the characters.
-7. **Then rig** — against locked designs — and do the full-animation sweep.
-   See "Open decisions" for why that order and not the other one.
 
 ## How a blocking pass is actually done
 
@@ -559,6 +731,8 @@ re-run `check_structural` + `check_dimensions`, save.
   re-architect. Lock verification is disabled (solo repo).
 - PRs so far: scaffold (#1), track+beatmap (#2), story/script (#3),
   boards infrastructure (#4), env blockout + scale guides (#6, #7),
-  guide-blockout tier (#8), garage passthrough + edit LFS (#9). PR #5 (a
+  guide-blockout tier (#8), garage passthrough + edit LFS (#9),
+  camera-driven layout (#10), animatic blocked end to end + the MCM house
+  (#11), the dab painter + albedo palette + mountain basin (#12). PR #5 (a
   test sunrise board) was scrapped — the strokes survive on the
   `board-sunrise` branch if ever wanted.
