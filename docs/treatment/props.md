@@ -329,10 +329,11 @@ well. **Faces need hands.**
 |---|---|---|---|---|---|
 | `machine_gun` ✓ | guide | **sq020-sh010 — soft-serve extrusion, bell flick** | **L3** | hand | Trigger, bell. Muzzle flash is FX. No deformation specced — see §3 |
 | `rosco` ✓ | guide | **sq050-sh040 — drawn, spun, racked with teeth** | **L3** | hand | Slide travel (one rigid part) |
-| `big_pistol` ✓ | guide | sq050-sh020 mid | L2 | hand | Recoil only |
+| `cop_rifle` | **reinstated 2026-08-06** | sq050-sh020 onward — the sheriff's firefight gun | **L3** | hand | Recoil only |
+| `big_pistol` ✓ | guide | sq050-sh020 mid | L2 | hand | Recoil only — **see the open question below** |
 | `gun_cabinet` ✓ | guide | **sq050-sh040 close, from behind her** | L2 + **L3 sign** | hand | Door hinge |
 | `arsenal_contents` | sub-collection | sq050-sh040 | L1 | primitive | Rack of long guns, shell boxes — silhouettes only |
-| `nam_rifle` | **new** | sq050-sh010, sepia, 2 s | L1 | buy/free | None. M16A1 per `refs/cop rifle/` |
+| `nam_rifle` | **new** | sq050-sh010, sepia, 2 s | L1 | buy/free | M16A1 per `refs/cop rifle/`, **or reuse `cop_rifle`** — see below |
 | `sheriff_duty_sidearm` | wardrobe | holstered, mid | L1 | primitive | — |
 | `shotgun_rack` | part of `cruiser_interior` | sq040-sh035 | L1 | primitive | — |
 
@@ -349,9 +350,42 @@ solves the sightline instead of fighting it. Wall-mounted above the cabinet is
 the fallback if the door angle can't be made to work. Either way this needs a
 blocking test before the cabinet is built past L1.
 
-**`cop_rifle` is cut as a sheriff weapon** — his firefight gun is the
-comically large pistol, and nothing in `script.md` gives him a rifle. The refs
-are repurposed as the flashback rifle above.
+## The three weapons must read apart — set 2026-08-06
+
+The armory is designed as a **three-way material split**, so the shooters are
+told apart by silhouette and finish alone, with the colour turned off:
+
+| | weapon | material read |
+|---|---|---|
+| **The boy** | `machine_gun` | **big dull moulded plastic.** Absurdly overdone — a kid added every part he could think of and the printer built it. Scope on too tall a riser, banana magazine, full stock, carrying handle, foregrip, bipod, a pointless drum canister, and the literal bell and whistle. Chunky, soft-edged, mould-seamed, unmistakably a toy. |
+| **Mom** | `rosco` | **small bright silver.** A sleek **silver 9mm semi-automatic pistol** — mirror-bright stainless slide, brushed nickel frame, black checkered grips, no decoration at all. The smallest and shiniest object in the film, and the only bright metal. Its slide is what she racks with her teeth. |
+| **The sheriff** | `cop_rifle` | **long wood and blued steel.** An **M14**: full-length one-piece walnut stock, warm red-brown and hand-oiled, blued charcoal steel worn bright at the edges, perforated handguard, dull olive canvas sling. Nothing tactical, nothing modern, nothing plastic. |
+
+Concept sheets for all three, plus a one-scale lineup proving the read, are in
+`concept/props/`.
+
+**`cop_rifle` is reinstated — Ian's call, 2026-08-06.** It was previously cut on
+the grounds that his firefight gun is the comically large pistol and nothing in
+`script.md` gave him a rifle. That is overruled: the sheriff carries an **M14**,
+and the wood is what separates him visually from the other two shooters.
+
+**Open — what happens to `big_pistol`.** `guns-script.md` has the 'Nam flashback
+trigger and then *"out comes a comically large gun"* at `sq050-sh020`. Three ways
+to resolve it, none chosen yet:
+
+1. **The M14 *is* the comically large gun.** A full-length wood service rifle
+   hauled out in a suburban backyard is comically large, and it lands the
+   flashback in the same beat — the rifle he kept from the war. This also lets
+   `nam_rifle` and `cop_rifle` collapse into one asset instead of two, which is
+   the cheapest outcome and the tidiest story.
+2. **He has both** — the oversized pistol is the comedy reveal, the M14 is what
+   he actually fights with. Costs an extra hero asset and muddies the silhouette
+   split.
+3. **Keep the pistol as the reveal and drop the M14.** Contradicts the call
+   above.
+
+Option 1 is the recommendation. Nothing in `script.md` or `guns-script.md` has
+been rewritten pending that decision.
 
 ---
 

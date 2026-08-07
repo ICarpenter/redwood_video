@@ -107,6 +107,15 @@ wants one.
 
 ## The shading machine
 
+> ⚠️ **THIS SECTION DESCRIBES A DEAD MECHANISM — 2026-08-06.** The tilt-dab
+> painter was built, tested, and deleted; painting normals as colour fights
+> Blender's paint stack on every stroke. See `docs/handoff.md` § *The dab
+> painter is deleted* for the four reasons. **How this look gets shaded is
+> now an open question and colour starts from scratch.** The section is left
+> standing because the *intent* below — flat facets that still catch light,
+> grain that reacts, no banding — is still what we want; only the machine is
+> gone. Nothing here names a tool that still exists.
+
 The unifying technique — proven by the Gindy kettle file — is
 **hand-painted normal dabs**: brush strokes painted into the normal
 channel, each dab one flat color = one flat facet catching light as a
@@ -258,31 +267,75 @@ the sun is visible it is a flat disc, no glow, no bloom.
 
 ## Characters
 
-UPA-flat — Little Golden Books people — wearing the same `MCM_Toon` shader
-as the world, 2-band, mottled, matte:
+UPA-flat — flat graphic caricature, exaggerated proportions, no sculpting —
+wearing the same `MCM_Toon` shader as the world: mottled and matte, no
+banding (see *The shading machine*):
 
 - **Faces are flat shapes, not sculpts:** dot/wedge eyes, graphic brows,
   mouth as a cut shape. No linework on a face. Acting is carried by
   silhouette, pose, and holds.
-- **One print artifact rides on people:** the off-register **blush
-  dot** — period-correct Golden Books misregistration, and the project's
-  off-register signature surviving on flesh. It only reads as a print
-  artifact while it's the only one, so people otherwise stay cleanly
-  registered.
-- **Hair is a solid graphic mass** — bowl cut is one shape, Mom's
-  hairspray helmet is one huge sculpted mass, the mustache is a single
-  form.
+- **Skin carries no print artifact.** People are cleanly registered — no
+  misregistration on flesh, ever. An off-register **blush dot** lived here
+  until **2026-08-05**; it is gone, and so is the Little Golden Books
+  reference that justified it. These people are caricatured, not wholesome.
+  The one off-register element on a person is the boy's band tee, below.
+- **Hair is a solid graphic mass** — bowl cut is one shape, Mom's curly
+  bob is one rounded mass with the curl read only around its outer
+  contour, the mustache is a single form.
 - **Wardrobe is flat fills.** The boy's band-tee graphic gets to be
   off-register: the tee is a print within the print.
 - **The decade rides the silhouette** (setting canon, expressed flat):
-  - **Mom — 1988 mall-glam armor, all film:** the hairspray helmet,
-    shoulder-padded blouse in mall-mauve, pleated high-waist pants.
-    Supersedes the earlier curler/housecoat look; `refs/mom/` remains
-    the face/energy DNA, and the oven mitts survive as kitchen props.
-    The silhouette is pre-armored for the final-boss turn — no costume
-    change needed.
+  - **Mom — 1988 mall-glam armor, all film:** shoulder-padded
+    button-front blouse in mall-mauve with a hard square shoulder shelf,
+    pleated high-waist pants. Supersedes the earlier curler/housecoat
+    look; `refs/mom/` remains the face/energy DNA. The silhouette is
+    pre-armored for the final-boss turn — no costume change needed.
+
+    **Hands — the oven mitts are dead, film-wide (2026-08-06).** She
+    wore them on both hands in every shot, and they made her read as a
+    housewife, which she is not. **She goes to work.** The shoulder pads
+    and the pleated trousers are what a woman wears to a job, and they
+    were carrying that on their own the whole time — the mitts were
+    fighting them. She bakes; it is something she *does*, not what she
+    *is*, and the kitchen keeps its quilted pair on the hook by the
+    stove where that reads correctly.
+    Her hands are bare and they are capable: long slender fingers, hard
+    well-kept nails painted in the same saturated note as her lipstick.
+    **She racks a slide with her fingers** — see the knock-on at
+    `script.md` `sq050-sh040`, where the teeth gag went with the mitts.
+
+    **Hair (changed 2026-08-06):** the hairspray helmet is out. She wears
+    a late-80s/early-90s permed **curly bob** — short at the jaw, never
+    past the shoulders, all its length spent on volume instead, soft and
+    springy rather than lacquered. Straight off
+    `refs/mom/moms-new-haircut-mid-1990s-v0-tcgp7b5kkkce1.webp`. It still
+    obeys the solid-graphic-mass rule above; a bob is a cleaner one-shape
+    than a teased helmet ever was. The wardrobe stays 1988 — only the
+    head moved.
+
+    **Glasses (added 2026-08-06):** large round wire-rimmed glasses, thin
+    warm-gold frames, big lenses covering the cheekbones. Flat-translate
+    to one bold graphic shape on the face, which suits a UPA-flat read.
+
+    **Build and face (set 2026-08-06):** thin, wiry and hard-working,
+    caricatured as far past naturalism as the boy — long tendony neck,
+    narrow bony shoulders, big head, angular everywhere, no glamour.
+    Long narrow jaw to a pointed chin, hard high cheekbones with hollows
+    beneath, small wedge nose, heavy hooded lids. **She is where the boy
+    got his face:** the huge open toothy grin is hers first and the
+    sleepy hooded lids are hers, and her bob and his bowl cut are the
+    same rounded silhouette. Her default is the sweetest face in the
+    county; the `sq020-sh040` scold works by *switching that grin off*
+    into a flat level line while the lids stay heavy. Not angry —
+    serious. Her lipstick is the hottest, most saturated note on her,
+    the way the boy's devil decal is on him.
   - **Boy:** bowl cut over a faded-denim baggy silhouette, cuffs
-    pooling over the sneakers, band tee as above.
+    pooling over the sneakers, band tee as above. **Build (set
+    2026-08-05):** thin and wiry, pushed well past naturalism — long
+    neck, long colt legs, narrow shoulders, big head — so the oversized
+    denim visibly swamps him. His face pairs heavy hooded lids with a
+    huge open toothy grin: the eyes stay sleepy and the mouth does all
+    the acting.
   - **Sheriff:** the man reads timeless county lawman; his anachronism
     is the car (see the two strata) — a boxy 80s LTD Crown Victoria, a
     decade out of date even in 1993, cream body with the rust pop the
@@ -367,8 +420,8 @@ on old objects (the truck's chips become misregistered plates), sun-faded
 hues, paper-tone ghosting at edges. Fresh printed objects are *perfectly*
 registered, fully saturated — too perfect, which is the "NOT A TOY" note.
 
-Print wear stays on the built world; people keep their clean registration
-(blush dot excepted), so wear reads as the world aging *around* them.
+Print wear stays on the built world; people keep their clean registration,
+so wear reads as the world aging *around* them.
 
 **The sweet-tea pitcher stays pristine:** the one thing in the film with
 zero misregistration and full saturation. It out-prints the world around
@@ -398,6 +451,11 @@ it, which is only legible while nothing else does.
   pass, no bloom, no cloth sim, no hair systems, no specular outside wet
   paint — every one of those is an aesthetic choice made for the look,
   which happens to also cost nothing. Frames render extremely fast.
+- ⚠️ **The next three bullets name tools that were deleted 2026-08-06** —
+  `redwood_dabpaint.py`, `tilt_palette.py`, `albedo_palette.py` and
+  `assets/materials/tilt_palette/` are all gone. Kept as the record of what
+  was tried and why. The palette itself survives as § Palette above and as
+  data in `assets/materials/albedo_palette/`.
 - **The dab painter** (`tools/addons/redwood_dabpaint.py`, designed
   2026-08-04 — `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`):
   one native brush stroke sets both channels, because the painted image
@@ -499,6 +557,17 @@ to spend one, that's worth doing on purpose rather than by drift.
   finishing modifier rather than a style; decide late.
 
 ## Pinned state (2026-08-04 — resume later this week)
+
+> ⚠️ **VOID as a plan, 2026-08-06 — kept as a log.** Everything below that
+> names the dab painter or the palette generators refers to deleted code, and
+> "Next, in order" items 1 and 2 (settle the albedo palette, paint one asset)
+> die with it — colour and brushes start from scratch. Two things survive: the
+> **sq020-sh020 look-dev frame** (item 3) is still exactly the right test, and
+> the **banding finding is still canon** — banding suppresses dabs everywhere
+> but the terminator, which is why it is out film-wide and the engine is
+> unforced. The proving file it came from (`assets/materials/tilt_dab_test/`)
+> was deleted with the rest; the finding stands on its own and the file is in
+> git history. Current state lives in `docs/handoff.md`.
 
 Done:
 

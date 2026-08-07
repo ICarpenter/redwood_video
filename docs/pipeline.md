@@ -40,9 +40,11 @@ Columns: `sq,sh,description,start_frame,end_frame,duration,assets,status`
   metadata — `export_shot.py` exports what a layout scene actually contains
   and never reads this column.
 - Shots LINK, never append, either shape; rig animation via library overrides.
-- Look materials: `assets/materials/` — `tilt_palette/` (direction × lean
-  swatches), `albedo_palette/` (the MCM families), `tilt_dab_test/` (the
-  proving file). The shader is `MCM_Toon`; see `treatment/style.md`.
+- Look materials: `assets/materials/` — currently only `albedo_palette/`,
+  kept as a record of the 2026-08-04 palette and read by nothing (its README
+  says so). The tilt-dab painter and its artifacts were deleted 2026-08-06;
+  surfacing is being restarted from scratch. For the look itself see
+  `treatment/style.md`, and for what happened see `handoff.md`.
 - Polyhaven assets: fine. AI text-to-3D / Sketchfab / purchased models:
   blockouts only — retopo and repaint into the print look before a shot
   renders. Nothing bought or generated ships at hero grade; see
