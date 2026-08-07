@@ -1,8 +1,10 @@
 # redwood_video
 
 An animated music video produced end-to-end in Blender — **Mid-Century Print**,
-a flat-gouache poster look built on hand-painted tilt dabs (`MCM_Toon`), cut to
-a finished track. Style locked 2026-08-05; see `docs/treatment/style.md`.
+a flat-gouache poster look, cut to a finished track. Style locked 2026-08-05;
+see `docs/treatment/style.md`. **How that look gets rendered is open** — the
+tilt-dab painter was tried and deleted 2026-08-06, and colour and brushes are
+being restarted; see `docs/handoff.md`.
 
 - **Start here:** `docs/handoff.md` — project state, conventions, next actions
 - Design spec: `docs/superpowers/specs/2026-07-19-redwood-video-pipeline-design.md`

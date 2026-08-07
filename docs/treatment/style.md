@@ -107,6 +107,15 @@ wants one.
 
 ## The shading machine
 
+> ⚠️ **THIS SECTION DESCRIBES A DEAD MECHANISM — 2026-08-06.** The tilt-dab
+> painter was built, tested, and deleted; painting normals as colour fights
+> Blender's paint stack on every stroke. See `docs/handoff.md` § *The dab
+> painter is deleted* for the four reasons. **How this look gets shaded is
+> now an open question and colour starts from scratch.** The section is left
+> standing because the *intent* below — flat facets that still catch light,
+> grain that reacts, no banding — is still what we want; only the machine is
+> gone. Nothing here names a tool that still exists.
+
 The unifying technique — proven by the Gindy kettle file — is
 **hand-painted normal dabs**: brush strokes painted into the normal
 channel, each dab one flat color = one flat facet catching light as a
@@ -442,6 +451,11 @@ it, which is only legible while nothing else does.
   pass, no bloom, no cloth sim, no hair systems, no specular outside wet
   paint — every one of those is an aesthetic choice made for the look,
   which happens to also cost nothing. Frames render extremely fast.
+- ⚠️ **The next three bullets name tools that were deleted 2026-08-06** —
+  `redwood_dabpaint.py`, `tilt_palette.py`, `albedo_palette.py` and
+  `assets/materials/tilt_palette/` are all gone. Kept as the record of what
+  was tried and why. The palette itself survives as § Palette above and as
+  data in `assets/materials/albedo_palette/`.
 - **The dab painter** (`tools/addons/redwood_dabpaint.py`, designed
   2026-08-04 — `docs/superpowers/specs/2026-08-04-tilt-dab-painter-design.md`):
   one native brush stroke sets both channels, because the painted image
@@ -543,6 +557,17 @@ to spend one, that's worth doing on purpose rather than by drift.
   finishing modifier rather than a style; decide late.
 
 ## Pinned state (2026-08-04 — resume later this week)
+
+> ⚠️ **VOID as a plan, 2026-08-06 — kept as a log.** Everything below that
+> names the dab painter or the palette generators refers to deleted code, and
+> "Next, in order" items 1 and 2 (settle the albedo palette, paint one asset)
+> die with it — colour and brushes start from scratch. Two things survive: the
+> **sq020-sh020 look-dev frame** (item 3) is still exactly the right test, and
+> the **banding finding is still canon** — banding suppresses dabs everywhere
+> but the terminator, which is why it is out film-wide and the engine is
+> unforced. The proving file it came from (`assets/materials/tilt_dab_test/`)
+> was deleted with the rest; the finding stands on its own and the file is in
+> git history. Current state lives in `docs/handoff.md`.
 
 Done:
 

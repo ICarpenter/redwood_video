@@ -804,93 +804,23 @@ Facts worth keeping:
 - Defaults are tuned for a close shot. At 20 m a 0.06 m chunk is invisible;
   raise `Debris Scale`/`Hole Size` on the modifier for wide coverage.
 
-### `tools/tilt_palette.py` — the tilt-dab swatch registry + picker sheet
+### Surfacing tools — DELETED 2026-08-06
 
-```sh
-python3 tools/tilt_palette.py            # writes assets/materials/tilt_palette/
-```
+There are none. `tilt_palette.py`, `albedo_palette.py`, `palette_common.py`,
+`dabpaint.py`, `addons/redwood_dabpaint.py` and their tests were the tilt-dab
+painter, and all of them were deleted when that approach was abandoned — see
+`handoff.md` § *The dab painter is deleted*. Colour and brushes are being
+started from scratch and nothing has replaced them yet.
 
-Source of truth for the Mid-Century Print candidate's tilt-dab palette
-(`docs/treatment/style.md`): 12 clock directions × 4 lean
-tiers (whisper 3° / soft 7° / medium 14° / strong 25°) + flat, encoded as
-tangent-space normal colors. Emits the picker-sheet PNG (columns = flat then
-12/1/…/11 o'clock; rows = whisper→strong), a 256×1 `tilt_lut.png`, a 32×32
-icon per swatch, and a JSON sidecar with every swatch's normal/RGB/hex plus
-its LUT index. Stdlib only; importable — the dab painter reads its math from
-here. Retuning tiers/directions and rerunning never invalidates painted work.
+Two things survive on purpose. `assets/materials/albedo_palette/` keeps the
+palette **as data** — the JSON, the picker sheet and a README saying it is a
+record and not a system. And `docs/treatment/style.md` § Palette is the prose
+version, which is the canon one. Everything else, including the generators'
+maths, is in git history.
 
-- Any tier is available on any surface. The per-family tier table this tool
-  used to emit was dropped 2026-08-04 along with the rule itself.
-- The sheet is **data, not color**: load as Non-Color when sampling.
-  Blender's color-picker hex field assumes sRGB and the eyedropper samples
-  display-transformed pixels — both silently corrupt the normal encoding.
-  Let the dab painter set the brush colour for you.
-- **Append swatches, never reorder them.** A painted texel is an index into
-  the LUT, so reordering repaints every existing dab. The JSON carries an
-  `ordering_hash` and the add-on warns when it moves.
-
-### `tools/albedo_palette.py` — the colour half of the dab palette
-
-```sh
-python3 tools/albedo_palette.py          # writes assets/materials/albedo_palette/
-```
-
-Mirrors `tilt_palette.py` for colour: 15 bases from the treatment's two
-palette tables (11 core + 4 annex), each with five drift variants —
-`warm`/`cool` (±8° hue), `dusk` (−6°, ×0.92 value), `pale` (×0.85 sat),
-`deep` (×1.15 sat, ×0.94 value) — for 90 swatches. Emits the same four
-artifacts.
-
-Drift is an HSV shift, not an RGB blend: measured 2026-08-04, an RGB
-multiply-cool swings paper-cream 174° of hue into blue-grey while other bases
-barely move, whereas a hue rotation moves every base by the same amount.
-
-Swatches carry `group` and `role` text so the picker can show what each is
-for. **Nothing is enforced** — the mint reservation and the post-1980 annex
-are art direction, not constraints the tools police.
-
-Ordered by hue then value, so an antialiased dab edge — which blends two
-indices into a third — lands on a transitional swatch rather than a stray one.
-
-### `tools/palette_common.py` — the index-encoding core (not run directly)
-
-Shared by both generators and the add-on, stdlib and bpy-free. Owns the
-round-trip (index → brush channel → 8-bit texel → index, exact for all 256),
-the LUT addressing that lands each index on its texel centre, the ordering
-hash, the PNG writer, and the artifact emitters. An off-by-one here makes
-every dab in the film the wrong swatch, so it is the most heavily tested
-module in `tools/`.
-
-### `tools/dabpaint.py` — dab painter decisions (not run directly)
-
-The bpy-free half of the add-on, the way `guides.py` sits under
-`redwood_guides.py`: asset naming, brush encoding, palette loading, ordering
-drift detection, and the image specs the setup run re-applies.
-
-### `tools/addons/redwood_dabpaint.py` — paint colour and facet in one stroke
-
-`View3D > Sidebar > Redwood > Dab Paint`. Enable it with a file inside the
-project saved, so the project root is findable.
-
-Pick an albedo swatch and a tilt swatch, then paint. Both land in one native
-brush stroke, because the painted image is not colour: it stores
-`R = albedo index`, `G = tilt index`, and the two film-wide LUTs resolve
-them. One image means **Blender's own undo is the only undo** — one Ctrl+Z
-takes back a dab in both channels and nothing can desync. Nothing runs during
-a stroke; the add-on's only job while you paint is having set `brush.color`
-when you clicked a swatch.
-
-- **Make Paintable** creates or heals the index map, both LUT links, and the
-  material. Idempotent, like `make_layout` — re-run it to fix a drifted
-  colorspace or interpolation, both of which fail silently.
-- **Bake to PNG** resolves the index map through both LUTs into ordinary
-  `<asset>_albedo.png` / `<asset>_tilt.png`, for another tool or a final
-  render. The index map stays authoritative; baking does not alter the
-  material.
-- Keep the brush **hard-edged**: a dab is one flat facet. Soft falloff blends
-  indices at the edge, which decode as unrelated swatches.
-- Verified end to end by `tools/tests/check_dabpaint.py` — writes index *i*,
-  renders, and asserts the pixel is swatch *i*.
+Whatever comes next: `redwood_guides.py` is the model for how an add-on ships
+here — a bpy-free module in `tools/` holding the decisions, a thin bpy add-on
+over it, and an in-Blender integration check in `tools/tests/`.
 
 ### `tools/encode_delivery.sh` — final masters
 

@@ -15,8 +15,8 @@ machine gun, and by sundown has dragged his mom and the county sheriff into a
 three-way backyard war. 50 shots. Solo production.
 
 **The look is locked; the mechanism that renders it is not.** Hand-painted
-tilt dabs were the answer from 2026-08-04 to 2026-08-06 and are now parked —
-see *The dab painter is parked* below. Anything in `style.md`, `tools.md` or
+tilt dabs were the answer from 2026-08-04 to 2026-08-06 and have been deleted
+— see *The dab painter is deleted* below. Anything in `style.md`, `tools.md` or
 `README.md` that describes the film as being made *of* tilt dabs is
 describing an approach that is back in R&D. The picture those docs describe
 is still the target.
@@ -71,13 +71,14 @@ then the sheriff's introduction and crash (`sq040_sh030`–`sh066`).
 
 ---
 
-## The dab painter is parked — Ian's call, 2026-08-06
+## The dab painter is deleted — Ian's call, 2026-08-06
 
 **Painting normals as colour is fighting Blender's setup, and we fought it
 hard for three days to find that out.** The tilt-dab mechanism — an artist
 paints two index maps, one indexing an albedo swatch and one indexing a facet
-normal, and the shader decodes them — is set aside. The *look* it was serving
-is untouched and still locked.
+normal, and the shader decodes them — is gone from the repo, not merely
+shelved. The *look* it was serving is untouched and still locked. **Colour and
+brushes both start from scratch.**
 
 What the tests established, in the order it hurt:
 
@@ -104,28 +105,38 @@ Any one of these is survivable. Together they mean the artist fights the tool
 on every stroke of a 50-shot film, which is the wrong place to be spending
 the effort.
 
-**What is kept.** The two palettes and their LUTs (`tools/albedo_palette.py`,
-`tools/tilt_palette.py`) — the colour and facet thinking is good and outlives
-the painting mechanism. The gotchas in *Blender 5.1.2 gotchas already paid
-for* — they are true Blender facts and cost real days. And
-`assets/materials/tilt_dab_test/` as the record of the test.
+**What was deleted** — the whole surfacing toolchain, so `tools/` has no
+surfacing tools at all now: `dabpaint.py`, `albedo_palette.py`,
+`tilt_palette.py`, `palette_common.py`, `addons/redwood_dabpaint.py`, the brush
+builders (`dabbrushes.py`, `build_dab_brushes.py`), every dab and palette test
+under `tools/tests/`, and the generated artifacts
+`assets/materials/tilt_palette/`, `assets/materials/tilt_dab_test/` and the
+brush masks. The add-on was also removed from Blender's user add-ons directory.
+The committed half is recoverable — `git log --diff-filter=D -- tools/` finds
+the commit, `git show <commit>^:<path>` gets a file back. The brush builders
+and their runners were never committed and are simply gone.
 
-**What stays in the tree but is not the plan.** The committed dab painter
-from PR #12 — `tools/dabpaint.py`, `tools/addons/redwood_dabpaint.py`,
-`tools/tests/check_dabpaint.py` — still works and is not deleted. Do not build
-on it without asking.
+**What was kept, and why.**
 
-**What was deliberately never committed** (left in the working tree on
-`style-lock`, 2026-08-06): `tools/dabbrushes.py`, `tools/build_dab_brushes.py`,
-`assets/materials/brushes/`, the brush-mask test runners under `tools/tests/`
-(`check_dab_brushes.py`, `check_stamp_hardness.py`, `load_test_masks.py`,
-`clear_index_map.py`, `test_dabbrushes.py`), the stamp-hardness additions to
-`dabpaint.py`/`test_dabpaint.py`, and the `tilt_dab_test.blend` edits. If the
-approach is ever revived, that is where the unfinished half is.
+- `assets/materials/albedo_palette/` — the palette **as data**: the JSON (96
+  swatches, with the colour census in its `meta` that produced them) and the
+  picker sheet, plus a README saying it is a record and not a system. Nothing
+  reads it. The generator is gone with everything else.
+- `docs/treatment/style.md` § Palette — the prose version, with roles and
+  reasoning. **This is the canon one**; the JSON is the long tail under it.
+- The gotchas in *Blender 5.1.2 gotchas already paid for* — true Blender facts
+  that cost real days, and most of them are not dab-specific.
+
+The tilt palette was **not** kept: it indexed facet normals for this mechanism
+specifically, and nothing else ever consumed it.
 
 **What replaces it: nothing yet.** Painterly rendering is open R&D from
 2026-08-06 — brushes, layering, materials — and no mechanism has been chosen.
-See *Open decisions*.
+Start from the look, not from anything above. See *Open decisions*.
+
+**Blender wants a restart** after this — the add-on file is gone but a running
+session still has it registered, and user preferences still list it as enabled
+until Blender rewrites them.
 
 ---
 
@@ -476,8 +487,10 @@ is found via `$BLENDER`, defaulting to
 | `conform_edit.py` | rebuilds `edit/edit.blend`: track + markers + best tier per shot |
 | `encode_delivery.sh` | ProRes HQ master + H.264 into `delivery/` |
 
-Tests: `python3 -m unittest discover -s tools/tests -t tools/tests` (45
-passing). Note the `-t` — `tools/tests` has no `__init__.py`, so plain
+Tests: `python3 -m unittest discover -s tools/tests -t tools/tests` (**48
+passing as of 2026-08-06** — it was 162 before the palette and dab tests went
+with their modules). Note the `-t` — `tools/tests` has no `__init__.py`, so
+plain
 discovery from the repo root fails with "Start directory is not importable".
 
 ### Which tools destroy work
@@ -515,9 +528,8 @@ touched it — regenerate instead.
   commit behind — fast-forward before branching off it.
 - The current branch is **`style-lock`**: the style lock and props catalogue
   (`c0bb4ff`), then the concept-art drop and the character canon it moved
-  (`cb05dd2`). Not yet a PR. It also carries the **uncommitted dab-brush
-  work** listed in *The dab painter is parked* — anyone switching branches
-  should expect it in the working tree, and it is not meant to be committed.
+  (`cb05dd2`), then the deletion of the whole surfacing toolchain. Not yet a
+  PR.
 - Merged branches that can be deleted: `scaffold`, `track-and-beatmap`,
   `ideation`, `boards`, `envs`, `boards-guide-blockout`,
   `property-passthrough`, `camera-driven-layout`, `animatic-sq060-sq090`,
@@ -579,8 +591,8 @@ rejected. Fix the old animation rather than re-introducing `sheriff_eating`.
   undulation, and the surfacing pass — which is now the same open question as
   the painterly render, below.
 - **How the painterly look is actually rendered — OPEN, restarted
-  2026-08-06.** Tilt dabs were the answer and are parked; nothing has replaced
-  them. The R&D track is brushes, layering and materials, and it should be
+  2026-08-06.** Tilt dabs were the answer and have been deleted; nothing has
+  replaced them, and colour starts from scratch alongside the brushes. The R&D track is brushes, layering and materials, and it should be
   judged the way everything else here is judged: render a frame and look at
   it. Constraints that survive from `style.md` regardless of mechanism — flat
   matte shapes, no linework, no banding, subtle patina, print wear on the
@@ -646,12 +658,12 @@ real and still owed; they are simply not what is being worked.
 2. **Test on geometry that already exists** — the property greybox, a guide, a
    prop. Track B must not wait on the boy.
 3. **Render a frame and look at it.** Same rule as everything else here; the
-   tilt-dab approach passed a lot of arithmetic on its way to being parked.
+   tilt-dab approach passed a lot of arithmetic on its way to being deleted.
 4. **Put any candidate through the four questions that killed tilt dabs**
    before committing to it: does antialiasing turn its data into garbage; can
    it be verified headlessly; does it need per-datablock manual UI setup that
    cannot be scripted; and does the artist fight it on every stroke, fifty
-   shots long. See *The dab painter is parked*.
+   shots long. See *The dab painter is deleted*.
 
 ### Still owed on the animatic — not being worked
 
